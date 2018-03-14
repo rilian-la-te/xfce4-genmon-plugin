@@ -23,18 +23,16 @@
 
 #include "cmdspawn.h"
 #include "config_gui.h"
+#include "launcher.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include <libxfce4panel/xfce-panel-convenience.h>
-#include <libxfce4panel/xfce-panel-plugin.h>
-#include <libxfce4ui/libxfce4ui.h>
-#include <libxfce4util/libxfce4util.h>
-
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -92,26 +90,21 @@ static void ExecOnClickCmd(GtkWidget *p_wSc, void *p_pvPlugin)
 {
 	struct genmon_t *poPlugin   = (genmon_t *)p_pvPlugin;
 	struct monitor_t *poMonitor = &(poPlugin->oMonitor);
-	GError *error               = NULL;
 
-	xfce_spawn_command_line_on_screen(gdk_screen_get_default(),
-	                                  poMonitor->onClickCmd,
-	                                  0,
-	                                  0,
-	                                  &error);
-	if (error)
+	bool fail = vala_panel_launch_command_on_screen(poMonitor->onClickCmd, poPlugin->plugin);
+	if (fail)
 	{
-		char *first = g_strdup_printf(_("Could not run \"%s\""), poMonitor->onClickCmd);
-		xfce_message_dialog(NULL,
-		                    _("Xfce Panel"),
-		                    "dialog-error",
-		                    first,
-		                    error->message,
-		                    "gtk-close",
-		                    GTK_RESPONSE_OK,
-		                    NULL);
-		g_error_free(error);
-		g_free(first);
+		g_autofree char *first =
+		    g_strdup_printf(_("Could not run \"%s\""), poMonitor->onClickCmd);
+		g_autoptr(GtkDialog) dlg =
+		    GTK_DIALOG(gtk_message_dialog_new(NULL,
+		                                      GTK_DIALOG_DESTROY_WITH_PARENT,
+		                                      GTK_MESSAGE_ERROR,
+		                                      GTK_BUTTONS_CLOSE,
+		                                      "%s",
+		                                      first,
+		                                      NULL));
+		gtk_dialog_run(dlg);
 	}
 }
 
@@ -123,24 +116,20 @@ static void ExecOnValClickCmd(GtkWidget *p_wSc, void *p_pvPlugin)
 	struct monitor_t *poMonitor = &(poPlugin->oMonitor);
 	GError *error               = NULL;
 
-	xfce_spawn_command_line_on_screen(gdk_screen_get_default(),
-	                                  poMonitor->onValClickCmd,
-	                                  0,
-	                                  0,
-	                                  &error);
-	if (error)
+	bool fail = vala_panel_launch_command_on_screen(poMonitor->onValClickCmd, poPlugin->plugin);
+	if (fail)
 	{
-		char *first = g_strdup_printf(_("Could not run \"%s\""), poMonitor->onValClickCmd);
-		xfce_message_dialog(NULL,
-		                    _("Xfce Panel"),
-		                    "dialog-error",
-		                    first,
-		                    error->message,
-		                    "gtk-close",
-		                    GTK_RESPONSE_OK,
-		                    NULL);
-		g_error_free(error);
-		g_free(first);
+		g_autofree char *first =
+		    g_strdup_printf(_("Could not run \"%s\""), poMonitor->onValClickCmd);
+		g_autoptr(GtkDialog) dlg =
+		    GTK_DIALOG(gtk_message_dialog_new(NULL,
+		                                      GTK_DIALOG_DESTROY_WITH_PARENT,
+		                                      GTK_MESSAGE_ERROR,
+		                                      GTK_BUTTONS_CLOSE,
+		                                      "%s",
+		                                      first,
+		                                      NULL));
+		gtk_dialog_run(dlg);
 	}
 }
 

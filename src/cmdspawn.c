@@ -190,6 +190,7 @@ char *genmon_SpawnCmd(const char *p_pcCmdLine, int wait)
 		                                      "%s",
 		                                      first,
 		                                      NULL));
+		gtk_dialog_run(dlg);
 		return (NULL);
 	}
 	/* Spawn the command and free allocated memory */

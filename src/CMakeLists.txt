@@ -4,6 +4,10 @@ set(PLUGIN_FILES
 	main.c
 	cmdspawn.c
 	config_gui.c
+        mon_widget.c
+        mon_widget.h
+        launcher.c
+        launcher.h
 )
 
 add_library(genmon-xfce MODULE
