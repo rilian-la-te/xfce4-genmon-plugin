@@ -1,8 +1,10 @@
 /*
  *  Generic Monitor plugin for the Xfce4 panel
- *  Header file to construct the configure GUI
+ *  Header file to spawn a process and capture its output
  *  Copyright (c) 2004 Roger Seguin <roger_seguin@msn.com>
  *                                  <http://rmlx.dyndns.org>
+ *  Copyright (c) 2006 Julien Devemy <jujucece@gmail.com>
+ *  Copyright (c) 2012 John Lindgren <john.lindgren@aol.com>
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -19,40 +21,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef _config_gui_h
-#define _config_gui_h
+#ifndef _cmdspawn_h
+#define _cmdspawn_h
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+char *genmon_Spawn(char **argv, int wait);
+char *genmon_SpawnCmd(const char *cmdline, int wait);
 
-#include <gtk/gtk.h>
-
-#include <libxfce4util/libxfce4util.h>
-#include <libxfce4panel/xfce-panel-plugin.h>
-
-
-typedef struct gui_t {
-    /* Configuration GUI widgets */
-    GtkWidget      *wTF_Cmd;
-    GtkWidget      *wTB_Title;
-    GtkWidget      *wTF_Title;
-    GtkWidget      *wSc_Period;
-    GtkWidget      *wPB_Font;
-} gui_t;
-
-
-#ifdef __cplusplus
-extern          "C" {
-#endif
-
-    int genmon_CreateConfigGUI (GtkWidget * ParentWindow,
-        struct gui_t *gui);
-    /* Create configuration/Option GUI */
-    /* Return 0 on success, -1 otherwise */
-
-#ifdef __cplusplus
-}/* extern "C" */
-#endif
-
-#endif/* _config_gui_h */
+#endif /* _cmdspawn_h */
