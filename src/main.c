@@ -815,7 +815,7 @@ static void genmon_dialog_response(GtkWidget *dlg, int response, genmon_t *genmo
 {
 	UpdateConf(genmon);
 	gtk_widget_destroy(dlg);
-	xfce_panel_plugin_unblock_menu(genmon->plugin);
+	//	xfce_panel_plugin_unblock_menu(genmon->plugin);
 	genmon_write_config(genmon->plugin, genmon);
 	/* Do not wait the next timer to update display */
 	DisplayCmdOutput(genmon);
@@ -829,7 +829,7 @@ static void genmon_create_options(GenMonWidget *plugin, genmon_t *poPlugin)
 	struct param_t *poConf = &(poPlugin->oConf.oParam);
 	struct gui_t *poGUI    = &(poPlugin->oConf.oGUI);
 
-	xfce_panel_plugin_block_menu(plugin);
+	//	xfce_panel_plugin_block_menu(plugin);
 
 	dlg = xfce_titled_dialog_new_with_buttons(_("Configuration"),
 	                                          GTK_WINDOW(
@@ -919,7 +919,7 @@ static gboolean genmon_set_size(GenMonWidget *plugin, int size, genmon_t *poPlug
 {
 	struct monitor_t *poMonitor = &(poPlugin->oMonitor);
 
-	if (xfce_panel_plugin_get_orientation(plugin) == GTK_ORIENTATION_HORIZONTAL)
+	if (gtk_orientable_get_orientation(GTK_ORIENTABLE(plugin)) == GTK_ORIENTATION_HORIZONTAL)
 	{
 		if (size > BORDER)
 			gtk_widget_set_size_request(GTK_WIDGET(poMonitor->wBar),
@@ -983,11 +983,8 @@ static void genmon_construct(GenMonWidget *plugin)
 
 	g_signal_connect(plugin, "size-changed", G_CALLBACK(genmon_set_size), genmon);
 
-	xfce_panel_plugin_menu_show_about(plugin);
-
 	g_signal_connect(plugin, "about", G_CALLBACK(About), plugin);
 
-	xfce_panel_plugin_menu_show_configure(plugin);
 	g_signal_connect(plugin, "configure-plugin", G_CALLBACK(genmon_create_options), genmon);
 
 	g_signal_connect(plugin, "remote-event", G_CALLBACK(genmon_remote_event), genmon);
@@ -1002,5 +999,3 @@ static void genmon_construct(GenMonWidget *plugin)
 	                 G_CALLBACK(ExecOnValClickCmd),
 	                 genmon);
 }
-
-XFCE_PANEL_PLUGIN_REGISTER(genmon_construct)
