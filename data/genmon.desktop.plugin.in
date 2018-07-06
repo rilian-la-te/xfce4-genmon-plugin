@@ -1,0 +1,10 @@
+[Plugin]
+Name=GenMon
+Description=Cyclically spawns a script/program, captures its output and displays the resulting string in the panel
+Icon=utilites-system-monitor
+Authors=Roger Seguin <roger_seguin@msn.com>;Julien Devemy <jujucece@gmail.com>;Tony Paulic <tony.paulic@gmail.com>
+Website=http://goodies.xfce.org/projects/panel-plugins/xfce4-genmon-plugin
+HelpURI=https://gitlab.com/vala-panel-project/xfce4-genmon-plugin
+License=lgpl
+Version=0.1.0
+

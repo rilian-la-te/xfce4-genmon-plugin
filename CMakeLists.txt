@@ -33,5 +33,6 @@ pkg_check_modules(XFCE libxfce4panel-2.0 libxfconf-0)
 cmake_dependent_option(ENABLE_XFCE "Enable Xfce Panel Integration" ON
     "XFCE_FOUND" OFF)
 
+add_subdirectory(data)
 add_subdirectory(po)
 add_subdirectory(src)

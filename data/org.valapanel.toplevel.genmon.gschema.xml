@@ -1,0 +1,20 @@
+<schemalist>
+  <schema id="org.valapanel.genmon">
+    <key name="update-period" type="d">
+      <range min="0" max="3600"/>
+      <default>1</default>
+    </key>
+    <key name="font" type="s">
+      <default>''</default>
+    </key>
+    <key name="command" type="s">
+      <default>''</default>
+    </key>
+    <key name="label-text" type="s">
+      <default>''</default>
+    </key>
+    <key name="use-label" type="b">
+      <default>false</default>
+    </key>
+  </schema>
+</schemalist>
