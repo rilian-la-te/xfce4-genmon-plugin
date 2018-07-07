@@ -1,7 +1,7 @@
 set(PLUGIN_FILES
 	cmdspawn.h
 	config_gui.h
-	main.c
+        main.c
 	cmdspawn.c
 	config_gui.c
         mon_widget.c
@@ -9,8 +9,13 @@ set(PLUGIN_FILES
         launcher.c
         launcher.h
 )
+glib_compile_resources(GLIB_RESOURCES_GENMON
+    source
+        genmon.gresource.xml
+)
 
 add_library(genmon-xfce MODULE
-		${PLUGIN_FILES}
+                ${PLUGIN_FILES}
+                ${GLIB_RESOURCES_GENMON}
         )
 target_link_libraries(genmon-xfce PRIVATE GLIB2::GIO_UNIX GTK3::GTK)

@@ -423,8 +423,7 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	g_object_class_install_property(oclass,
 	                                PROP_UPDATE_INTERVAL_MS,
 	                                pspecs[PROP_UPDATE_INTERVAL_MS]);
-	gtk_widget_class_set_template_from_resource(GTK_WIDGET_CLASS(klass),
-	                                            "/org/vala-panel-genmon/main.ui");
+	gtk_widget_class_set_template_from_resource(GTK_WIDGET_CLASS(klass), "/org/genmon/main.ui");
 	gtk_widget_class_bind_template_child_full(GTK_WIDGET_CLASS(klass),
 	                                          "main-box",
 	                                          FALSE,
