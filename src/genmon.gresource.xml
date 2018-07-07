@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<gresources>
+  <gresource prefix="/org/genmon">
+    <file compressed="true" alias="main.ui" preprocess="xml-stripblanks">../data/main.ui</file>
+  </gresource>
+</gresources>
