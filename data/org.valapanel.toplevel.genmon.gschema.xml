@@ -10,10 +10,10 @@
     <key name="command" type="s">
       <default>''</default>
     </key>
-    <key name="label-text" type="s">
+    <key name="title-text" type="s">
       <default>''</default>
     </key>
-    <key name="use-label" type="b">
+    <key name="use-title" type="b">
       <default>false</default>
     </key>
   </schema>

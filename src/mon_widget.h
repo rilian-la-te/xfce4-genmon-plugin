@@ -6,8 +6,8 @@
 G_BEGIN_DECLS
 
 /* Configuration Keywords */
-#define GENMON_PROP_USE_LABEL "use-label"
-#define GENMON_PROP_LABEL_TEXT "label-text"
+#define GENMON_PROP_USE_TITLE "use-title"
+#define GENMON_PROP_TITLE_TEXT "title-text"
 #define GENMON_PROP_CMD "command"
 #define GENMON_PROP_UPDATE_PERIOD "update-period"
 #define GENMON_PROP_FONT "font"
