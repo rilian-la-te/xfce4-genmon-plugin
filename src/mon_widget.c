@@ -340,14 +340,36 @@ static void genmon_widget_init(GenMonWidget *self)
 	genmon_widget_set_timer(self);
 }
 
-static void genmon_widget_set_property(GObject *object, guint prop_id, const GValue *value,
+static void genmon_widget_set_property(GObject *object, uint prop_id, const GValue *value,
                                        GParamSpec *pspec)
 {
 }
 
-static void genmon_widget_get_property(GObject *object, guint prop_id, GValue *value,
+static void genmon_widget_get_property(GObject *object, uint prop_id, GValue *value,
                                        GParamSpec *pspec)
 {
+	GenMonWidget *self = GENMON_WIDGET(object);
+	switch (prop_id)
+	{
+	case PROP_COMMAND:
+		g_value_set_string(value, self->configuration.props.command);
+		break;
+	case PROP_FONT_VALUE:
+		g_value_set_string(value, self->configuration.props.font_value);
+		break;
+	case PROP_TITLE:
+		g_value_set_string(value, self->configuration.props.title);
+		break;
+	case PROP_UPDATE_INTERVAL_MS:
+		g_value_set_uint(value, self->configuration.props.update_interval_ms);
+		break;
+	case PROP_IS_TITLE_DISPAYED:
+		g_value_set_boolean(value, self->configuration.props.is_title_displayed);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+		break;
+	}
 }
 static void genmon_widget_finalize(GObject *obj)
 {
