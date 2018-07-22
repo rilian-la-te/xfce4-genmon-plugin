@@ -343,6 +343,46 @@ static void genmon_widget_init(GenMonWidget *self)
 static void genmon_widget_set_property(GObject *object, uint prop_id, const GValue *value,
                                        GParamSpec *pspec)
 {
+	GenMonWidget *self =
+	    G_TYPE_CHECK_INSTANCE_CAST(object, genmon_widget_get_type(), GenMonWidget);
+	switch (prop_id)
+	{
+	case PROP_COMMAND:
+		g_clear_pointer(&self->configuration.props.command, g_free);
+		self->configuration.props.command = g_value_get_string(value);
+		g_object_notify_by_pspec(object, pspec);
+		break;
+	case PROP_FONT_VALUE:
+		g_clear_pointer(&self->configuration.props.font_value, g_free);
+		self->configuration.props.font_value = g_value_get_string(value);
+		g_object_notify_by_pspec(object, pspec);
+		break;
+	case PROP_TITLE:
+		g_clear_pointer(&self->configuration.props.title, g_free);
+		self->configuration.props.title = g_value_get_string(value);
+		g_object_notify_by_pspec(object, pspec);
+		break;
+	case PROP_UPDATE_INTERVAL_MS:
+		if (self->timer_id)
+		{
+			g_source_remove(self->timer_id);
+			self->timer_id = 0;
+		}
+		self->configuration.props.update_interval_ms = g_value_get_uint(value);
+		genmon_widget_set_timer(self);
+		g_object_notify_by_pspec(object, pspec);
+		break;
+	case PROP_IS_TITLE_DISPAYED:
+		self->configuration.props.is_title_displayed = g_value_get_boolean(value);
+		if (self->configuration.props.is_title_displayed)
+			gtk_widget_show(GTK_WIDGET(self->title_label));
+		else
+			gtk_widget_hide(GTK_WIDGET(self->title_label));
+		g_object_notify_by_pspec(object, pspec);
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+		break;
+	}
 }
 
 static void genmon_widget_get_property(GObject *object, uint prop_id, GValue *value,
