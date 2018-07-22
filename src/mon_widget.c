@@ -345,6 +345,7 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 {
 	GenMonWidget *self =
 	    G_TYPE_CHECK_INSTANCE_CAST(object, genmon_widget_get_type(), GenMonWidget);
+	GtkOrientation orient;
 	switch (prop_id)
 	{
 	case PROP_COMMAND:
@@ -379,6 +380,19 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 		else
 			gtk_widget_hide(GTK_WIDGET(self->title_label));
 		g_object_notify_by_pspec(object, pspec);
+		break;
+	case PROP_ORIENTATION:
+		orient = (GtkOrientation)g_value_get_enum(value);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->main_box), orient);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->image_box), orient);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->progress),
+		                               orient == GTK_ORIENTATION_HORIZONTAL
+		                                   ? GTK_ORIENTATION_VERTICAL
+		                                   : GTK_ORIENTATION_HORIZONTAL);
+		gtk_progress_bar_set_inverted(self->progress,
+		                              orient == GTK_ORIENTATION_HORIZONTAL ? true : false);
+		g_object_notify_by_pspec(object, pspec);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		break;
@@ -405,6 +419,10 @@ static void genmon_widget_get_property(GObject *object, uint prop_id, GValue *va
 		break;
 	case PROP_IS_TITLE_DISPAYED:
 		g_value_set_boolean(value, self->configuration.props.is_title_displayed);
+		break;
+	case PROP_ORIENTATION:
+		g_value_set_enum(value,
+		                 gtk_orientable_get_orientation(GTK_ORIENTABLE(self->main_box)));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
