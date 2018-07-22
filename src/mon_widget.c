@@ -487,4 +487,11 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	                                          FALSE,
 	                                          G_STRUCT_OFFSET(GenMonWidget,
 	                                                          value_button_label));
+	gtk_widget_class_bind_template_callback_full(GTK_WIDGET_CLASS(klass),
+	                                             "genmon_widget_exec_on_click_cmd",
+	                                             G_CALLBACK(genmon_widget_exec_on_click_cmd));
+	gtk_widget_class_bind_template_callback_full(GTK_WIDGET_CLASS(klass),
+	                                             "genmon_widget_exec_on_val_click_cmd",
+	                                             G_CALLBACK(
+	                                                 genmon_widget_exec_on_val_click_cmd));
 }
