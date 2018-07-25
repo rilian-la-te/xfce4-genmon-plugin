@@ -332,6 +332,84 @@ static void genmon_widget_build(GenMonWidget *self)
 	                               GTK_STYLE_PROVIDER(css_provider),
 	                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
+
+static int genmon_widget_set_font_value(void *data)
+{
+	GenMonWidget *poPlugin = GENMON_WIDGET(data);
+	char *css;
+	PangoFontDescription *font =
+	    pango_font_description_from_string(poPlugin->configuration.props.font_value);
+	if (G_LIKELY(font))
+	{
+		css = g_strdup_printf(
+		    ".-genmon-widget-private { font-family: %s; font-size: %dpx; font-style: %s; "
+		    "font-weight: %s }",
+		    pango_font_description_get_family(font),
+		    pango_font_description_get_size(font) / PANGO_SCALE,
+		    (pango_font_description_get_style(font) == PANGO_STYLE_ITALIC ||
+		     pango_font_description_get_style(font) == PANGO_STYLE_OBLIQUE)
+		        ? "italic"
+		        : "normal",
+		    (pango_font_description_get_weight(font) >= PANGO_WEIGHT_BOLD) ? "bold"
+		                                                                   : "normal");
+		pango_font_description_free(font);
+	}
+	else
+		css = g_strdup_printf(".-genmon-widget-private { font: %s; }",
+		                      poPlugin->configuration.props.font_value);
+	/* Setup Gtk style */
+	GtkCssProvider *css_provider = gtk_css_provider_new();
+	gtk_css_provider_load_from_data(css_provider, css, strlen(css), NULL);
+	gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+	                                   GTK_WIDGET(poPlugin->title_label))),
+	                               GTK_STYLE_PROVIDER(css_provider),
+	                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+	                                   GTK_WIDGET(poPlugin->value_label))),
+	                               GTK_STYLE_PROVIDER(css_provider),
+	                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+	                                   GTK_WIDGET(poPlugin->value_button_label))),
+	                               GTK_STYLE_PROVIDER(css_provider),
+	                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	g_free(css);
+
+	bool enable = true;
+	if (poPlugin->configuration.props.font_value == NULL ||
+	    !g_strcmp0(poPlugin->configuration.props.font_value, ""))
+		enable = false;
+
+	if (enable)
+	{
+		gtk_style_context_add_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+		                                GTK_WIDGET(poPlugin->title_label))),
+		                            "-genmon-widget-private");
+
+		gtk_style_context_add_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+		                                GTK_WIDGET(poPlugin->value_label))),
+		                            "-genmon-widget-private");
+
+		gtk_style_context_add_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+		                                GTK_WIDGET(poPlugin->value_button_label))),
+		                            "-genmon-widget-private");
+	}
+	else
+	{
+		gtk_style_context_remove_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+		                                   GTK_WIDGET(poPlugin->title_label))),
+		                               "-genmon-widget-private");
+
+		gtk_style_context_remove_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+		                                   GTK_WIDGET(poPlugin->value_label))),
+		                               "-genmon-widget-private");
+
+		gtk_style_context_remove_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+		                                   GTK_WIDGET(poPlugin->value_button_label))),
+		                               "-genmon-widget-private");
+	}
+
+	return (0);
+}
 /* genmon_create_control() */
 
 static void genmon_widget_init(GenMonWidget *self)
@@ -356,6 +434,7 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 	case PROP_FONT_VALUE:
 		g_clear_pointer(&self->configuration.props.font_value, g_free);
 		self->configuration.props.font_value = g_value_get_string(value);
+		genmon_widget_set_font_value(self);
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	case PROP_TITLE:
