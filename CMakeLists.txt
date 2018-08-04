@@ -29,9 +29,9 @@ find_package(GTK 3.22 REQUIRED COMPONENTS GDK X11 WAYLAND)
 include(CMakeDependentOption)
 
 #set build options
-pkg_check_modules(XFCE libxfce4panel-2.0 libxfconf-0)
-cmake_dependent_option(ENABLE_XFCE "Enable Xfce Panel Integration" ON
-    "XFCE_FOUND" OFF)
+pkg_check_modules(VALAPANEL vala-panel>=0.4.50 IMPORTED_TARGET)
+cmake_dependent_option(ENABLE_VALAPANEL "Enable Vala Panel Integration" ON
+    "VALAPANEL_FOUND" OFF)
 
 add_subdirectory(data)
 add_subdirectory(po)
