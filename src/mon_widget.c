@@ -3,6 +3,7 @@
 #include <glib/gi18n.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <vala-panel/client.h>
 
 #include "cmdspawn.h"
 #include "config_gui.h"
@@ -280,28 +281,15 @@ static void genmon_widget_build(GenMonWidget *self)
 	gtk_event_box_set_visible_window(GTK_EVENT_BOX(self), false);
 
 	gtk_widget_show(GTK_WIDGET(self->main_box));
-	gtk_container_set_border_width(GTK_CONTAINER(self->main_box), 0);
 	gtk_label_set_text(self->title_label, self->configuration.props.title);
 	if (self->configuration.props.is_title_displayed)
 		gtk_widget_show(GTK_WIDGET(self->title_label));
 
-	/* Create a Box to put image and text */
-	gtk_widget_show(GTK_WIDGET(self->image_box));
-	gtk_container_set_border_width(GTK_CONTAINER(self->image_box), 0);
-
 	//	xfce_panel_plugin_add_action_widget(plugin, self->button);
 
 	/* Add Image Button*/
-	gtk_container_add(GTK_CONTAINER(self->button), GTK_WIDGET(self->button_image));
-	gtk_container_set_border_width(GTK_CONTAINER(self->button), 0);
-
-	/* Add Value */
-	gtk_widget_show(GTK_WIDGET(self->value_label));
-
-	/* Add Value Button */
-	gtk_container_set_border_width(GTK_CONTAINER(self->value_button), 0);
-
-	/* Add Value Button Label */
+	vala_panel_setup_button(self->button, self->button_image, "");
+	vala_panel_setup_button(self->value_button, NULL, NULL);
 
 	/* Add Bar */
 	if (orientation == GTK_ORIENTATION_HORIZONTAL)
@@ -508,6 +496,12 @@ static void genmon_widget_get_property(GObject *object, uint prop_id, GValue *va
 		break;
 	}
 }
+
+GenMonWidget *genmon_widget_new()
+{
+	return GENMON_WIDGET(g_object_new(genmon_widget_get_type(), NULL));
+}
+
 static void genmon_widget_finalize(GObject *obj)
 {
 	GenMonWidget *self = GENMON_WIDGET(obj);

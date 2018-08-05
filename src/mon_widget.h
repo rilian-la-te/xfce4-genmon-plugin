@@ -14,6 +14,8 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE(GenMonWidget, genmon_widget, GENMON, WIDGET, GtkEventBox)
 
+GenMonWidget *genmon_widget_new();
+
 G_END_DECLS
 
 #endif // MON_WIDGET_H
