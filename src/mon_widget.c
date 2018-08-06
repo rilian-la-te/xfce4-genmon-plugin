@@ -37,7 +37,6 @@ typedef struct
 
 typedef struct
 {
-	struct gui_t gui_widgets; /* Configuration/option dialog */
 	GenMonProperties props;
 } GenMonConfigurator;
 

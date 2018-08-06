@@ -1,9 +1,13 @@
 #include "vala-panel-genmon.h"
+#include "config_gui.h"
 #include "mon_widget.h"
+
+#define BORDER 2
 
 struct _GenMonApplet
 {
 	ValaPanelApplet parent;
+	GenMonWidget *widget;
 };
 
 G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, vala_panel_applet_get_type());
@@ -16,6 +20,7 @@ GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings
 	                                G_ACTION_MAP(self), VALA_PANEL_APPLET_ACTION_CONFIGURE)),
 	                            true);
 	GenMonWidget *widget = genmon_widget_new();
+	self->widget         = widget;
 	g_settings_bind(settings,
 	                GENMON_PROP_USE_TITLE,
 	                widget,
@@ -47,12 +52,56 @@ GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings
 	return self;
 }
 
+static GtkWidget *genmon_applet_get_settings_ui(ValaPanelApplet *base)
+{
+	GenMonApplet *self = GENMON_APPLET(base);
+	struct gui_t gui_widgets; /* Configuration/option dialog */
+
+	GtkBox *vbox = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, BORDER + 6));
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER + 4);
+
+	(void)genmon_CreateConfigGUI(GTK_WIDGET(vbox), &gui_widgets);
+
+	g_object_bind_property(self->widget,
+	                       GENMON_PROP_USE_TITLE,
+	                       gui_widgets.wTB_Title,
+	                       "active",
+	                       (GBindingFlags)(G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL));
+	g_object_bind_property(gui_widgets.wTB_Title,
+	                       "active",
+	                       gui_widgets.wTF_Title,
+	                       "sensitive",
+	                       (GBindingFlags)(G_BINDING_SYNC_CREATE));
+	g_object_bind_property(self->widget,
+	                       GENMON_PROP_TITLE_TEXT,
+	                       gui_widgets.wTF_Title,
+	                       "text",
+	                       (GBindingFlags)(G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL));
+	g_object_bind_property(self->widget,
+	                       GENMON_PROP_UPDATE_PERIOD,
+	                       gui_widgets.wSc_Period,
+	                       "value",
+	                       (GBindingFlags)(G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL));
+	g_object_bind_property(self->widget,
+	                       GENMON_PROP_CMD,
+	                       gui_widgets.wTF_Cmd,
+	                       "text",
+	                       (GBindingFlags)(G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL));
+	g_object_bind_property(self->widget,
+	                       GENMON_PROP_FONT,
+	                       gui_widgets.wPB_Font,
+	                       "font",
+	                       (GBindingFlags)(G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL));
+	gtk_widget_show_all(GTK_WIDGET(vbox));
+}
+
 static void genmon_applet_init(GenMonApplet *self)
 {
 }
 
 static void genmon_applet_class_init(GenMonAppletClass *klass)
 {
+	((ValaPanelAppletClass *)klass)->get_settings_ui = genmon_applet_get_settings_ui;
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)
