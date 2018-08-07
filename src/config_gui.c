@@ -124,10 +124,10 @@ int genmon_CreateConfigGUI(GtkWidget *vbox1, struct gui_t *p_poGUI)
 	gtk_widget_show(hseparator10);
 	gtk_box_pack_start(GTK_BOX(vbox1), hseparator10, FALSE, FALSE, 0);
 
-	wPB_Font = gtk_button_new_with_label(_("Select the display font..."));
+	wPB_Font = gtk_font_button_new();
 	gtk_widget_show(wPB_Font);
 	gtk_box_pack_start(GTK_BOX(vbox1), wPB_Font, TRUE, TRUE, 0);
-	gtk_widget_set_tooltip_text(wPB_Font, "Press to change font...");
+	gtk_widget_set_tooltip_text(wPB_Font, "Press to change font for plugin...");
 
 	hbox4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 	gtk_widget_show(hbox4);
