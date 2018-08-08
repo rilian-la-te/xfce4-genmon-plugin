@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAUNCHER_H
-#define LAUNCHER_H
+#ifndef GENMON_LAUNCHER_H
+#define GENMON_LAUNCHER_H
 
 #include <gdk/gdk.h>
 #include <gio/gdesktopappinfo.h>

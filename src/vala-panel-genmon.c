@@ -93,6 +93,8 @@ static GtkWidget *genmon_applet_get_settings_ui(ValaPanelApplet *base)
 	                       "font",
 	                       (GBindingFlags)(G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL));
 	gtk_widget_show_all(GTK_WIDGET(vbox));
+
+	return GTK_WIDGET(vbox);
 }
 
 static void genmon_applet_init(GenMonApplet *self)
