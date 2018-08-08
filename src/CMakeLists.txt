@@ -21,3 +21,5 @@ add_library(genmon MODULE
                 ${GLIB_RESOURCES_GENMON}
         )
 target_link_libraries(genmon PRIVATE GLIB2::GIO_UNIX GTK3::GTK PkgConfig::VALAPANEL)
+
+install(TARGETS genmon DESTINATION ${CMAKE_INSTALL_LIBDIR}/vala-panel/applets)

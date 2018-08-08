@@ -10,7 +10,7 @@
 #endif()
 #if (ENABLE_VALAPANEL)
     add_schema("org.valapanel.toplevel.genmon.gschema.xml")
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/genmon.plugin DESTINATION ${CMAKE_INSTALL_LIBDIR}/vala-panel/applets)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/genmon.plugin DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/vala-panel/applets)
 #endif()
 #if (ENABLE_BUDGIE)
 #    add_schema("org.valapanel.toplevel.sntray.gschema.xml")
