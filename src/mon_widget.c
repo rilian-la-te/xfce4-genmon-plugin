@@ -25,27 +25,11 @@ enum
 
 static GParamSpec *pspecs[LAST_PROP];
 
-typedef struct
-{
-	/* Configurable parameters */
-	char *command; /* Commandline to spawn */
-	bool is_title_displayed;
-	char *title;
-	uint32_t update_interval_ms;
-	char *font_value;
-} GenMonProperties;
-
-typedef struct
-{
-	GenMonProperties props;
-} GenMonConfigurator;
-
 struct _GenMonWidget
 {
 	GtkEventBox __parent__;
 	unsigned int timer_id; /* Cyclic update */
-	GenMonConfigurator configuration;
-	/* Plugin monitor */
+	                       /* Plugin monitor */
 	GtkBox *main_box;
 	GtkBox *image_box;
 	GtkLabel *title_label;
@@ -59,6 +43,13 @@ struct _GenMonWidget
 	char *click_command;
 	char *value_click_command;
 	char *cmd_result; /* Commandline resulting string */
+
+	/* Configurable parameters */
+	char *command; /* Commandline to spawn */
+	bool is_title_displayed;
+	char *title;
+	uint32_t update_interval_ms;
+	char *font_value;
 };
 
 static void gtk_orientable_interface_init(GtkOrientableIface *iface);
@@ -110,13 +101,12 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 /* Launch the command, get its output and display it in the panel-docked
    text field */
 {
-	GenMonProperties *props = &(self->configuration.props);
 	char *begin;
 	char *end;
 	bool newVersion = false;
 
 	g_clear_pointer(&self->cmd_result, g_free);
-	self->cmd_result = props->command[0] > 0 ? genmon_SpawnCmd(props->command, 1) : NULL;
+	self->cmd_result = self->command[0] > 0 ? genmon_SpawnCmd(self->command, 1) : NULL;
 
 	/* If the command fails, display XXX */
 	if (!self->cmd_result)
@@ -236,9 +226,9 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 	                                        "----------------\n"
 	                                        "%s\n"
 	                                        "Period (s): %d",
-	                                        props->title,
-	                                        props->command,
-	                                        props->update_interval_ms / 1000);
+	                                        self->title,
+	                                        self->command,
+	                                        self->update_interval_ms / 1000);
 
 	gtk_widget_set_tooltip_markup(GTK_WIDGET(self), acToolTips);
 
@@ -249,14 +239,13 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 /* To avoid multiple timers */
 static bool genmon_widget_set_timer(void *data)
 {
-	GenMonWidget *self      = GENMON_WIDGET(data);
-	GenMonProperties *props = &(self->configuration.props);
+	GenMonWidget *self = GENMON_WIDGET(data);
 
 	genmon_widget_display_command_output(self);
 
 	if (self->timer_id == 0)
 	{
-		self->timer_id = g_timeout_add(props->update_interval_ms,
+		self->timer_id = g_timeout_add(self->update_interval_ms,
 		                               (GSourceFunc)genmon_widget_set_timer,
 		                               self);
 		return false;
@@ -270,16 +259,12 @@ static void genmon_widget_build(GenMonWidget *self)
 {
 	GtkOrientation orientation = gtk_orientable_get_orientation(GTK_ORIENTABLE(self));
 
-	self->configuration.props.command            = g_strdup("");
-	self->configuration.props.title              = g_strdup("(genmon)");
-	self->configuration.props.is_title_displayed = false;
-	self->configuration.props.update_interval_ms = 30 * 1000;
-	self->timer_id                               = 0;
+	self->timer_id = 0;
 	gtk_event_box_set_visible_window(GTK_EVENT_BOX(self), false);
 
 	gtk_widget_show(GTK_WIDGET(self->main_box));
-	gtk_label_set_text(self->title_label, self->configuration.props.title);
-	if (self->configuration.props.is_title_displayed)
+	gtk_label_set_text(self->title_label, self->title);
+	if (self->is_title_displayed)
 		gtk_widget_show(GTK_WIDGET(self->title_label));
 
 	//	xfce_panel_plugin_add_action_widget(plugin, self->button);
@@ -318,12 +303,12 @@ static void genmon_widget_build(GenMonWidget *self)
 	                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
 
-static int genmon_widget_set_font_value(void *data)
+static int genmon_widget_set_font_value(GenMonWidget *poPlugin)
 {
-	GenMonWidget *poPlugin = GENMON_WIDGET(data);
 	char *css;
-	PangoFontDescription *font =
-	    pango_font_description_from_string(poPlugin->configuration.props.font_value);
+	if (!g_strcmp0(poPlugin->font_value, ""))
+		return 0;
+	PangoFontDescription *font = pango_font_description_from_string(poPlugin->font_value);
 	if (G_LIKELY(font))
 	{
 		css = g_strdup_printf(
@@ -340,8 +325,8 @@ static int genmon_widget_set_font_value(void *data)
 		pango_font_description_free(font);
 	}
 	else
-		css = g_strdup_printf(".-genmon-widget-private { font: %s; }",
-		                      poPlugin->configuration.props.font_value);
+		css =
+		    g_strdup_printf(".-genmon-widget-private { font: %s; }", poPlugin->font_value);
 	/* Setup Gtk style */
 	GtkCssProvider *css_provider = gtk_css_provider_new();
 	gtk_css_provider_load_from_data(css_provider, css, strlen(css), NULL);
@@ -360,8 +345,7 @@ static int genmon_widget_set_font_value(void *data)
 	g_free(css);
 
 	bool enable = true;
-	if (poPlugin->configuration.props.font_value == NULL ||
-	    !g_strcmp0(poPlugin->configuration.props.font_value, ""))
+	if (poPlugin->font_value == NULL || !g_strcmp0(poPlugin->font_value, ""))
 		enable = false;
 
 	if (enable)
@@ -397,10 +381,20 @@ static int genmon_widget_set_font_value(void *data)
 }
 /* genmon_create_control() */
 
-static void genmon_widget_init(GenMonWidget *self)
+static GObject *genmon_widget_constructor(GType type, guint n_construct_properties,
+                                          GObjectConstructParam *construct_properties)
 {
+	GObjectClass *parent_class = G_OBJECT_CLASS(genmon_widget_parent_class);
+	GObject *obj =
+	    parent_class->constructor(type, n_construct_properties, construct_properties);
+	GenMonWidget *self = GENMON_WIDGET(obj);
 	genmon_widget_build(self);
 	genmon_widget_set_timer(self);
+	return G_OBJECT(self);
+}
+static void genmon_widget_init(GenMonWidget *self)
+{
+	gtk_widget_init_template(GTK_WIDGET(self));
 }
 
 static void genmon_widget_set_property(GObject *object, uint prop_id, const GValue *value,
@@ -412,19 +406,19 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 	switch (prop_id)
 	{
 	case PROP_COMMAND:
-		g_clear_pointer(&self->configuration.props.command, g_free);
-		self->configuration.props.command = g_value_get_string(value);
+		g_clear_pointer(&self->command, g_free);
+		self->command = g_value_get_string(value);
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	case PROP_FONT_VALUE:
-		g_clear_pointer(&self->configuration.props.font_value, g_free);
-		self->configuration.props.font_value = g_value_get_string(value);
+		g_clear_pointer(&self->font_value, g_free);
+		self->font_value = g_value_get_string(value);
 		genmon_widget_set_font_value(self);
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	case PROP_TITLE:
-		g_clear_pointer(&self->configuration.props.title, g_free);
-		self->configuration.props.title = g_value_get_string(value);
+		g_clear_pointer(&self->title, g_free);
+		self->title = g_value_get_string(value);
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	case PROP_UPDATE_INTERVAL_MS:
@@ -433,13 +427,13 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 			g_source_remove(self->timer_id);
 			self->timer_id = 0;
 		}
-		self->configuration.props.update_interval_ms = g_value_get_uint(value);
+		self->update_interval_ms = g_value_get_uint(value);
 		genmon_widget_set_timer(self);
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	case PROP_IS_TITLE_DISPAYED:
-		self->configuration.props.is_title_displayed = g_value_get_boolean(value);
-		if (self->configuration.props.is_title_displayed)
+		self->is_title_displayed = g_value_get_boolean(value);
+		if (self->is_title_displayed)
 			gtk_widget_show(GTK_WIDGET(self->title_label));
 		else
 			gtk_widget_hide(GTK_WIDGET(self->title_label));
@@ -471,19 +465,19 @@ static void genmon_widget_get_property(GObject *object, uint prop_id, GValue *va
 	switch (prop_id)
 	{
 	case PROP_COMMAND:
-		g_value_set_string(value, self->configuration.props.command);
+		g_value_set_string(value, self->command);
 		break;
 	case PROP_FONT_VALUE:
-		g_value_set_string(value, self->configuration.props.font_value);
+		g_value_set_string(value, self->font_value);
 		break;
 	case PROP_TITLE:
-		g_value_set_string(value, self->configuration.props.title);
+		g_value_set_string(value, self->title);
 		break;
 	case PROP_UPDATE_INTERVAL_MS:
-		g_value_set_uint(value, self->configuration.props.update_interval_ms);
+		g_value_set_uint(value, self->update_interval_ms);
 		break;
 	case PROP_IS_TITLE_DISPAYED:
-		g_value_set_boolean(value, self->configuration.props.is_title_displayed);
+		g_value_set_boolean(value, self->is_title_displayed);
 		break;
 	case PROP_ORIENTATION:
 		g_value_set_enum(value,
@@ -506,9 +500,9 @@ static void genmon_widget_finalize(GObject *obj)
 	if (self->timer_id)
 		g_source_remove(self->timer_id);
 
-	g_clear_pointer(&self->configuration.props.command, g_free);
-	g_clear_pointer(&self->configuration.props.title, g_free);
-	g_clear_pointer(&self->configuration.props.font_value, g_free);
+	g_clear_pointer(&self->command, g_free);
+	g_clear_pointer(&self->title, g_free);
+	g_clear_pointer(&self->font_value, g_free);
 	g_clear_pointer(&self->cmd_result, g_free);
 	g_clear_pointer(&self->click_command, g_free);
 	g_clear_pointer(&self->value_click_command, g_free);
@@ -517,6 +511,7 @@ static void genmon_widget_finalize(GObject *obj)
 static void genmon_widget_class_init(GenMonWidgetClass *klass)
 {
 	GObjectClass *oclass = G_OBJECT_CLASS(klass);
+	oclass->constructor  = genmon_widget_constructor;
 	oclass->finalize     = genmon_widget_finalize;
 	oclass->set_property = genmon_widget_set_property;
 	oclass->get_property = genmon_widget_get_property;
@@ -526,7 +521,7 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	    g_param_spec_string(GENMON_PROP_CMD,
 	                        GENMON_PROP_CMD,
 	                        GENMON_PROP_CMD,
-	                        NULL,
+	                        "/bin/uname",
 	                        (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
 	                                      G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
 	                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
@@ -534,7 +529,7 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	    g_param_spec_string(GENMON_PROP_FONT,
 	                        GENMON_PROP_FONT,
 	                        GENMON_PROP_FONT,
-	                        NULL,
+	                        "",
 	                        (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
 	                                      G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
 	                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
@@ -542,17 +537,17 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	    g_param_spec_string(GENMON_PROP_TITLE_TEXT,
 	                        GENMON_PROP_TITLE_TEXT,
 	                        GENMON_PROP_TITLE_TEXT,
-	                        NULL,
+	                        "(genmon)",
 	                        (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
 	                                      G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
-	                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+	                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
 	pspecs[PROP_UPDATE_INTERVAL_MS] =
 	    g_param_spec_uint(GENMON_PROP_UPDATE_PERIOD,
 	                      GENMON_PROP_UPDATE_PERIOD,
 	                      GENMON_PROP_UPDATE_PERIOD,
 	                      1,
 	                      G_MAXUINT,
-	                      100,
+                          30000 * 1000,
 	                      (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
 	                                    G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
 	                                    G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
