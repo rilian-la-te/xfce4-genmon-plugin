@@ -12,7 +12,7 @@ DEBUG=0
 # set valid icon path if you want an icon displayed before output
 #   if you don't want an icon, comment out the line
 #ICON=
-ICON=/home/toz/.icons/taskman.png
+ICON=@CMAKE_INSTALL_FULL_DATAROOTDIR@/icons/Adwaita/scalable/apps/utilities-system-monitor-symbolic.svg
 
 # get CPU info
 CPU=$(cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | awk -v RS="" '{printf("%02d", ($13-$2+$15-$4)*100/($13-$2+$15-$4+$16-$5))}')

@@ -10,15 +10,15 @@ then
   grep "/dev/sda1" /etc/mtab >/dev/null 2>&1
   if [ $? == 0 ]
   then
-    echo "<img>/usr/local/share/icons/Tango/16x16/actions/gtk-delete.png</img>"
+    echo "<img>@CMAKE_INSTALL_FULL_DATAROOTDIR@/icons/Adwaita/scalable/actions/edit-delete-symbolic.svgs</img>"
     echo "<click>umount /dev/sda1</click>"
     echo "<tool>Click to unmount the USB disk</tool>"
   else
-    echo "<img>/usr/local/share/icons/Tango/16x16/devices/gnome-dev-harddisk-usb.png</img>"
+    echo "<img>@CMAKE_INSTALL_FULL_DATAROOTDIR@/icons/Adwaita/scalable/devices/media-flash-symbolic.svg</img>"
     echo "<click>mount /dev/sda1</click>"
     echo "<tool>Click to mount the USB disk</tool>"
   fi
 else
-  echo "<img>/usr/local/share/icons/Tango/16x16/actions/add.png</img>"
+  echo "<img>@CMAKE_INSTALL_FULL_DATAROOTDIR@/icons/Adwaita/scalable/actions/list-add-symbolic.png</img>"
   echo "<tool>No USB disk detected</tool>"
 fi

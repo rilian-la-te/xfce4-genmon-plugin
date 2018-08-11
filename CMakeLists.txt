@@ -6,7 +6,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)
 
 find_package(PkgConfig)
-set (GETTEXT_PACKAGE "xfce4-genmon-plugin")
+set (GETTEXT_PACKAGE "genmon")
 include(GitVersion)
 determine_fallback_version(${CMAKE_SOURCE_DIR}/cmake)
 include(FallbackVersion)
@@ -29,7 +29,7 @@ find_package(GTK 3.22 REQUIRED COMPONENTS GDK X11 WAYLAND)
 include(CMakeDependentOption)
 
 #set build options
-pkg_check_modules(VALAPANEL vala-panel>=0.4.50 IMPORTED_TARGET)
+pkg_check_modules(VALAPANEL vala-panel>=0.4.60 IMPORTED_TARGET)
 cmake_dependent_option(ENABLE_VALAPANEL "Enable Vala Panel Integration" ON
     "VALAPANEL_FOUND" OFF)
 

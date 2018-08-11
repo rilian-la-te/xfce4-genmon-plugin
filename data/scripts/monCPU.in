@@ -2,7 +2,8 @@
 
 # An example script for the genmon plugin displaying information on the CPU
 
-echo "<img>/usr/local/share/icons/Tango/16x16/apps/utilities-system-monitor.png</img>"
+echo "<img>@CMAKE_INSTALL_FULL_DATAROOTDIR@/icons/Adwaita/scalable/apps/utilities-system-monitor-symbolic.svg
+</img>"
 
 declare -i cpuFreq
 cpuFreq=$(cat /proc/cpuinfo | grep "cpu MHz" | sed 's/\ \ */ /g' | cut -f3 -d" " | cut -f1 -d".")

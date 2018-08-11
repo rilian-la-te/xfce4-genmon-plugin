@@ -15,9 +15,9 @@
     # REMIND_TIME = how far into the future to look for appointments to show
 REMIND_TIME=15
     # NO_APPTS_ICON = the icon to display if no appointments are found
-NO_APPTS_ICON=/home/toz/.icons/cal-no-appts.png
+NO_APPTS_ICON=/usr/share/icons/Adwaita/scalable/mimetypes/x-office-calendar-symbolic.svg
     # YES_APPTS_ICON = the icon to display if appointments are found
-YES_APPTS_ICON=/home/toz/.icons/cal-yes-appts.png
+YES_APPTS_ICON=/usr/share/icons/Adwaita/scalable/status/appointment-soon-symbolic.svg
 
 #################################
 DO NOT CHANGE ANYTHING BELOW
