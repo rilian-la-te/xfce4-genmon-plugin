@@ -16,3 +16,5 @@
 #    add_schema("org.valapanel.toplevel.sntray.gschema.xml")
 #    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sntray-budgie.plugin DESTINATION ${CMAKE_INSTALL_LIBDIR}/budgie-desktop/plugins/budgie-sntray-plugin)
 #endif()
+
+add_subdirectory(scripts)

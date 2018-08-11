@@ -1,4 +1,4 @@
-project(xfce4-genmon-plugin C)
+project(genmon C)
 cmake_minimum_required(VERSION 3.6)
 cmake_policy (VERSION 3.6)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
