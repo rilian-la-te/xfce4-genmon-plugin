@@ -50,6 +50,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="relief">none</property>
                 <signal name="clicked" handler="genmon_widget_exec_on_click_cmd" object="GenMonWidget" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="button-image">
@@ -88,6 +89,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="relief">none</property>
                 <signal name="clicked" handler="genmon_widget_exec_on_val_click_cmd" object="GenMonWidget" swapped="no"/>
                 <child>
                   <object class="GtkLabel" id="value-button-label">
@@ -119,6 +121,7 @@
           <object class="GtkProgressBar" id="progress">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="valign">center</property>
             <property name="pulse_step">0.01</property>
             <style>
               <class name="genmon_progressbar"/>

@@ -97,6 +97,17 @@ static GtkWidget *genmon_applet_get_settings_ui(ValaPanelApplet *base)
 	return GTK_WIDGET(vbox);
 }
 
+static bool genmon_applet_remote_command(ValaPanelApplet *base, const char *command)
+{
+	GenMonApplet *self = GENMON_APPLET(base);
+	if (g_strcmp0(command, "refresh") == 0)
+	{
+		genmon_widget_display_command_output(self->widget);
+		return true;
+	}
+	return false;
+}
+
 static void genmon_applet_init(GenMonApplet *self)
 {
 }
@@ -104,6 +115,7 @@ static void genmon_applet_init(GenMonApplet *self)
 static void genmon_applet_class_init(GenMonAppletClass *klass)
 {
 	((ValaPanelAppletClass *)klass)->get_settings_ui = genmon_applet_get_settings_ui;
+	((ValaPanelAppletClass *)klass)->remote_command  = genmon_applet_remote_command;
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)

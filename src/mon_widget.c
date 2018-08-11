@@ -106,7 +106,7 @@ static void genmon_widget_exec_on_val_click_cmd(GtkWidget *unused, void *data)
 
 /**************************************************************/
 
-static int genmon_widget_display_command_output(GenMonWidget *self)
+void genmon_widget_display_command_output(GenMonWidget *self)
 /* Launch the command, get its output and display it in the panel-docked
    text field */
 {
@@ -241,8 +241,6 @@ static int genmon_widget_display_command_output(GenMonWidget *self)
 	                                        props->update_interval_ms / 1000);
 
 	gtk_widget_set_tooltip_markup(GTK_WIDGET(self), acToolTips);
-
-	return 0;
 
 } /* DisplayCmdOutput() */
 
@@ -463,6 +461,7 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		break;
 	}
+	genmon_widget_display_command_output(self);
 }
 
 static void genmon_widget_get_property(GObject *object, uint prop_id, GValue *value,
