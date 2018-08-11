@@ -16,9 +16,13 @@ GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings
 {
 	GenMonApplet *self = GENMON_APPLET(
 	    vala_panel_applet_construct(genmon_applet_get_type(), toplevel, settings, uuid));
-	g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action(
-	                                G_ACTION_MAP(self), VALA_PANEL_APPLET_ACTION_CONFIGURE)),
-	                            true);
+	GActionMap *map = G_ACTION_MAP(vala_panel_applet_get_action_group(VALA_PANEL_APPLET(self)));
+	g_simple_action_set_enabled(
+	    G_SIMPLE_ACTION(g_action_map_lookup_action(map, VALA_PANEL_APPLET_ACTION_CONFIGURE)),
+	    true);
+	g_simple_action_set_enabled(
+	    G_SIMPLE_ACTION(g_action_map_lookup_action(map, VALA_PANEL_APPLET_ACTION_REMOTE)),
+	    true);
 	GenMonWidget *widget = genmon_widget_new();
 	self->widget         = widget;
 	g_settings_bind(settings,
