@@ -407,18 +407,18 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 	{
 	case PROP_COMMAND:
 		g_clear_pointer(&self->command, g_free);
-		self->command = g_value_get_string(value);
+		self->command = g_value_dup_string(value);
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	case PROP_FONT_VALUE:
 		g_clear_pointer(&self->font_value, g_free);
-		self->font_value = g_value_get_string(value);
+		self->font_value = g_value_dup_string(value);
 		genmon_widget_set_font_value(self);
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	case PROP_TITLE:
 		g_clear_pointer(&self->title, g_free);
-		self->title = g_value_get_string(value);
+		self->title = g_value_dup_string(value);
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	case PROP_UPDATE_INTERVAL_MS:
@@ -427,7 +427,7 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 			g_source_remove(self->timer_id);
 			self->timer_id = 0;
 		}
-		self->update_interval_ms = g_value_get_uint(value);
+		self->update_interval_ms = g_value_get_uint(value) * 1000;
 		genmon_widget_set_timer(self);
 		g_object_notify_by_pspec(object, pspec);
 		break;
@@ -547,7 +547,7 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	                      GENMON_PROP_UPDATE_PERIOD,
 	                      1,
 	                      G_MAXUINT,
-                          30000 * 1000,
+	                      30000 * 1000,
 	                      (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
 	                                    G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
 	                                    G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
