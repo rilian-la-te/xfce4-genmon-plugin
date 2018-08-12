@@ -1,17 +1,17 @@
 <schemalist>
   <schema id="org.valapanel.genmon">
     <key name="update-period" type="d">
-      <range min="0" max="3600"/>
-      <default>1</default>
+      <range min="1000" max="3600000"/>
+      <default>1000</default>
     </key>
     <key name="font" type="s">
       <default>''</default>
     </key>
     <key name="command" type="s">
-      <default>''</default>
+      <default>'/bin/uname -a'</default>
     </key>
     <key name="title-text" type="s">
-      <default>''</default>
+      <default>'(genmon)'</default>
     </key>
     <key name="use-title" type="b">
       <default>false</default>

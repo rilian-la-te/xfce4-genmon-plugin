@@ -263,7 +263,11 @@ static void genmon_widget_build(GenMonWidget *self)
 	gtk_event_box_set_visible_window(GTK_EVENT_BOX(self), false);
 
 	gtk_widget_show(GTK_WIDGET(self->main_box));
-	gtk_label_set_text(self->title_label, self->title);
+	g_object_bind_property(self,
+	                       GENMON_PROP_TITLE_TEXT,
+	                       self->title_label,
+	                       "label",
+	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
 	if (self->is_title_displayed)
 		gtk_widget_show(GTK_WIDGET(self->title_label));
 
@@ -521,7 +525,7 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	    g_param_spec_string(GENMON_PROP_CMD,
 	                        GENMON_PROP_CMD,
 	                        GENMON_PROP_CMD,
-	                        "/bin/uname",
+	                        "",
 	                        (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
 	                                      G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
 	                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
@@ -537,7 +541,7 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	    g_param_spec_string(GENMON_PROP_TITLE_TEXT,
 	                        GENMON_PROP_TITLE_TEXT,
 	                        GENMON_PROP_TITLE_TEXT,
-	                        "(genmon)",
+	                        "(x)",
 	                        (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
 	                                      G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
 	                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
@@ -545,7 +549,7 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	    g_param_spec_uint(GENMON_PROP_UPDATE_PERIOD,
 	                      GENMON_PROP_UPDATE_PERIOD,
 	                      GENMON_PROP_UPDATE_PERIOD,
-	                      1,
+	                      1000,
 	                      G_MAXUINT,
 	                      30000 * 1000,
 	                      (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
