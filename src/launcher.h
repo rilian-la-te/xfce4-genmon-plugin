@@ -26,11 +26,5 @@
 
 bool vala_panel_launch(GDesktopAppInfo *app_info, GList *uris, GtkWidget *parent);
 bool vala_panel_launch_command_on_screen(const char *command, GtkWidget *parent);
-GAppInfo *vala_panel_get_default_for_uri(const char *uri);
-void child_spawn_func(void *data);
-char *posix_get_cmdline_string(const char *filename);
-void menu_launch_id(GSimpleAction *action, GVariant *param, gpointer user_data);
-void menu_launch_uri(GSimpleAction *action, GVariant *param, gpointer user_data);
-void menu_launch_command(GSimpleAction *action, GVariant *param, gpointer user_data);
 
 #endif // LAUNCHER_H
