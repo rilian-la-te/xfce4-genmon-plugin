@@ -221,14 +221,13 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 	end                         = strstr(self->cmd_result, "</tool>");
 	g_autofree char *acToolTips = (begin && end && begin < end)
 	                                  ? g_strndup(begin + 6, end - begin - 6)
-	                                  : g_strdup_printf(
-	                                        "%s\n"
-	                                        "----------------\n"
-	                                        "%s\n"
-	                                        "Period (s): %d",
-	                                        self->title,
-	                                        self->command,
-	                                        self->update_interval_ms / 1000);
+	                                  : g_strdup_printf(_("%s\n"
+	                                                      "----------------\n"
+	                                                      "%s\n"
+	                                                      "Period (s): %d"),
+	                                                    self->title,
+	                                                    self->command,
+	                                                    self->update_interval_ms / 1000);
 
 	gtk_widget_set_tooltip_markup(GTK_WIDGET(self), acToolTips);
 
@@ -431,7 +430,7 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 			g_source_remove(self->timer_id);
 			self->timer_id = 0;
 		}
-		self->update_interval_ms = g_value_get_uint(value) * 1000;
+		self->update_interval_ms = g_value_get_uint(value);
 		genmon_widget_set_timer(self);
 		g_object_notify_by_pspec(object, pspec);
 		break;
@@ -551,7 +550,7 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	                      GENMON_PROP_UPDATE_PERIOD,
 	                      1000,
 	                      G_MAXUINT,
-	                      30000 * 1000,
+	                      30 * 1000,
 	                      (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
 	                                    G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
 	                                    G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
