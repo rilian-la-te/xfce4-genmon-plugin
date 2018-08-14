@@ -320,7 +320,7 @@ static int genmon_widget_set_font_value(GenMonWidget *poPlugin)
 	if (G_LIKELY(font))
 	{
 		css = g_strdup_printf(
-		    ".-genmon-widget-private { font-family: %s; font-size: %dpx; font-style: %s; "
+		    ".-genmon-widget-private { font-family: %s; font-size: %dpt; font-style: %s; "
 		    "font-weight: %s }",
 		    pango_font_description_get_family(font),
 		    pango_font_description_get_size(font) / PANGO_SCALE,
