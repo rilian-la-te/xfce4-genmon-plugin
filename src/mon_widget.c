@@ -217,17 +217,18 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 	}
 
 	/* Test if a ToolTip is given */
-	begin                       = strstr(self->cmd_result, "<tool>");
-	end                         = strstr(self->cmd_result, "</tool>");
-	g_autofree char *acToolTips = (begin && end && begin < end)
-	                                  ? g_strndup(begin + 6, end - begin - 6)
-	                                  : g_strdup_printf(_("%s\n"
-	                                                      "----------------\n"
-	                                                      "%s\n"
-	                                                      "Period (s): %d"),
-	                                                    self->title,
-	                                                    self->command,
-	                                                    self->update_interval_ms / 1000);
+	begin = strstr(self->cmd_result, "<tool>");
+	end   = strstr(self->cmd_result, "</tool>");
+	g_autofree char *acToolTips =
+	    (begin && end && begin < end)
+	        ? g_strndup(begin + 6, end - begin - 6)
+	        : g_strdup_printf(_("%s\n"
+	                            "----------------\n"
+	                            "%s\n"
+	                            "Period (s): %1.3lf"),
+	                          self->title,
+	                          self->command,
+	                          self->update_interval_ms / (double)1000);
 
 	gtk_widget_set_tooltip_markup(GTK_WIDGET(self), acToolTips);
 
