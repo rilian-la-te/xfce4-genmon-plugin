@@ -124,6 +124,12 @@ int genmon_CreateConfigGUI(GtkWidget *vbox1, struct gui_t *p_poGUI)
 	gtk_widget_show(hbox4);
 	gtk_container_add(GTK_CONTAINER(vbox1), hbox4);
 
+	g_object_bind_property(wTB_Title,
+	                       "active",
+	                       wTF_Title,
+	                       "sensitive",
+	                       (GBindingFlags)(G_BINDING_SYNC_CREATE));
+
 	if (p_poGUI)
 	{
 		COPYVAL(p_poGUI, wTF_Cmd);
@@ -154,10 +160,4 @@ void genmon_ui_init_gsettings(struct gui_t *ui, GSettings *settings)
 	                ui->wTB_Title,
 	                "active",
 	                G_SETTINGS_BIND_DEFAULT);
-
-	g_object_bind_property(ui->wTB_Title,
-	                       "active",
-	                       ui->wTF_Title,
-	                       "sensitive",
-	                       (GBindingFlags)(G_BINDING_SYNC_CREATE));
 }
