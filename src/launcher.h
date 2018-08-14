@@ -1,6 +1,6 @@
 /*
- * vala-panel
- * Copyright (C) 2015-2016 Konstantin Pugin <ria.freelander@gmail.com>
+ * generic-monitor-plugin
+ * Copyright (C) 2015-2018 Konstantin Pugin <ria.freelander@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
