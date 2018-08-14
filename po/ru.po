@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Sergey Shlyapugin <shlyapugin@gmail.com>, 2013
 # Simple88, 2016
@@ -9,75 +9,140 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Xfce Panel Plugins\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-10 06:31+0200\n"
-"PO-Revision-Date: 2017-09-19 18:06+0000\n"
+"POT-Creation-Date: 2018-08-14 14:47+0300\n"
+"PO-Revision-Date: 2018-08-14 14:48+0300\n"
 "Last-Translator: Simple88\n"
-"Language-Team: Russian (http://www.transifex.com/xfce/xfce-panel-plugins/language/ru/)\n"
+"Language-Team: Russian (http://www.transifex.com/xfce/xfce-panel-plugins/"
+"language/ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
-#: ../panel-plugin/cmdspawn.c:166
+#: ../src/cmdspawn.c:182
 #, c-format
-msgid "Error in command \"%s\""
-msgstr "Ошибка в команде \"%s\""
+msgid "Error \"%s\" in command \"%s\""
+msgstr "Ошибка \"%s\" в команде \"%s\""
 
-#: ../panel-plugin/cmdspawn.c:168 ../panel-plugin/main.c:94
-msgid "Xfce Panel"
-msgstr "Панель Xfce"
-
-#: ../panel-plugin/config_gui.c:78
+#: ../src/config_gui.c:72
 msgid "Command"
 msgstr "Команда"
 
-#: ../panel-plugin/config_gui.c:107
-msgid "Period (s) "
-msgstr "Период (с)"
+#: ../src/config_gui.c:84
+msgid "Input the shell command to spawn, then press <Enter>"
+msgstr "Введите команду оболочки для выполнения, затем нажмите <Enter>"
 
-#: ../panel-plugin/config_gui.c:115
+#: ../src/config_gui.c:99
+msgid "Interval between 2 consecutive spawns"
+msgstr "Интервал между двумя ближайшими обновлениями"
+
+#: ../src/config_gui.c:102
+msgid "Period (ms) "
+msgstr "Период (мсек.)"
+
+#: ../src/config_gui.c:110
 msgid "Label"
-msgstr "Метка"
+msgstr "Заголовок"
 
-#: ../panel-plugin/config_gui.c:126
+#: ../src/config_gui.c:113
+msgid "Tick to display label"
+msgstr "Выберите для показа заголовка"
+
+#: ../src/config_gui.c:119
+msgid "Input the plugin label, then press <Enter>"
+msgstr "Введите заголовок плагина, затем нажмите <Enter>"
+
+#: ../src/config_gui.c:121
 msgid "(genmon)"
 msgstr "(монитор)"
 
-#: ../panel-plugin/config_gui.c:132
-msgid "Select the display font..."
-msgstr "Выбрать шрифт для отображения..."
+#: ../src/config_gui.c:130
+msgid "Press to change font for plugin..."
+msgstr "Нажмите для изменения шрифта плагина..."
 
-#: ../panel-plugin/main.c:93
+#: ../src/main.c:100 ../src/main.c:123 ../src/mon_widget.c:72
 #, c-format
 msgid "Could not run \"%s\""
 msgstr "Не удалось запустить \"%s\""
 
-#: ../panel-plugin/main.c:613
-msgid ""
-"Cyclically spawns a script/program, captures its output and displays the "
-"resulting string in the panel"
-msgstr "Циклически выполняет программу/скрипт, захватывает вывод и отображает результирующую строку на панели"
-
-#: ../panel-plugin/main.c:615
-msgid ""
-"Copyright © 2004 Roger Seguin\n"
-"Copyright © 2006 Julien Devemy\n"
-"Copyright © 2016 Tony Paulic\n"
-msgstr "Copyright © 2004 Роджер Сегин\nCopyright © 2006 Жюльен Девеми\nCopyright © 2016 Тони Паулик\n"
-
-#: ../panel-plugin/main.c:633
+#: ../src/main.c:787
 msgid "Font Selection"
 msgstr "Выбор шрифта"
 
-#: ../panel-plugin/main.c:677
+#: ../src/main.c:828
 msgid "Configuration"
 msgstr "Конфигурация"
 
-#: ../panel-plugin/main.c:686 ../panel-plugin/genmon.desktop.in.h:1
+#: ../src/main.c:838
 msgid "Generic Monitor"
 msgstr "Общий монитор"
 
-#: ../panel-plugin/genmon.desktop.in.h:2
-msgid "Show output of a command."
-msgstr "Отображает результат команды"
+#: ../src/mon_widget.c:224
+#, c-format
+msgid ""
+"%s\n"
+"----------------\n"
+"%s\n"
+"Period (s): %1.3lf"
+msgstr ""
+"%s\n"
+"----------------\n"
+"%s\n"
+"Период (сек): %1.3lf"
+
+#~ msgid ""
+#~ "%s\n"
+#~ "----------------\n"
+#~ "%s\n"
+#~ "Period (s): %lf"
+#~ msgstr ""
+#~ "%s\n"
+#~ "----------------\n"
+#~ "%s\n"
+#~ "Период (сек): %lf"
+
+#~ msgid ""
+#~ "%s\n"
+#~ "----------------\n"
+#~ "%s\n"
+#~ "Period (s): %d"
+#~ msgstr ""
+#~ "%s\n"
+#~ "----------------\n"
+#~ "%s\n"
+#~ "Период (сек.): %d"
+
+#~ msgid "Error in command \"%s\""
+#~ msgstr "Ошибка в команде \"%s\""
+
+#~ msgid "Xfce Panel"
+#~ msgstr "Панель Xfce"
+
+#~ msgid "Period (s) "
+#~ msgstr "Период (с)"
+
+#~ msgid "Select the display font..."
+#~ msgstr "Выбрать шрифт для отображения..."
+
+#~ msgid ""
+#~ "Cyclically spawns a script/program, captures its output and displays the "
+#~ "resulting string in the panel"
+#~ msgstr ""
+#~ "Циклически выполняет программу/скрипт, захватывает вывод и отображает "
+#~ "результирующую строку на панели"
+
+#~ msgid ""
+#~ "Copyright © 2004 Roger Seguin\n"
+#~ "Copyright © 2006 Julien Devemy\n"
+#~ "Copyright © 2016 Tony Paulic\n"
+#~ msgstr ""
+#~ "Copyright © 2004 Роджер Сегин\n"
+#~ "Copyright © 2006 Жюльен Девеми\n"
+#~ "Copyright © 2016 Тони Паулик\n"
+
+#~ msgid "Show output of a command."
+#~ msgstr "Отображает результат команды"
