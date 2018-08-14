@@ -3,5 +3,6 @@
 <gresources>
   <gresource prefix="/org/genmon">
     <file compressed="true" alias="main.ui" preprocess="xml-stripblanks">../data/main.ui</file>
+    <file compressed="true" alias="config.ui" preprocess="xml-stripblanks">../data/config.ui</file>
   </gresource>
 </gresources>

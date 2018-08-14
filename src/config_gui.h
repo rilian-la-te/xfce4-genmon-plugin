@@ -28,24 +28,12 @@
 
 #include <gtk/gtk.h>
 
-typedef struct gui_t
-{
-	/* Configuration GUI widgets */
-	GtkWidget *main_box;
-	GtkWidget *wTF_Cmd;
-	GtkWidget *wTB_Title;
-	GtkWidget *wTF_Title;
-	GtkWidget *wSc_Period;
-	GtkWidget *wPB_Font;
-} gui_t;
-
 G_BEGIN_DECLS
 
-int genmon_CreateConfigGUI(GtkWidget *ParentWindow, struct gui_t *gui);
-/* Create configuration/Option GUI */
-/* Return 0 on success, -1 otherwise */
+G_DECLARE_FINAL_TYPE(GenMonConfig, genmon_config, GENMON, CONFIG, GtkGrid)
 
-void genmon_ui_init_gsettings(struct gui_t *ui, GSettings *settings);
+GenMonConfig *genmon_config_new();
+void genmon_config_init_gsettings(GenMonConfig *ui, GSettings *settings);
 
 G_END_DECLS
 

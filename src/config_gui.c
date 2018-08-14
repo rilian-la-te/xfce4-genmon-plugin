@@ -27,137 +27,79 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#define COPYVAL(var, field) ((var)->field = field)
-
-/**** GUI initially created using glade-2 ****/
-
-int genmon_CreateConfigGUI(GtkWidget *vbox1, struct gui_t *p_poGUI)
+struct _GenMonConfig
 {
-	GtkWidget *table1;
-	GtkWidget *label1;
-	GtkWidget *wTF_Cmd;
-	GtkWidget *eventbox1;
-	GtkAdjustment *wSc_Period_adj;
-	GtkWidget *wSc_Period;
-	GtkWidget *label2;
-	GtkWidget *wTB_Title;
-	GtkWidget *wTF_Title;
-	GtkWidget *hseparator10;
-	GtkWidget *wPB_Font;
-	GtkWidget *hbox4;
+	GtkGrid __parent__;
+	/* Configuration GUI widgets */
+	GtkWidget *entry_cmd;
+	GtkWidget *spin_interval;
+	GtkWidget *entry_title;
+	GtkWidget *check_title;
+	GtkWidget *fntbutton;
+};
 
-	table1 = gtk_grid_new();
-	gtk_grid_set_column_spacing(GTK_GRID(table1), 2);
-	gtk_grid_set_row_spacing(GTK_GRID(table1), 2);
-	gtk_widget_show(table1);
-	gtk_box_pack_start(GTK_BOX(vbox1), table1, FALSE, TRUE, 0);
+G_DEFINE_TYPE(GenMonConfig, genmon_config, GTK_TYPE_GRID)
 
-	label1 = gtk_label_new(g_dgettext(GETTEXT_PACKAGE, "Command"));
-	gtk_widget_show(label1);
-	gtk_grid_attach(GTK_GRID(table1), label1, 0, 0, 1, 1);
-	//(GtkAttachOptions) (GTK_FILL),
-	//(GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
-	gtk_widget_set_valign(label1, GTK_ALIGN_CENTER);
-
-	wTF_Cmd = gtk_entry_new();
-	gtk_widget_show(wTF_Cmd);
-	gtk_grid_attach(GTK_GRID(table1), wTF_Cmd, 1, 0, 1, 1);
-	gtk_widget_set_tooltip_text(
-	    wTF_Cmd,
-	    g_dgettext(GETTEXT_PACKAGE, "Input the shell command to spawn, then press <Enter>"));
-	gtk_entry_set_max_length(GTK_ENTRY(wTF_Cmd), 128);
-
-	eventbox1 = gtk_event_box_new();
-	gtk_widget_show(eventbox1);
-	gtk_grid_attach(GTK_GRID(table1), eventbox1, 1, 2, 1, 1);
-	gtk_widget_set_valign(GTK_WIDGET(eventbox1), GTK_ALIGN_CENTER);
-	gtk_widget_set_halign(GTK_WIDGET(eventbox1), GTK_ALIGN_CENTER);
-	gtk_widget_set_vexpand(GTK_WIDGET(eventbox1), TRUE);
-	gtk_widget_set_hexpand(GTK_WIDGET(eventbox1), TRUE);
-
-	wSc_Period_adj = gtk_adjustment_new(15000, 200, 1000 * 60 * 60 * 24, 50, 1000, 0);
-	wSc_Period     = gtk_spin_button_new(GTK_ADJUSTMENT(wSc_Period_adj), 50, 2);
-	gtk_widget_show(wSc_Period);
-	gtk_container_add(GTK_CONTAINER(eventbox1), wSc_Period);
-	gtk_widget_set_tooltip_text(wSc_Period,
-	                            g_dgettext(GETTEXT_PACKAGE,
-	                                       "Interval between 2 consecutive spawns"));
-	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(wSc_Period), TRUE);
-
-	label2 = gtk_label_new(g_dgettext(GETTEXT_PACKAGE, "Period (ms) "));
-	gtk_widget_show(label2);
-	gtk_grid_attach(GTK_GRID(table1), label2, 0, 2, 1, 1);
-	//(GtkAttachOptions) (GTK_FILL),
-	//(GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
-	gtk_widget_set_valign(label2, GTK_ALIGN_CENTER);
-
-	wTB_Title = gtk_check_button_new_with_mnemonic(g_dgettext(GETTEXT_PACKAGE, "Label"));
-	gtk_widget_show(wTB_Title);
-	gtk_grid_attach(GTK_GRID(table1), wTB_Title, 0, 1, 1, 1);
-	gtk_widget_set_tooltip_text(wTB_Title,
-	                            g_dgettext(GETTEXT_PACKAGE, "Tick to display label"));
-
-	wTF_Title = gtk_entry_new();
-	gtk_widget_show(wTF_Title);
-	gtk_grid_attach(GTK_GRID(table1), wTF_Title, 1, 1, 1, 1);
-
-	gtk_widget_set_tooltip_text(wTF_Title,
-	                            g_dgettext(GETTEXT_PACKAGE,
-	                                       "Input the plugin label, then press <Enter>"));
-	gtk_entry_set_max_length(GTK_ENTRY(wTF_Title), 16);
-	gtk_entry_set_text(GTK_ENTRY(wTF_Title), g_dgettext(GETTEXT_PACKAGE, "(genmon)"));
-
-	hseparator10 = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-	gtk_widget_show(hseparator10);
-	gtk_box_pack_start(GTK_BOX(vbox1), hseparator10, FALSE, FALSE, 0);
-
-	wPB_Font = gtk_font_button_new();
-	gtk_widget_show(wPB_Font);
-	gtk_box_pack_start(GTK_BOX(vbox1), wPB_Font, TRUE, TRUE, 0);
-	gtk_widget_set_tooltip_text(wPB_Font,
-	                            g_dgettext(GETTEXT_PACKAGE,
-	                                       "Press to change font for plugin..."));
-
-	hbox4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
-	gtk_widget_show(hbox4);
-	gtk_container_add(GTK_CONTAINER(vbox1), hbox4);
-
-	g_object_bind_property(wTB_Title,
+void genmon_config_init(GenMonConfig *self)
+{
+	gtk_widget_init_template(GTK_WIDGET(self));
+	g_object_bind_property(self->check_title,
 	                       "active",
-	                       wTF_Title,
+	                       self->entry_title,
 	                       "sensitive",
 	                       (GBindingFlags)(G_BINDING_SYNC_CREATE));
+}
 
-	if (p_poGUI)
-	{
-		COPYVAL(p_poGUI, wTF_Cmd);
-		COPYVAL(p_poGUI, wTB_Title);
-		COPYVAL(p_poGUI, wTF_Title);
-		COPYVAL(p_poGUI, wSc_Period);
-		COPYVAL(p_poGUI, wPB_Font);
-	}
-	return (0);
-} /* CreateConfigGUI() */
-
-void genmon_ui_init_gsettings(struct gui_t *ui, GSettings *settings)
+void genmon_config_class_init(GenMonConfigClass *klass)
 {
-	g_settings_bind(settings, GENMON_PROP_CMD, ui->wTF_Cmd, "text", G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind(settings, GENMON_PROP_FONT, ui->wPB_Font, "font", G_SETTINGS_BIND_DEFAULT);
+	gtk_widget_class_set_template_from_resource(GTK_WIDGET_CLASS(klass),
+	                                            "/org/genmon/config.ui");
+	gtk_widget_class_bind_template_child_full(GTK_WIDGET_CLASS(klass),
+	                                          "entry-cmd",
+	                                          FALSE,
+	                                          G_STRUCT_OFFSET(GenMonConfig, entry_cmd));
+	gtk_widget_class_bind_template_child_full(GTK_WIDGET_CLASS(klass),
+	                                          "spin-interval",
+	                                          FALSE,
+	                                          G_STRUCT_OFFSET(GenMonConfig, spin_interval));
+	gtk_widget_class_bind_template_child_full(GTK_WIDGET_CLASS(klass),
+	                                          "fntbutton",
+	                                          FALSE,
+	                                          G_STRUCT_OFFSET(GenMonConfig, fntbutton));
+	gtk_widget_class_bind_template_child_full(GTK_WIDGET_CLASS(klass),
+	                                          "entry-title",
+	                                          FALSE,
+	                                          G_STRUCT_OFFSET(GenMonConfig, entry_title));
+	gtk_widget_class_bind_template_child_full(GTK_WIDGET_CLASS(klass),
+	                                          "check-title",
+	                                          FALSE,
+	                                          G_STRUCT_OFFSET(GenMonConfig, check_title));
+}
+
+GenMonConfig *genmon_config_new()
+{
+	return GENMON_CONFIG(g_object_new(genmon_config_get_type(), NULL));
+}
+
+void genmon_config_init_gsettings(GenMonConfig *ui, GSettings *settings)
+{
+	g_settings_bind(settings, GENMON_PROP_CMD, ui->entry_cmd, "text", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings, GENMON_PROP_FONT, ui->fntbutton, "font", G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind(settings,
 	                GENMON_PROP_TITLE_TEXT,
-	                ui->wTF_Title,
+	                ui->entry_title,
 	                "text",
 	                G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind(settings,
 	                GENMON_PROP_UPDATE_PERIOD,
-	                ui->wSc_Period,
+	                ui->spin_interval,
 	                "value",
 	                G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind(settings,
 	                GENMON_PROP_USE_TITLE,
-	                ui->wTB_Title,
+	                ui->check_title,
 	                "active",
 	                G_SETTINGS_BIND_DEFAULT);
+	gtk_widget_set_sensitive(GTK_WIDGET(ui->entry_title),
+	                         gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ui->check_title)));
 }
