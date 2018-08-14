@@ -43,6 +43,7 @@
 #include <memory.h>
 #include <poll.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,7 +52,7 @@
 #include <unistd.h>
 
 /**********************************************************************/
-char *genmon_Spawn(char **argv, int wait)
+char *genmon_spawn(char **argv, int wait)
 /**********************************************************************/
 /* Spawn a command and capture its output from stdout or stderr */
 /* Return allocated string on success, otherwise NULL */
@@ -93,7 +94,7 @@ char *genmon_Spawn(char **argv, int wait)
 		return (NULL);
 	case 0:
 		close(0); /* stdin is not used in child */
-		/* Redirect stdout/stderr to associated pipe's write-ends */
+		          /* Redirect stdout/stderr to associated pipe's write-ends */
 		for (i = 0; i < OUT_ERR; i++)
 		{
 			j = i + 1; // stdout/stderr file descriptor
@@ -164,7 +165,7 @@ End:
 } // Spawn()
 
 /**********************************************************************/
-char *genmon_SpawnCmd(const char *p_pcCmdLine, int wait)
+char *genmon_spawn_with_error_window(const char *p_pcCmdLine, int wait)
 /**********************************************************************/
 /* Parse a command line, spawn the command, and capture its output from stdout
    or stderr */
@@ -192,5 +193,44 @@ char *genmon_SpawnCmd(const char *p_pcCmdLine, int wait)
 		return (NULL);
 	}
 	/* Spawn the command and free allocated memory */
-	return genmon_Spawn(argv, wait);
+	return genmon_spawn(argv, wait);
 } // SpawnCmd()
+
+static void child_spawn_func(void *data)
+{
+	setpgid(0, getpgid(getppid()));
+}
+
+static bool vala_panel_launch(GDesktopAppInfo *app_info, GList *uris, GtkWidget *parent)
+{
+	g_autoptr(GError) err            = NULL;
+	g_autoptr(GAppLaunchContext) cxt = G_APP_LAUNCH_CONTEXT(
+	    gdk_display_get_app_launch_context(gtk_widget_get_display(parent)));
+	bool ret = g_desktop_app_info_launch_uris_as_manager(G_DESKTOP_APP_INFO(app_info),
+	                                                     uris,
+	                                                     cxt,
+	                                                     G_SPAWN_SEARCH_PATH,
+	                                                     child_spawn_func,
+	                                                     NULL,
+	                                                     NULL,
+	                                                     NULL,
+	                                                     &err);
+	if (err)
+		g_warning("%s\n", err->message);
+	return ret;
+}
+
+bool genmon_launch_command_on_screen(const char *command, GtkWidget *parent)
+{
+	g_autoptr(GError) err            = NULL;
+	g_autoptr(GAppLaunchContext) cxt = G_APP_LAUNCH_CONTEXT(
+	    gdk_display_get_app_launch_context(gtk_widget_get_display(parent)));
+	g_autoptr(GDesktopAppInfo) info = G_DESKTOP_APP_INFO(
+	    g_app_info_create_from_commandline(command, NULL, G_APP_INFO_CREATE_NONE, &err));
+	if (err)
+	{
+		g_warning("%s\n", err->message);
+		return false;
+	}
+	return vala_panel_launch(info, NULL, parent);
+}

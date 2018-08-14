@@ -24,7 +24,14 @@
 #ifndef _cmdspawn_h
 #define _cmdspawn_h
 
-char *genmon_Spawn(char **argv, int wait);
-char *genmon_SpawnCmd(const char *cmdline, int wait);
+#include <gdk/gdk.h>
+#include <gio/gdesktopappinfo.h>
+#include <gtk/gtk.h>
+#include <stdbool.h>
+
+char *genmon_spawn(char **argv, int wait);
+
+char *genmon_spawn_with_error_window(const char *cmdline, int wait);
+bool genmon_launch_command_on_screen(const char *command, GtkWidget *parent);
 
 #endif /* _cmdspawn_h */

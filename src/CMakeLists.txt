@@ -8,8 +8,6 @@ set(PLUGIN_FILES
 	config_gui.c
         mon_widget.c
         mon_widget.h
-        launcher.c
-        launcher.h
         vala-panel-genmon.c
         vala-panel-genmon.h
 )

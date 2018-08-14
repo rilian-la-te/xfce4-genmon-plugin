@@ -27,7 +27,6 @@
 
 #include "cmdspawn.h"
 #include "config_gui.h"
-#include "launcher.h"
 
 enum
 {
@@ -85,8 +84,7 @@ static void gtk_orientable_interface_init(GtkOrientableIface *iface)
 
 static void genmon_widget_exec_with_error_dialog(GenMonWidget *self, const char *cmd)
 {
-	bool fail =
-	    vala_panel_launch_command_on_screen(cmd, gtk_widget_get_parent(GTK_WIDGET(self)));
+	bool fail = genmon_launch_command_on_screen(cmd, gtk_widget_get_parent(GTK_WIDGET(self)));
 	if (fail)
 	{
 		g_autofree char *first =
@@ -127,7 +125,8 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 	bool newVersion = false;
 
 	g_clear_pointer(&self->cmd_result, g_free);
-	self->cmd_result = self->command[0] > 0 ? genmon_SpawnCmd(self->command, 1) : NULL;
+	self->cmd_result =
+	    self->command[0] > 0 ? genmon_spawn_with_error_window(self->command, 1) : NULL;
 
 	/* If the command fails, display XXX */
 	if (!self->cmd_result)
