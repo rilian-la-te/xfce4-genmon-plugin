@@ -20,6 +20,7 @@
  */
 
 #include "config_gui.h"
+#include "mon_widget.h"
 
 #include "config.h"
 
@@ -133,3 +134,30 @@ int genmon_CreateConfigGUI(GtkWidget *vbox1, struct gui_t *p_poGUI)
 	}
 	return (0);
 } /* CreateConfigGUI() */
+
+void genmon_ui_init_gsettings(struct gui_t *ui, GSettings *settings)
+{
+	g_settings_bind(settings, GENMON_PROP_CMD, ui->wTF_Cmd, "text", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings, GENMON_PROP_FONT, ui->wPB_Font, "font", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings,
+	                GENMON_PROP_TITLE_TEXT,
+	                ui->wTF_Title,
+	                "text",
+	                G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings,
+	                GENMON_PROP_UPDATE_PERIOD,
+	                ui->wSc_Period,
+	                "value",
+	                G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings,
+	                GENMON_PROP_USE_TITLE,
+	                ui->wTB_Title,
+	                "active",
+	                G_SETTINGS_BIND_DEFAULT);
+
+	g_object_bind_property(ui->wTB_Title,
+	                       "active",
+	                       ui->wTF_Title,
+	                       "sensitive",
+	                       (GBindingFlags)(G_BINDING_SYNC_CREATE));
+}

@@ -76,45 +76,13 @@ GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings
 
 static GtkWidget *genmon_applet_get_settings_ui(ValaPanelApplet *base)
 {
-	GenMonApplet *self = GENMON_APPLET(base);
 	struct gui_t gui_widgets; /* Configuration/option dialog */
 
 	GtkBox *vbox = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, BORDER + 6));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER + 4);
 
 	(void)genmon_CreateConfigGUI(GTK_WIDGET(vbox), &gui_widgets);
-
-	g_settings_bind(vala_panel_applet_get_settings(base),
-	                GENMON_PROP_TITLE_TEXT,
-	                gui_widgets.wTF_Title,
-	                "text",
-	                G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind(vala_panel_applet_get_settings(base),
-	                GENMON_PROP_CMD,
-	                gui_widgets.wTF_Cmd,
-	                "text",
-	                G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind(vala_panel_applet_get_settings(base),
-	                GENMON_PROP_FONT,
-	                gui_widgets.wPB_Font,
-	                "font",
-	                G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind(vala_panel_applet_get_settings(base),
-	                GENMON_PROP_UPDATE_PERIOD,
-	                gui_widgets.wSc_Period,
-	                "value",
-	                G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind(vala_panel_applet_get_settings(base),
-	                GENMON_PROP_USE_TITLE,
-	                gui_widgets.wTB_Title,
-	                "active",
-	                G_SETTINGS_BIND_DEFAULT);
-
-	g_object_bind_property(gui_widgets.wTB_Title,
-	                       "active",
-	                       gui_widgets.wTF_Title,
-	                       "sensitive",
-	                       (GBindingFlags)(G_BINDING_SYNC_CREATE));
+	genmon_ui_init_gsettings(&gui_widgets, vala_panel_applet_get_settings(base));
 
 	gtk_widget_show_all(GTK_WIDGET(vbox));
 

@@ -45,6 +45,8 @@ int genmon_CreateConfigGUI(GtkWidget *ParentWindow, struct gui_t *gui);
 /* Create configuration/Option GUI */
 /* Return 0 on success, -1 otherwise */
 
+void genmon_ui_init_gsettings(struct gui_t *ui, GSettings *settings);
+
 G_END_DECLS
 
 #endif /* _config_gui_h */
