@@ -94,14 +94,26 @@ static bool genmon_applet_remote_command(ValaPanelApplet *base, const char *comm
 	return false;
 }
 
+static void genmon_applet_update_context_menu(ValaPanelApplet *base, GMenu *parent)
+{
+	g_autoptr(GMenuItem) refresh_item =
+	    g_menu_item_new(g_dgettext(GETTEXT_PACKAGE, "Refresh"), NULL);
+	g_menu_item_set_action_and_target(refresh_item,
+	                                  "applet." VALA_PANEL_APPLET_ACTION_REMOTE,
+	                                  "s",
+	                                  "refresh");
+	g_menu_prepend_item(parent, refresh_item);
+}
+
 static void genmon_applet_init(GenMonApplet *self)
 {
 }
 
 static void genmon_applet_class_init(GenMonAppletClass *klass)
 {
-	((ValaPanelAppletClass *)klass)->get_settings_ui = genmon_applet_get_settings_ui;
-	((ValaPanelAppletClass *)klass)->remote_command  = genmon_applet_remote_command;
+	((ValaPanelAppletClass *)klass)->get_settings_ui     = genmon_applet_get_settings_ui;
+	((ValaPanelAppletClass *)klass)->remote_command      = genmon_applet_remote_command;
+	((ValaPanelAppletClass *)klass)->update_context_menu = genmon_applet_update_context_menu;
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)
