@@ -283,8 +283,12 @@ static void genmon_widget_build(GenMonWidget *self)
 	                       self->title_label,
 	                       "label",
 	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
-	if (self->is_title_displayed)
-		gtk_widget_show(GTK_WIDGET(self->title_label));
+
+	g_object_bind_property(self,
+	                       GENMON_PROP_USE_TITLE,
+	                       self->title_label,
+	                       "visible",
+	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
 
 	//	xfce_panel_plugin_add_action_widget(plugin, self->button);
 
@@ -427,6 +431,7 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 	case PROP_COMMAND:
 		g_clear_pointer(&self->command, g_free);
 		self->command = g_value_dup_string(value);
+		genmon_widget_display_command_output(self);
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	case PROP_FONT_VALUE:
@@ -452,10 +457,6 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 		break;
 	case PROP_IS_TITLE_DISPAYED:
 		self->is_title_displayed = g_value_get_boolean(value);
-		if (self->is_title_displayed)
-			gtk_widget_show(GTK_WIDGET(self->title_label));
-		else
-			gtk_widget_hide(GTK_WIDGET(self->title_label));
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	case PROP_ORIENTATION:
@@ -474,7 +475,6 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		break;
 	}
-	genmon_widget_display_command_output(self);
 }
 
 static void genmon_widget_get_property(GObject *object, uint prop_id, GValue *value,
