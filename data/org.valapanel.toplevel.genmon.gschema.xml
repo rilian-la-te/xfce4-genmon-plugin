@@ -1,7 +1,7 @@
 <schemalist>
   <schema id="org.valapanel.genmon">
     <key name="update-period" type="d">
-      <range min="1000" max="3600000"/>
+      <range min="200" max="3600000"/>
       <default>1000</default>
     </key>
     <key name="font" type="s">

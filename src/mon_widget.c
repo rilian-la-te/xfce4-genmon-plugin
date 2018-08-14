@@ -570,7 +570,7 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	    g_param_spec_uint(GENMON_PROP_UPDATE_PERIOD,
 	                      GENMON_PROP_UPDATE_PERIOD,
 	                      GENMON_PROP_UPDATE_PERIOD,
-	                      1000,
+	                      200,
 	                      G_MAXUINT,
 	                      30 * 1000,
 	                      (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |

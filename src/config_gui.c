@@ -91,7 +91,7 @@ int genmon_CreateConfigGUI(GtkWidget *vbox1, struct gui_t *p_poGUI)
 	gtk_widget_set_vexpand(GTK_WIDGET(eventbox1), TRUE);
 	gtk_widget_set_hexpand(GTK_WIDGET(eventbox1), TRUE);
 
-	wSc_Period_adj = gtk_adjustment_new(15000, 1000, 1000 * 60 * 60 * 24, 50, 1000, 0);
+	wSc_Period_adj = gtk_adjustment_new(15000, 200, 1000 * 60 * 60 * 24, 50, 1000, 0);
 	wSc_Period     = gtk_spin_button_new(GTK_ADJUSTMENT(wSc_Period_adj), 50, 2);
 	gtk_widget_show(wSc_Period);
 	gtk_container_add(GTK_CONTAINER(eventbox1), wSc_Period);
