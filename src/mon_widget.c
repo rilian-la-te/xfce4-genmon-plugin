@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <vala-panel/client.h>
 
+#include "config.h"
+
 #include "cmdspawn.h"
 #include "config_gui.h"
 #include "launcher.h"
@@ -69,7 +71,8 @@ static void genmon_widget_exec_with_error_dialog(GenMonWidget *self, const char 
 	    vala_panel_launch_command_on_screen(cmd, gtk_widget_get_parent(GTK_WIDGET(self)));
 	if (fail)
 	{
-		g_autofree char *first = g_strdup_printf(_("Could not run \"%s\""), cmd);
+		g_autofree char *first =
+		    g_strdup_printf(g_dgettext(GETTEXT_PACKAGE, "Could not run \"%s\""), cmd);
 		g_autoptr(GtkDialog) dlg =
 		    GTK_DIALOG(gtk_message_dialog_new(NULL,
 		                                      GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -222,10 +225,11 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 	g_autofree char *acToolTips =
 	    (begin && end && begin < end)
 	        ? g_strndup(begin + 6, end - begin - 6)
-	        : g_strdup_printf(_("%s\n"
-	                            "----------------\n"
-	                            "%s\n"
-	                            "Period (s): %1.3lf"),
+	        : g_strdup_printf(g_dgettext(GETTEXT_PACKAGE,
+	                                     "%s\n"
+	                                     "----------------\n"
+	                                     "%s\n"
+	                                     "Period (s): %1.3lf"),
 	                          self->title,
 	                          self->command,
 	                          self->update_interval_ms / (double)1000);

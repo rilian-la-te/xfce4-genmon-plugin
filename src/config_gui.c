@@ -21,9 +21,7 @@
 
 #include "config_gui.h"
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "config.h"
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -69,7 +67,7 @@ int genmon_CreateConfigGUI(GtkWidget *vbox1, struct gui_t *p_poGUI)
 	gtk_widget_show(table1);
 	gtk_box_pack_start(GTK_BOX(vbox1), table1, FALSE, TRUE, 0);
 
-	label1 = gtk_label_new(_("Command"));
+	label1 = gtk_label_new(g_dgettext(GETTEXT_PACKAGE, "Command"));
 	gtk_widget_show(label1);
 	gtk_grid_attach(GTK_GRID(table1), label1, 0, 0, 1, 1);
 	//(GtkAttachOptions) (GTK_FILL),
@@ -80,8 +78,9 @@ int genmon_CreateConfigGUI(GtkWidget *vbox1, struct gui_t *p_poGUI)
 	wTF_Cmd = gtk_entry_new();
 	gtk_widget_show(wTF_Cmd);
 	gtk_grid_attach(GTK_GRID(table1), wTF_Cmd, 1, 0, 1, 1);
-	gtk_widget_set_tooltip_text(wTF_Cmd,
-	                            _("Input the shell command to spawn, then press <Enter>"));
+	gtk_widget_set_tooltip_text(
+	    wTF_Cmd,
+	    g_dgettext(GETTEXT_PACKAGE, "Input the shell command to spawn, then press <Enter>"));
 	gtk_entry_set_max_length(GTK_ENTRY(wTF_Cmd), 128);
 
 	eventbox1 = gtk_event_box_new();
@@ -96,10 +95,12 @@ int genmon_CreateConfigGUI(GtkWidget *vbox1, struct gui_t *p_poGUI)
 	wSc_Period     = gtk_spin_button_new(GTK_ADJUSTMENT(wSc_Period_adj), 50, 2);
 	gtk_widget_show(wSc_Period);
 	gtk_container_add(GTK_CONTAINER(eventbox1), wSc_Period);
-	gtk_widget_set_tooltip_text(wSc_Period, _("Interval between 2 consecutive spawns"));
+	gtk_widget_set_tooltip_text(wSc_Period,
+	                            g_dgettext(GETTEXT_PACKAGE,
+	                                       "Interval between 2 consecutive spawns"));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(wSc_Period), TRUE);
 
-	label2 = gtk_label_new(_("Period (ms) "));
+	label2 = gtk_label_new(g_dgettext(GETTEXT_PACKAGE, "Period (ms) "));
 	gtk_widget_show(label2);
 	gtk_grid_attach(GTK_GRID(table1), label2, 0, 2, 1, 1);
 	//(GtkAttachOptions) (GTK_FILL),
@@ -107,18 +108,21 @@ int genmon_CreateConfigGUI(GtkWidget *vbox1, struct gui_t *p_poGUI)
 	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
 	gtk_widget_set_valign(label2, GTK_ALIGN_CENTER);
 
-	wTB_Title = gtk_check_button_new_with_mnemonic(_("Label"));
+	wTB_Title = gtk_check_button_new_with_mnemonic(g_dgettext(GETTEXT_PACKAGE, "Label"));
 	gtk_widget_show(wTB_Title);
 	gtk_grid_attach(GTK_GRID(table1), wTB_Title, 0, 1, 1, 1);
-	gtk_widget_set_tooltip_text(wTB_Title, _("Tick to display label"));
+	gtk_widget_set_tooltip_text(wTB_Title,
+	                            g_dgettext(GETTEXT_PACKAGE, "Tick to display label"));
 
 	wTF_Title = gtk_entry_new();
 	gtk_widget_show(wTF_Title);
 	gtk_grid_attach(GTK_GRID(table1), wTF_Title, 1, 1, 1, 1);
 
-	gtk_widget_set_tooltip_text(wTF_Title, _("Input the plugin label, then press <Enter>"));
+	gtk_widget_set_tooltip_text(wTF_Title,
+	                            g_dgettext(GETTEXT_PACKAGE,
+	                                       "Input the plugin label, then press <Enter>"));
 	gtk_entry_set_max_length(GTK_ENTRY(wTF_Title), 16);
-	gtk_entry_set_text(GTK_ENTRY(wTF_Title), _("(genmon)"));
+	gtk_entry_set_text(GTK_ENTRY(wTF_Title), g_dgettext(GETTEXT_PACKAGE, "(genmon)"));
 
 	hseparator10 = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_show(hseparator10);
@@ -127,7 +131,9 @@ int genmon_CreateConfigGUI(GtkWidget *vbox1, struct gui_t *p_poGUI)
 	wPB_Font = gtk_font_button_new();
 	gtk_widget_show(wPB_Font);
 	gtk_box_pack_start(GTK_BOX(vbox1), wPB_Font, TRUE, TRUE, 0);
-	gtk_widget_set_tooltip_text(wPB_Font, _("Press to change font for plugin..."));
+	gtk_widget_set_tooltip_text(wPB_Font,
+	                            g_dgettext(GETTEXT_PACKAGE,
+	                                       "Press to change font for plugin..."));
 
 	hbox4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 	gtk_widget_show(hbox4);

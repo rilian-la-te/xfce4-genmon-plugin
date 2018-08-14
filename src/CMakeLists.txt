@@ -1,4 +1,6 @@
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 set(PLUGIN_FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/config.h
 	cmdspawn.h
 	config_gui.h
         #main.c

@@ -34,9 +34,7 @@
 
 #include "cmdspawn.h"
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "config.h"
 
 #include <errno.h>
 #include <glib.h>
@@ -179,17 +177,17 @@ char *genmon_SpawnCmd(const char *p_pcCmdLine, int wait)
 	/* Split the commandline into an argv array */
 	if (!g_shell_parse_argv(p_pcCmdLine, &argc, &argv, &error))
 	{
-		g_autofree char *first = g_strdup_printf(_("Error \"%s\" in command \"%s\""),
-		                                         error->message,
-		                                         p_pcCmdLine);
+		g_autofree char *first =
+		    g_strdup_printf(g_dgettext(GETTEXT_PACKAGE, "Error \"%s\" in command \"%s\""),
+		                    error->message,
+		                    p_pcCmdLine);
 		g_autoptr(GtkDialog) dlg =
 		    GTK_DIALOG(gtk_message_dialog_new(NULL,
 		                                      GTK_DIALOG_DESTROY_WITH_PARENT,
 		                                      GTK_MESSAGE_ERROR,
 		                                      GTK_BUTTONS_CLOSE,
 		                                      "%s",
-		                                      first,
-		                                      NULL));
+		                                      first));
 		gtk_dialog_run(dlg);
 		return (NULL);
 	}
