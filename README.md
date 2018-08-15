@@ -43,14 +43,14 @@ clickable icon), a tooltip, a text and a bar.
 
 To display these items, the script called by genmon should return a simple
 XML string.
-
+```
 The XML tags which can be used are :
 <txt>Text to display</txt>
 <img>Path to the image to display</img>
 <tool>Tooltip text</tool>
 <bar>Pourcentage to display in the bar</bar>
 <click>The command to be executed when clicking on the image</click>
-
+```
 If None of the tags are detected in the result of the command, the plugin
 returns to its original behaviour (displaying the result of the command).
 
