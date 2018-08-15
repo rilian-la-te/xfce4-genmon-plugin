@@ -123,6 +123,35 @@ static void genmon_applet_configure_plugin(XfcePanelPlugin *base)
 	return;
 }
 
+static void genmon_applet_about(XfcePanelPlugin *plugin)
+{
+	const gchar *auth[] = { "Roger Seguin <roger_seguin@msn.com>",
+		                "Julien Devemy <jujucece@gmail.com>",
+		                "Tony Paulic <tony.paulic@gmail.com>",
+		                NULL };
+
+	gtk_show_about_dialog(NULL,
+	                      "logo-icon-name",
+	                      "utilities-system-monitor",
+	                      "license-type",
+	                      GTK_LICENSE_LGPL_3_0,
+	                      "version",
+	                      VERSION,
+	                      "program-name",
+	                      GETTEXT_PACKAGE,
+	                      "comments",
+	                      _("Cyclically spawns a script/program, captures its output and "
+	                        "displays the resulting string in the panel"),
+	                      "website",
+	                      "http://goodies.xfce.org/projects/panel-plugins/xfce4-genmon-plugin",
+	                      "copyright",
+	                      _("Copyright \xc2\xa9 2004 Roger Seguin\nCopyright \xc2\xa9 2006 "
+	                        "Julien Devemy\nCopyright \xc2\xa9 2016 Tony Paulic\n"),
+	                      "authors",
+	                      auth,
+	                      NULL);
+}
+
 static gboolean genmon_set_size(XfcePanelPlugin *plugin, int size)
 /* Plugin API */
 /* Set the size of the panel-docked monitor */
@@ -171,6 +200,7 @@ static void genmon_applet_class_init(GenMonAppletClass *klass)
 	((XfcePanelPluginClass *)klass)->mode_changed     = genmon_applet_mode_changed;
 	((XfcePanelPluginClass *)klass)->remote_event     = genmon_applet_remote_event;
 	((XfcePanelPluginClass *)klass)->size_changed     = genmon_set_size;
+	((XfcePanelPluginClass *)klass)->about            = genmon_applet_about;
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)
