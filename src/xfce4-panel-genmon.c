@@ -98,6 +98,7 @@ void genmon_applet_construct(XfcePanelPlugin *parent)
 
 static void genmon_applet_configure_plugin(XfcePanelPlugin *base)
 {
+	GenMonApplet *self = GENMON_APPLET(base);
 	xfce_panel_plugin_block_menu(base);
 	GenMonConfig *config = genmon_config_new(); /* Configuration/option dialog */
 
@@ -106,6 +107,7 @@ static void genmon_applet_configure_plugin(XfcePanelPlugin *base)
 	gtk_window_set_transient_for(GTK_WINDOW(dlg),
 	                             GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(base))));
 	gtk_window_set_destroy_with_parent(GTK_WINDOW(dlg), true);
+	genmon_config_init_properties(config, self->widget);
 
 	g_signal_connect(dlg, "unmap", G_CALLBACK(gtk_widget_destroy), dlg);
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dlg))),

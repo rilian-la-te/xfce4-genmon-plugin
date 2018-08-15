@@ -20,7 +20,6 @@
  */
 
 #include "config_gui.h"
-#include "mon_widget.h"
 
 #include "config.h"
 
@@ -102,4 +101,33 @@ void genmon_config_init_gsettings(GenMonConfig *ui, GSettings *settings)
 	                G_SETTINGS_BIND_DEFAULT);
 	gtk_widget_set_sensitive(GTK_WIDGET(ui->entry_title),
 	                         gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ui->check_title)));
+}
+
+void genmon_config_init_properties(GenMonConfig *self, GenMonWidget *widget)
+{
+	g_object_bind_property(widget,
+	                       GENMON_PROP_USE_TITLE,
+	                       self->check_title,
+	                       "active",
+	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
+	g_object_bind_property(widget,
+	                       GENMON_PROP_CMD,
+	                       self->entry_cmd,
+	                       "text",
+	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
+	g_object_bind_property(widget,
+	                       GENMON_PROP_FONT,
+	                       self->fntbutton,
+	                       "font",
+	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
+	g_object_bind_property(widget,
+	                       GENMON_PROP_TITLE_TEXT,
+	                       self->entry_title,
+	                       "text",
+	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
+	g_object_bind_property(widget,
+	                       GENMON_PROP_UPDATE_PERIOD,
+	                       self->spin_interval,
+	                       "value",
+	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
 }

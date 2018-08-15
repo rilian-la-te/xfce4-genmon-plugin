@@ -22,11 +22,9 @@
 #ifndef _config_gui_h
 #define _config_gui_h
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <gtk/gtk.h>
+
+#include "mon_widget.h"
 
 G_BEGIN_DECLS
 
@@ -34,6 +32,7 @@ G_DECLARE_FINAL_TYPE(GenMonConfig, genmon_config, GENMON, CONFIG, GtkGrid)
 
 GenMonConfig *genmon_config_new();
 void genmon_config_init_gsettings(GenMonConfig *ui, GSettings *settings);
+void genmon_config_init_properties(GenMonConfig *ui, GenMonWidget *widget);
 
 G_END_DECLS
 
