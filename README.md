@@ -45,20 +45,18 @@ To display these items, the script called by genmon should return a simple
 XML string.
 
 The XML tags which can be used are :
-```
 <txt>Text to display</txt>
 <img>Path to the image to display</img>
 <tool>Tooltip text</tool>
 <bar>Pourcentage to display in the bar</bar>
 <click>The command to be executed when clicking on the image</click>
-```
 
 If None of the tags are detected in the result of the command, the plugin
 returns to its original behaviour (displaying the result of the command).
 
 No tag is mandatory: for instance, you can display a tooltip without and image...
 
-The text between the <txt> and </txt>, and the <tool> and </tool> tags can use pango markup for style and color.
+The text between the `<txt>` and `</txt>`, and the `<tool>` and `</tool>` tags can use pango markup for style and color.
 
 Here's a simple example of a plugin displaying the Temp of the CPU in the panel
 (with an icon) and the Freq in a Tooltip:
