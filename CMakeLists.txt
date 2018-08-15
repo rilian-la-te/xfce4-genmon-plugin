@@ -45,7 +45,7 @@ cmake_dependent_option(ENABLE_XFCE "Enable Xfce4 Panel Integration" ON
     "XFCE_FOUND" OFF)
 
 set(BUDGIE_FOUND OFF)
-#pkg_check_modules(BUDGIE budgie-1.0 libpeas-1.0 IMPORTED_TARGET)
+pkg_check_modules(BUDGIE budgie-1.0 libpeas-1.0 IMPORTED_TARGET)
 cmake_dependent_option(ENABLE_BUDGIE "Enable budgie-desktop plugin" ON
     "BUDGIE_FOUND" OFF)
 

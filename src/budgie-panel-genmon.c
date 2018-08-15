@@ -16,56 +16,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "budgie-panel-genmon.h"
 #include "config_gui.h"
 #include "mon_widget.h"
-#include "vala-panel-genmon.h"
+
+#include <stdbool.h>
 
 #define BORDER 2
 
 struct _GenMonApplet
 {
-	ValaPanelApplet parent;
+	BudgieApplet parent;
 	GenMonWidget *widget;
+	GSettings *settings;
 };
 
-G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, vala_panel_applet_get_type());
+G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, budgie_applet_get_type());
 
-GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings, const char *uuid)
+GenMonApplet *genmon_applet_new(const char *uuid)
 {
-	GenMonApplet *self = GENMON_APPLET(
-	    vala_panel_applet_construct(genmon_applet_get_type(), toplevel, settings, uuid));
-	GActionMap *map = G_ACTION_MAP(vala_panel_applet_get_action_group(VALA_PANEL_APPLET(self)));
-	g_simple_action_set_enabled(
-	    G_SIMPLE_ACTION(g_action_map_lookup_action(map, VALA_PANEL_APPLET_ACTION_CONFIGURE)),
-	    true);
-	g_simple_action_set_enabled(
-	    G_SIMPLE_ACTION(g_action_map_lookup_action(map, VALA_PANEL_APPLET_ACTION_REMOTE)),
-	    true);
+	GenMonApplet *self =
+	    GENMON_APPLET(g_object_new(genmon_applet_get_type(), "uuid", uuid, NULL));
 	GenMonWidget *widget = genmon_widget_new();
 	self->widget         = widget;
-	g_settings_bind(settings,
+	budgie_applet_set_settings_schema(BUDGIE_APPLET(self), "org.valapanel.genmon");
+	budgie_applet_set_settings_prefix(BUDGIE_APPLET(self),
+	                                  "/com/solus-project/budgie-panel/instance/sntray");
+	self->settings = budgie_applet_get_applet_settings(BUDGIE_APPLET(self), (char *)uuid);
+	g_settings_bind(self->settings,
 	                GENMON_PROP_USE_TITLE,
 	                widget,
 	                GENMON_PROP_USE_TITLE,
 	                G_SETTINGS_BIND_GET);
-	g_settings_bind(settings,
+	g_settings_bind(self->settings,
 	                GENMON_PROP_TITLE_TEXT,
 	                widget,
 	                GENMON_PROP_TITLE_TEXT,
 	                G_SETTINGS_BIND_GET);
-	g_settings_bind(settings,
+	g_settings_bind(self->settings,
 	                GENMON_PROP_UPDATE_PERIOD,
 	                widget,
 	                GENMON_PROP_UPDATE_PERIOD,
 	                G_SETTINGS_BIND_GET);
-	g_settings_bind(settings, GENMON_PROP_CMD, widget, GENMON_PROP_CMD, G_SETTINGS_BIND_GET);
-	g_settings_bind(settings, GENMON_PROP_FONT, widget, GENMON_PROP_FONT, G_SETTINGS_BIND_GET);
-
-	g_object_bind_property(toplevel,
-	                       VP_KEY_ORIENTATION,
-	                       widget,
-	                       VP_KEY_ORIENTATION,
-	                       G_BINDING_SYNC_CREATE);
+	g_settings_bind(self->settings,
+	                GENMON_PROP_CMD,
+	                widget,
+	                GENMON_PROP_CMD,
+	                G_SETTINGS_BIND_GET);
+	g_settings_bind(self->settings,
+	                GENMON_PROP_FONT,
+	                widget,
+	                GENMON_PROP_FONT,
+	                G_SETTINGS_BIND_GET);
 
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(widget));
 	gtk_widget_show(GTK_WIDGET(widget));
@@ -74,35 +76,30 @@ GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings
 	return self;
 }
 
-static GtkWidget *genmon_applet_get_settings_ui(ValaPanelApplet *base)
+static void genmon_applet_panel_position_changed(BudgieApplet *base, BudgiePanelPosition pos)
 {
+	GenMonApplet *self = GENMON_APPLET(base);
+	if (pos < BUDGIE_PANEL_POSITION_LEFT)
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->widget),
+		                               GTK_ORIENTATION_HORIZONTAL);
+	else
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->widget),
+		                               GTK_ORIENTATION_VERTICAL);
+}
+
+static GtkWidget *genmon_applet_get_settings_ui(BudgieApplet *base)
+{
+	GenMonApplet *self   = GENMON_APPLET(base);
 	GenMonConfig *config = genmon_config_new(); /* Configuration/option dialog */
-	genmon_config_init_gsettings(config, vala_panel_applet_get_settings(base));
+	genmon_config_init_gsettings(config, self->settings);
 	gtk_widget_show_all(GTK_WIDGET(config));
 
 	return GTK_WIDGET(config);
 }
 
-static bool genmon_applet_remote_command(ValaPanelApplet *base, const char *command)
+static gboolean genmon_applet_supports_settings(BudgieApplet *base)
 {
-	GenMonApplet *self = GENMON_APPLET(base);
-	if (g_strcmp0(command, "refresh") == 0)
-	{
-		genmon_widget_display_command_output(self->widget);
-		return true;
-	}
-	return false;
-}
-
-static void genmon_applet_update_context_menu(ValaPanelApplet *base, GMenu *parent)
-{
-	g_autoptr(GMenuItem) refresh_item =
-	    g_menu_item_new(g_dgettext(GETTEXT_PACKAGE, "Refresh"), NULL);
-	g_menu_item_set_action_and_target(refresh_item,
-	                                  "applet." VALA_PANEL_APPLET_ACTION_REMOTE,
-	                                  "s",
-	                                  "refresh");
-	g_menu_prepend_item(parent, refresh_item);
+	return true;
 }
 
 static void genmon_applet_init(GenMonApplet *self)
@@ -111,9 +108,9 @@ static void genmon_applet_init(GenMonApplet *self)
 
 static void genmon_applet_class_init(GenMonAppletClass *klass)
 {
-	((ValaPanelAppletClass *)klass)->get_settings_ui     = genmon_applet_get_settings_ui;
-	((ValaPanelAppletClass *)klass)->remote_command      = genmon_applet_remote_command;
-	((ValaPanelAppletClass *)klass)->update_context_menu = genmon_applet_update_context_menu;
+	((BudgieAppletClass *)klass)->get_settings_ui        = genmon_applet_get_settings_ui;
+	((BudgieAppletClass *)klass)->panel_position_changed = genmon_applet_panel_position_changed;
+	((BudgieAppletClass *)klass)->supports_settings      = genmon_applet_supports_settings;
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)
@@ -126,29 +123,34 @@ static void genmon_applet_class_finalize(GenMonAppletClass *klass)
 
 struct _GenMonPlugin
 {
-	ValaPanelAppletPlugin parent;
+	PeasExtensionBase parent;
 };
 
-G_DEFINE_DYNAMIC_TYPE(GenMonPlugin, genmon_plugin, vala_panel_applet_plugin_get_type());
+static void budgie_plugin_interface_init(BudgiePluginIface *iface);
 
-static ValaPanelApplet *genmon_plugin_get_applet_widget(ValaPanelAppletPlugin *base,
-                                                        ValaPanelToplevel *toplevel,
-                                                        GSettings *settings, const char *uuid)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(GenMonPlugin, genmon_plugin, peas_extension_base_get_type(), 0,
+                               G_IMPLEMENT_INTERFACE_DYNAMIC(budgie_plugin_get_type(),
+                                                             budgie_plugin_interface_init));
+
+static BudgieApplet *genmon_plugin_get_panel_widget(BudgiePlugin *base, char *uuid)
 {
-	g_return_val_if_fail(toplevel != NULL, NULL);
 	g_return_val_if_fail(uuid != NULL, NULL);
 
-	return VALA_PANEL_APPLET(genmon_applet_new(toplevel, settings, uuid));
+	return BUDGIE_APPLET(genmon_applet_new(uuid));
 }
 
-GenMonApplet *genmon_plugin_new(GType object_type)
+GenMonPlugin *genmon_plugin_new(GType object_type)
 {
-	return GENMON_APPLET(vala_panel_applet_plugin_construct(genmon_applet_get_type()));
+	return GENMON_PLUGIN(g_object_new(genmon_plugin_get_type(), NULL));
 }
 
 static void genmon_plugin_class_init(GenMonPluginClass *klass)
 {
-	((ValaPanelAppletPluginClass *)klass)->get_applet_widget = genmon_plugin_get_applet_widget;
+}
+
+static void budgie_plugin_interface_init(BudgiePluginIface *iface)
+{
+	iface->get_panel_widget = genmon_plugin_get_panel_widget;
 }
 
 static void genmon_plugin_init(GenMonPlugin *self)
@@ -162,22 +164,16 @@ static void genmon_plugin_class_finalize(GenMonPluginClass *klass)
 /*
  * IO Module functions
  */
-
-void g_io_genmon_load(GTypeModule *module)
+void peas_register_types(GTypeModule *module)
 {
 	g_return_if_fail(module != NULL);
+
+	PeasObjectModule *objmodule = PEAS_OBJECT_MODULE(module);
 
 	genmon_applet_register_type(module);
 	genmon_plugin_register_type(module);
 
-	g_type_module_use(module);
-	g_io_extension_point_implement(VALA_PANEL_APPLET_EXTENSION_POINT,
-	                               genmon_plugin_get_type(),
-	                               "genmon",
-	                               10);
-}
-
-void g_io_genmon_unload(GIOModule *module)
-{
-	g_return_if_fail(module != NULL);
+	peas_object_module_register_extension_type(objmodule,
+	                                           budgie_plugin_get_type(),
+	                                           genmon_plugin_get_type());
 }
