@@ -16,31 +16,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "mate-panel-genmon.h"
+#include "config.h"
 #include "config_gui.h"
 #include "mon_widget.h"
-#include "vala-panel-genmon.h"
+
+#include <glib/gi18n.h>
+#include <mate-panel-applet-gsettings.h>
 
 #define BORDER 2
 
 struct _GenMonApplet
 {
-	ValaPanelApplet parent;
+	MatePanelApplet parent;
 	GenMonWidget *widget;
+	GSettings *settings;
 };
 
-G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, vala_panel_applet_get_type());
+G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, mate_panel_applet_get_type())
 
-GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings, const char *uuid)
+static void genmon_applet_get_settings_ui(GtkAction *action, GenMonApplet *self);
+static void genmon_applet_about(GtkAction *action, GenMonApplet *self);
+
+static const GtkActionEntry genmon_menu_verbs[] =
+    { { "GenMonPreferences",
+	"document-properties",
+	N_("_Preferences"),
+	NULL,
+	NULL,
+	G_CALLBACK(genmon_applet_get_settings_ui) },
+      { "GenMonAbout", "help-about", N_("_About"), NULL, NULL, G_CALLBACK(genmon_applet_about) } };
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+static void genmon_applet_update_context_menu(GenMonApplet *self)
 {
-	GenMonApplet *self = GENMON_APPLET(
-	    vala_panel_applet_construct(genmon_applet_get_type(), toplevel, settings, uuid));
-	GActionMap *map = G_ACTION_MAP(vala_panel_applet_get_action_group(VALA_PANEL_APPLET(self)));
-	g_simple_action_set_enabled(
-	    G_SIMPLE_ACTION(g_action_map_lookup_action(map, VALA_PANEL_APPLET_ACTION_CONFIGURE)),
-	    true);
-	g_simple_action_set_enabled(
-	    G_SIMPLE_ACTION(g_action_map_lookup_action(map, VALA_PANEL_APPLET_ACTION_REMOTE)),
-	    true);
+	GtkActionGroup *action_group = gtk_action_group_new("GenMonApplet Menu Actions");
+	gtk_action_group_set_translation_domain(action_group, GETTEXT_PACKAGE);
+	gtk_action_group_add_actions(action_group,
+	                             genmon_menu_verbs,
+	                             G_N_ELEMENTS(genmon_menu_verbs),
+	                             self);
+	mate_panel_applet_setup_menu(
+	    MATE_PANEL_APPLET(self),
+	    "<menuitem name=\"GenMon Preferences Item\" action=\"GenMonPreferences\" />"
+	    "<menuitem name=\"GenMon About Item\" action=\"GenMonAbout\" />",
+	    action_group);
+}
+G_GNUC_END_IGNORE_DEPRECATIONS
+
+bool genmon_applet_panel_init(GenMonApplet *self)
+{
+	GSettings *settings =
+	    mate_panel_applet_settings_new(MATE_PANEL_APPLET(self), "org.valapanel.genmon");
 	GenMonWidget *widget = genmon_widget_new();
 	self->widget         = widget;
 	g_settings_bind(settings,
@@ -61,11 +88,7 @@ GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings
 	g_settings_bind(settings, GENMON_PROP_CMD, widget, GENMON_PROP_CMD, G_SETTINGS_BIND_GET);
 	g_settings_bind(settings, GENMON_PROP_FONT, widget, GENMON_PROP_FONT, G_SETTINGS_BIND_GET);
 
-	g_object_bind_property(toplevel,
-	                       VP_KEY_ORIENTATION,
-	                       widget,
-	                       VP_KEY_ORIENTATION,
-	                       G_BINDING_SYNC_CREATE);
+	genmon_applet_update_context_menu(self);
 
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(widget));
 	gtk_widget_show(GTK_WIDGET(widget));
@@ -74,46 +97,84 @@ GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings
 	return self;
 }
 
-static GtkWidget *genmon_applet_get_settings_ui(ValaPanelApplet *base)
+static void genmon_applet_get_settings_ui(GtkAction *action, GenMonApplet *self)
 {
 	GenMonConfig *config = genmon_config_new(); /* Configuration/option dialog */
-	genmon_config_init_gsettings(config, vala_panel_applet_get_settings(base));
+
+	GtkDialog *dlg = GTK_DIALOG(gtk_dialog_new());
+	gtk_window_set_title(GTK_WINDOW(dlg), _("Configuration"));
+	gtk_window_set_transient_for(GTK_WINDOW(dlg),
+	                             GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(self))));
+	gtk_window_set_destroy_with_parent(GTK_WINDOW(dlg), true);
+	genmon_config_init_gsettings(config, self->settings);
+
+	g_signal_connect(dlg, "unmap", G_CALLBACK(gtk_widget_destroy), dlg);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dlg))),
+	                   GTK_WIDGET(config),
+	                   true,
+	                   true,
+	                   0);
+
 	gtk_widget_show_all(GTK_WIDGET(config));
 
-	return GTK_WIDGET(config);
+	gtk_window_present(GTK_WINDOW(dlg));
+
+	return;
 }
 
-static bool genmon_applet_remote_command(ValaPanelApplet *base, const char *command)
+static void genmon_applet_about(GtkAction *action, GenMonApplet *self)
+{
+	const gchar *auth[] = { "Roger Seguin <roger_seguin@msn.com>",
+		                "Julien Devemy <jujucece@gmail.com>",
+		                "Tony Paulic <tony.paulic@gmail.com>",
+		                NULL };
+
+	gtk_show_about_dialog(NULL,
+	                      "logo-icon-name",
+	                      "utilities-system-monitor",
+	                      "license-type",
+	                      GTK_LICENSE_LGPL_3_0,
+	                      "version",
+	                      VERSION,
+	                      "program-name",
+	                      GETTEXT_PACKAGE,
+	                      "comments",
+	                      _("Cyclically spawns a script/program, captures its output and "
+	                        "displays the resulting string in the panel"),
+	                      "website",
+	                      "http://goodies.xfce.org/projects/panel-plugins/xfce4-genmon-plugin",
+	                      "copyright",
+	                      _("Copyright \xc2\xa9 2004 Roger Seguin\nCopyright \xc2\xa9 2006 "
+	                        "Julien Devemy\nCopyright \xc2\xa9 2016 Tony Paulic\n"),
+	                      "authors",
+	                      auth,
+	                      NULL);
+}
+
+static void genmon_applet_change_orient(MatePanelApplet *base, MatePanelAppletOrient orientation)
 {
 	GenMonApplet *self = GENMON_APPLET(base);
-	if (g_strcmp0(command, "refresh") == 0)
-	{
-		genmon_widget_display_command_output(self->widget);
-		return true;
-	}
-	return false;
-}
-
-static void genmon_applet_update_context_menu(ValaPanelApplet *base, GMenu *parent)
-{
-	g_autoptr(GMenuItem) refresh_item =
-	    g_menu_item_new(g_dgettext(GETTEXT_PACKAGE, "Refresh"), NULL);
-	g_menu_item_set_action_and_target(refresh_item,
-	                                  "applet." VALA_PANEL_APPLET_ACTION_REMOTE,
-	                                  "s",
-	                                  "refresh");
-	g_menu_prepend_item(parent, refresh_item);
+	if (orientation < MATE_PANEL_APPLET_ORIENT_LEFT)
+		gtk_orientable_set_orientation(self->widget, GTK_ORIENTATION_HORIZONTAL);
+	else
+		gtk_orientable_set_orientation(self->widget, GTK_ORIENTATION_VERTICAL);
 }
 
 static void genmon_applet_init(GenMonApplet *self)
 {
 }
 
+static void genmon_applet_finalize(GObject *base)
+{
+	GenMonApplet *self = GENMON_APPLET(base);
+	g_clear_pointer(&self->settings, g_object_unref);
+	g_clear_pointer(&self->widget, g_object_unref);
+}
+
 static void genmon_applet_class_init(GenMonAppletClass *klass)
 {
-	((ValaPanelAppletClass *)klass)->get_settings_ui     = genmon_applet_get_settings_ui;
-	((ValaPanelAppletClass *)klass)->remote_command      = genmon_applet_remote_command;
-	((ValaPanelAppletClass *)klass)->update_context_menu = genmon_applet_update_context_menu;
+	((MatePanelAppletClass *)klass)->change_orient = genmon_applet_change_orient;
+	((GObjectClass *)klass)->finalize              = genmon_applet_finalize;
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)
@@ -124,60 +185,17 @@ static void genmon_applet_class_finalize(GenMonAppletClass *klass)
  * Plugin functions
  */
 
-struct _GenMonPlugin
+static bool genmon_factory(MatePanelApplet *applet, const char *iid, gpointer data)
 {
-	ValaPanelAppletPlugin parent;
-};
+	bool retval = FALSE;
 
-G_DEFINE_DYNAMIC_TYPE(GenMonPlugin, genmon_plugin, vala_panel_applet_plugin_get_type());
+	if (!strcmp(iid, "GenMonApplet"))
+	{
+		retval = genmon_applet_panel_init(GENMON_APPLET(applet));
+	}
 
-static ValaPanelApplet *genmon_plugin_get_applet_widget(ValaPanelAppletPlugin *base,
-                                                        ValaPanelToplevel *toplevel,
-                                                        GSettings *settings, const char *uuid)
-{
-	g_return_val_if_fail(toplevel != NULL, NULL);
-	g_return_val_if_fail(uuid != NULL, NULL);
-
-	return VALA_PANEL_APPLET(genmon_applet_new(toplevel, settings, uuid));
+	return retval;
 }
 
-GenMonApplet *genmon_plugin_new(GType object_type)
-{
-	return GENMON_APPLET(vala_panel_applet_plugin_construct(genmon_applet_get_type()));
-}
-
-static void genmon_plugin_class_init(GenMonPluginClass *klass)
-{
-	((ValaPanelAppletPluginClass *)klass)->get_applet_widget = genmon_plugin_get_applet_widget;
-}
-
-static void genmon_plugin_init(GenMonPlugin *self)
-{
-}
-
-static void genmon_plugin_class_finalize(GenMonPluginClass *klass)
-{
-}
-
-/*
- * IO Module functions
- */
-
-void g_io_genmon_load(GTypeModule *module)
-{
-	g_return_if_fail(module != NULL);
-
-	genmon_applet_register_type(module);
-	genmon_plugin_register_type(module);
-
-	g_type_module_use(module);
-	g_io_extension_point_implement(VALA_PANEL_APPLET_EXTENSION_POINT,
-	                               genmon_plugin_get_type(),
-	                               "genmon",
-	                               10);
-}
-
-void g_io_genmon_unload(GIOModule *module)
-{
-	g_return_if_fail(module != NULL);
-}
+MATE_PANEL_APPLET_IN_PROCESS_FACTORY("GenMonAppletFactory", genmon_applet_get_type(),
+                                     "GenericMonitor", genmon_factory, NULL)
