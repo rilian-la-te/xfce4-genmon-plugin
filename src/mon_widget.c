@@ -21,12 +21,12 @@
 #include <glib/gi18n.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <vala-panel/client.h>
 
 #include "config.h"
 
 #include "cmdspawn.h"
 #include "config_gui.h"
+#include "util.h"
 
 enum
 {
@@ -293,8 +293,8 @@ static void genmon_widget_build(GenMonWidget *self)
 	//	xfce_panel_plugin_add_action_widget(plugin, self->button);
 
 	/* Add Image Button*/
-	vala_panel_setup_button(self->button, self->button_image, "");
-	vala_panel_setup_button(self->value_button, NULL, NULL);
+	genmon_setup_button(self->button, self->button_image, "");
+	genmon_setup_button(self->value_button, NULL, NULL);
 
 	/* Add Bar */
 	if (orientation == GTK_ORIENTATION_HORIZONTAL)
@@ -317,13 +317,7 @@ static void genmon_widget_build(GenMonWidget *self)
             progressbar.horizontal progress { min-height: 6px; }\
             progressbar.vertical trough { min-width: 6px; }\
             progressbar.vertical progress { min-width: 6px; }");
-
-	g_autoptr(GtkCssProvider) css_provider = gtk_css_provider_new();
-	gtk_css_provider_load_from_data(css_provider, css, strlen(css), NULL);
-	gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-	                                   GTK_WIDGET(self->progress))),
-	                               GTK_STYLE_PROVIDER(css_provider),
-	                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	css_apply_with_class(GTK_WIDGET(self->progress), css, NULL, false);
 }
 
 static int genmon_widget_set_font_value(GenMonWidget *poPlugin)
@@ -350,55 +344,26 @@ static int genmon_widget_set_font_value(GenMonWidget *poPlugin)
 	else
 		css =
 		    g_strdup_printf(".-genmon-widget-private { font: %s; }", poPlugin->font_value);
-	/* Setup Gtk style */
-	GtkCssProvider *css_provider = gtk_css_provider_new();
-	gtk_css_provider_load_from_data(css_provider, css, strlen(css), NULL);
-	gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-	                                   GTK_WIDGET(poPlugin->title_label))),
-	                               GTK_STYLE_PROVIDER(css_provider),
-	                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-	gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-	                                   GTK_WIDGET(poPlugin->value_label))),
-	                               GTK_STYLE_PROVIDER(css_provider),
-	                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-	gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-	                                   GTK_WIDGET(poPlugin->value_button_label))),
-	                               GTK_STYLE_PROVIDER(css_provider),
-	                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-	g_free(css);
 
+	/* Setup Gtk style */
 	bool enable = true;
 	if (poPlugin->font_value == NULL || !g_strcmp0(poPlugin->font_value, ""))
 		enable = false;
 
-	if (enable)
-	{
-		gtk_style_context_add_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-		                                GTK_WIDGET(poPlugin->title_label))),
-		                            "-genmon-widget-private");
+	css_apply_with_class(GTK_WIDGET(poPlugin->title_label),
+	                     css,
+	                     "-genmon-widget-private",
+	                     enable);
+	css_apply_with_class(GTK_WIDGET(poPlugin->value_label),
+	                     css,
+	                     "-genmon-widget-private",
+	                     enable);
+	css_apply_with_class(GTK_WIDGET(poPlugin->value_button_label),
+	                     css,
+	                     "-genmon-widget-private",
+	                     enable);
 
-		gtk_style_context_add_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-		                                GTK_WIDGET(poPlugin->value_label))),
-		                            "-genmon-widget-private");
-
-		gtk_style_context_add_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-		                                GTK_WIDGET(poPlugin->value_button_label))),
-		                            "-genmon-widget-private");
-	}
-	else
-	{
-		gtk_style_context_remove_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-		                                   GTK_WIDGET(poPlugin->title_label))),
-		                               "-genmon-widget-private");
-
-		gtk_style_context_remove_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-		                                   GTK_WIDGET(poPlugin->value_label))),
-		                               "-genmon-widget-private");
-
-		gtk_style_context_remove_class(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-		                                   GTK_WIDGET(poPlugin->value_button_label))),
-		                               "-genmon-widget-private");
-	}
+	g_free(css);
 
 	return (0);
 }
