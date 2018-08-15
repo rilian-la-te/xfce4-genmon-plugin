@@ -16,93 +16,146 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "xfce4-panel-genmon.h"
+#include "config.h"
 #include "config_gui.h"
 #include "mon_widget.h"
-#include "vala-panel-genmon.h"
+
+#include <glib/gi18n.h>
+#include <locale.h>
+#include <stdbool.h>
+#include <xfconf/xfconf.h>
 
 #define BORDER 2
 
 struct _GenMonApplet
 {
-	ValaPanelApplet parent;
+	XfcePanelPlugin parent;
 	GenMonWidget *widget;
+	XfconfChannel *channel;
 };
 
-G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, vala_panel_applet_get_type());
+G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, XFCE_TYPE_PANEL_PLUGIN);
 
-GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings, const char *uuid)
+static void genmon_applet_mode_changed(XfcePanelPlugin *sender, XfcePanelPluginMode mode)
 {
-	GenMonApplet *self = GENMON_APPLET(
-	    vala_panel_applet_construct(genmon_applet_get_type(), toplevel, settings, uuid));
-	GActionMap *map = G_ACTION_MAP(vala_panel_applet_get_action_group(VALA_PANEL_APPLET(self)));
-	g_simple_action_set_enabled(
-	    G_SIMPLE_ACTION(g_action_map_lookup_action(map, VALA_PANEL_APPLET_ACTION_CONFIGURE)),
-	    true);
-	g_simple_action_set_enabled(
-	    G_SIMPLE_ACTION(g_action_map_lookup_action(map, VALA_PANEL_APPLET_ACTION_REMOTE)),
-	    true);
+	GenMonApplet *self = GENMON_APPLET(sender);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(self->widget),
+	                               mode != XFCE_PANEL_PLUGIN_MODE_VERTICAL
+	                                   ? GTK_ORIENTATION_HORIZONTAL
+	                                   : GTK_ORIENTATION_VERTICAL);
+}
+
+void genmon_applet_construct(XfcePanelPlugin *parent)
+{
+	GenMonApplet *self = GENMON_APPLET(parent);
+	setlocale(LC_CTYPE, "");
+	bindtextdomain(GETTEXT_PACKAGE, LOCALE_DIR);
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+	textdomain(GETTEXT_PACKAGE);
+
 	GenMonWidget *widget = genmon_widget_new();
 	self->widget         = widget;
-	g_settings_bind(settings,
-	                GENMON_PROP_USE_TITLE,
-	                widget,
-	                GENMON_PROP_USE_TITLE,
-	                G_SETTINGS_BIND_GET);
-	g_settings_bind(settings,
-	                GENMON_PROP_TITLE_TEXT,
-	                widget,
-	                GENMON_PROP_TITLE_TEXT,
-	                G_SETTINGS_BIND_GET);
-	g_settings_bind(settings,
-	                GENMON_PROP_UPDATE_PERIOD,
-	                widget,
-	                GENMON_PROP_UPDATE_PERIOD,
-	                G_SETTINGS_BIND_GET);
-	g_settings_bind(settings, GENMON_PROP_CMD, widget, GENMON_PROP_CMD, G_SETTINGS_BIND_GET);
-	g_settings_bind(settings, GENMON_PROP_FONT, widget, GENMON_PROP_FONT, G_SETTINGS_BIND_GET);
+	gtk_container_add(GTK_CONTAINER(parent), GTK_WIDGET(self));
+	xfce_panel_plugin_add_action_widget(parent, GTK_WIDGET(widget));
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(self->widget),
+	                               xfce_panel_plugin_get_mode(parent) ==
+	                                       XFCE_PANEL_PLUGIN_MODE_VERTICAL
+	                                   ? GTK_ORIENTATION_VERTICAL
+	                                   : GTK_ORIENTATION_HORIZONTAL);
 
-	g_object_bind_property(toplevel,
-	                       VP_KEY_ORIENTATION,
-	                       widget,
-	                       VP_KEY_ORIENTATION,
-	                       G_BINDING_SYNC_CREATE);
+	xfconf_init(NULL);
 
-	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(widget));
-	gtk_widget_show(GTK_WIDGET(widget));
-	gtk_widget_show(GTK_WIDGET(self));
+	self->channel = xfce_panel_plugin_xfconf_channel_new(parent);
+	char *str =
+	    g_strdup_printf("%s/%s", xfce_panel_plugin_get_property_base(parent), GENMON_PROP_CMD);
+	xfconf_g_property_bind(self->channel, str, G_TYPE_STRING, widget, GENMON_PROP_CMD);
+	g_free(str);
+	str = g_strdup_printf("%s/%s",
+	                      xfce_panel_plugin_get_property_base(parent),
+	                      GENMON_PROP_TITLE_TEXT);
+	xfconf_g_property_bind(self->channel, str, G_TYPE_STRING, widget, GENMON_PROP_TITLE_TEXT);
+	g_free(str);
+	str = g_strdup_printf("%s/%s",
+	                      xfce_panel_plugin_get_property_base(parent),
+	                      GENMON_PROP_UPDATE_PERIOD);
+	xfconf_g_property_bind(self->channel, str, G_TYPE_UINT, widget, GENMON_PROP_UPDATE_PERIOD);
+	g_free(str);
+	str =
+	    g_strdup_printf("%s/%s", xfce_panel_plugin_get_property_base(parent), GENMON_PROP_FONT);
+	xfconf_g_property_bind(self->channel, str, G_TYPE_STRING, widget, GENMON_PROP_FONT);
+	g_free(str);
+	str = g_strdup_printf("%s/%s",
+	                      xfce_panel_plugin_get_property_base(parent),
+	                      GENMON_PROP_USE_TITLE);
+	xfconf_g_property_bind(self->channel, str, G_TYPE_BOOLEAN, widget, GENMON_PROP_USE_TITLE);
+	g_free(str);
 
-	return self;
+	gtk_widget_show_all(GTK_WIDGET(self));
+	xfce_panel_plugin_set_shrink(parent, true);
+	return;
 }
 
-static GtkWidget *genmon_applet_get_settings_ui(ValaPanelApplet *base)
+static void genmon_applet_configure_plugin(XfcePanelPlugin *base)
 {
+	xfce_panel_plugin_block_menu(base);
 	GenMonConfig *config = genmon_config_new(); /* Configuration/option dialog */
-	genmon_config_init_gsettings(config, vala_panel_applet_get_settings(base));
+
+	GtkDialog *dlg = GTK_DIALOG(gtk_dialog_new());
+	gtk_window_set_title(GTK_WINDOW(dlg), _("Configuration"));
+	gtk_window_set_transient_for(GTK_WINDOW(dlg),
+	                             GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(base))));
+	gtk_window_set_destroy_with_parent(GTK_WINDOW(dlg), true);
+
+	g_signal_connect(dlg, "unmap", G_CALLBACK(gtk_widget_destroy), dlg);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dlg))),
+	                   GTK_WIDGET(config),
+	                   true,
+	                   true,
+	                   0);
+
 	gtk_widget_show_all(GTK_WIDGET(config));
 
-	return GTK_WIDGET(config);
+	gtk_window_present(GTK_WINDOW(dlg));
+
+	return;
 }
 
-static bool genmon_applet_remote_command(ValaPanelApplet *base, const char *command)
+static gboolean genmon_set_size(XfcePanelPlugin *plugin, int size)
+/* Plugin API */
+/* Set the size of the panel-docked monitor */
+{
+	GenMonApplet *self = GENMON_APPLET(plugin);
+
+	if (xfce_panel_plugin_get_orientation(plugin) == GTK_ORIENTATION_HORIZONTAL)
+	{
+		if (size > BORDER)
+			gtk_widget_set_size_request(GTK_WIDGET(self->widget), 8, size - BORDER * 2);
+	}
+	else
+	{
+		if (size > BORDER)
+			gtk_widget_set_size_request(GTK_WIDGET(self->widget), size - BORDER * 2, 8);
+	}
+
+	return TRUE;
+} /* genmon_set_size() */
+
+static gboolean genmon_applet_remote_event(XfcePanelPlugin *base, const char *command,
+                                           const GValue *value)
 {
 	GenMonApplet *self = GENMON_APPLET(base);
-	if (g_strcmp0(command, "refresh") == 0)
+	g_return_val_if_fail(value == NULL || G_IS_VALUE(value), FALSE);
+	if (strcmp(command, "refresh") == 0)
 	{
-		genmon_widget_display_command_output(self->widget);
+		if (value != NULL && G_VALUE_HOLDS_BOOLEAN(value) && g_value_get_boolean(value))
+		{
+			/* update the display */
+			genmon_widget_display_command_output(self->widget);
+		}
 		return true;
 	}
 	return false;
-}
-
-static void genmon_applet_update_context_menu(ValaPanelApplet *base, GMenu *parent)
-{
-	g_autoptr(GMenuItem) refresh_item =
-	    g_menu_item_new(g_dgettext(GETTEXT_PACKAGE, "Refresh"), NULL);
-	g_menu_item_set_action_and_target(refresh_item,
-	                                  "applet." VALA_PANEL_APPLET_ACTION_REMOTE,
-	                                  "s",
-	                                  "refresh");
-	g_menu_prepend_item(parent, refresh_item);
 }
 
 static void genmon_applet_init(GenMonApplet *self)
@@ -111,73 +164,21 @@ static void genmon_applet_init(GenMonApplet *self)
 
 static void genmon_applet_class_init(GenMonAppletClass *klass)
 {
-	((ValaPanelAppletClass *)klass)->get_settings_ui     = genmon_applet_get_settings_ui;
-	((ValaPanelAppletClass *)klass)->remote_command      = genmon_applet_remote_command;
-	((ValaPanelAppletClass *)klass)->update_context_menu = genmon_applet_update_context_menu;
+	((XfcePanelPluginClass *)klass)->construct        = genmon_applet_construct;
+	((XfcePanelPluginClass *)klass)->configure_plugin = genmon_applet_configure_plugin;
+	((XfcePanelPluginClass *)klass)->mode_changed     = genmon_applet_mode_changed;
+	((XfcePanelPluginClass *)klass)->remote_event     = genmon_applet_remote_event;
+	((XfcePanelPluginClass *)klass)->size_changed     = genmon_set_size;
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)
 {
 }
 
-/*
- * Plugin functions
- */
-
-struct _GenMonPlugin
+GType xfce_panel_module_init(GTypeModule *module)
 {
-	ValaPanelAppletPlugin parent;
-};
-
-G_DEFINE_DYNAMIC_TYPE(GenMonPlugin, genmon_plugin, vala_panel_applet_plugin_get_type());
-
-static ValaPanelApplet *genmon_plugin_get_applet_widget(ValaPanelAppletPlugin *base,
-                                                        ValaPanelToplevel *toplevel,
-                                                        GSettings *settings, const char *uuid)
-{
-	g_return_val_if_fail(toplevel != NULL, NULL);
-	g_return_val_if_fail(uuid != NULL, NULL);
-
-	return VALA_PANEL_APPLET(genmon_applet_new(toplevel, settings, uuid));
-}
-
-GenMonApplet *genmon_plugin_new(GType object_type)
-{
-	return GENMON_APPLET(vala_panel_applet_plugin_construct(genmon_applet_get_type()));
-}
-
-static void genmon_plugin_class_init(GenMonPluginClass *klass)
-{
-	((ValaPanelAppletPluginClass *)klass)->get_applet_widget = genmon_plugin_get_applet_widget;
-}
-
-static void genmon_plugin_init(GenMonPlugin *self)
-{
-}
-
-static void genmon_plugin_class_finalize(GenMonPluginClass *klass)
-{
-}
-
-/*
- * IO Module functions
- */
-
-void g_io_genmon_load(GTypeModule *module)
-{
-	g_return_if_fail(module != NULL);
-
 	genmon_applet_register_type(module);
-	genmon_plugin_register_type(module);
 
 	g_type_module_use(module);
-	g_io_extension_point_implement(VALA_PANEL_APPLET_EXTENSION_POINT,
-	                               genmon_plugin_get_type(),
-	                               "genmon",
-	                               10);
-}
-
-void g_io_genmon_unload(GIOModule *module)
-{
-	g_return_if_fail(module != NULL);
+	return genmon_applet_get_type();
 }

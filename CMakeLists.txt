@@ -34,15 +34,18 @@ pkg_check_modules(VALAPANEL vala-panel>=0.4.60 IMPORTED_TARGET)
 cmake_dependent_option(ENABLE_VALAPANEL "Enable Vala Panel Integration" ON
     "VALAPANEL_FOUND" OFF)
 
-pkg_check_modules(MATE libmatepanelapplet-4.0>=1.20 IMPORTED_TARGET)
+set(MATE_FOUND OFF)
+#pkg_check_modules(MATE libmatepanelapplet-4.0>=1.20 IMPORTED_TARGET)
 cmake_dependent_option(ENABLE_MATE "Enable Mate Panel Integration" ON
     "MATE_FOUND" OFF)
 
-pkg_check_modules(XFCE libxfce4panel-2.0 libxfconf-0 IMPORTED_TARGET)
+set(XFCE_FOUND OFF)
+#pkg_check_modules(XFCE libxfce4panel-2.0 libxfconf-0 IMPORTED_TARGET)
 cmake_dependent_option(ENABLE_XFCE "Enable Xfce4 Panel Integration" ON
     "XFCE_FOUND" OFF)
 
-pkg_check_modules(BUDGIE budgie-1.0 libpeas-1.0 IMPORTED_TARGET)
+set(BUDGIE_FOUND OFF)
+#pkg_check_modules(BUDGIE budgie-1.0 libpeas-1.0 IMPORTED_TARGET)
 cmake_dependent_option(ENABLE_BUDGIE "Enable budgie-desktop plugin" ON
     "BUDGIE_FOUND" OFF)
 

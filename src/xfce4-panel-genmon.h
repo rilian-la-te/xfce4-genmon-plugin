@@ -19,13 +19,12 @@
 #ifndef VALAPANELGENMON_H
 #define VALAPANELGENMON_H
 
-#include <vala-panel/client.h>
+#include <gtk/gtk.h>
+#include <libxfce4panel/libxfce4panel.h>
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(GenMonApplet, genmon_applet, GENMON, APPLET, ValaPanelApplet);
-
-G_DECLARE_FINAL_TYPE(GenMonPlugin, genmon_plugin, GENMON, PLUGIN, ValaPanelAppletPlugin);
+G_DECLARE_FINAL_TYPE(GenMonApplet, genmon_applet, GENMON, APPLET, XfcePanelPlugin);
 
 G_END_DECLS
 
