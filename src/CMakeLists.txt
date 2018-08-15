@@ -12,6 +12,7 @@ set(PLUGIN_FILES_CORE
 )
 
 add_library(genmon-core STATIC ${PLUGIN_FILES_CORE})
+set_property(TARGET genmon-core PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries (genmon-core GLIB2::GIO_UNIX GTK3::GTK)
 
 glib_compile_resources(GLIB_RESOURCES_GENMON
