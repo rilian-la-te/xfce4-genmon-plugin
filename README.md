@@ -43,8 +43,9 @@ clickable icon), a tooltip, a text and a bar.
 
 To display these items, the script called by genmon should return a simple
 XML string.
-```
+
 The XML tags which can be used are :
+```
 <txt>Text to display</txt>
 <img>Path to the image to display</img>
 <tool>Tooltip text</tool>
@@ -120,3 +121,4 @@ Roger Seguin
 roger_seguin@msn.com
 
 Julien Devemy <jujucece@gmail.com>
+Konstantin Pugin <ria.freelander@gmail.com>s
