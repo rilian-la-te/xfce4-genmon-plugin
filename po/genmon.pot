@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-17 16:00+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/mate-panel-genmon.c:37
+msgid "_Preferences"
+msgstr ""
+
+#: ../src/mate-panel-genmon.c:41
+msgid "_About"
+msgstr ""
+
+#: ../src/mate-panel-genmon.c:96 ../src/xfce4-panel-genmon.c:108
+msgid "Configuration"
+msgstr ""
+
+#: ../src/mate-panel-genmon.c:128 ../src/xfce4-panel-genmon.c:143
+#: ../data/genmon-budgie.desktop.plugin.in:3
+#: ../data/genmon-mate.desktop.plugin.in:9 ../data/genmon.desktop.plugin.in:3
+#: ../data/genmon-mate.desktop.in:9
+msgid "GenMon"
+msgstr ""
+
+#: ../src/mate-panel-genmon.c:130 ../src/xfce4-panel-genmon.c:145
+#: ../data/genmon-mate.desktop.plugin.in:10 ../data/genmon.desktop.plugin.in:4
+msgid ""
+"Cyclically spawns a script/program, captures its output and displays the "
+"resulting string in the panel"
+msgstr ""
+
+#: ../src/mate-panel-genmon.c:135 ../src/xfce4-panel-genmon.c:150
+msgid ""
+"Copyright © 2004 Roger Seguin\n"
+"Copyright © 2006 Julien Devemy\n"
+"Copyright © 2016 Tony Paulic\n"
+msgstr ""
+
+#: ../data/config.ui:22
+msgid "Command"
+msgstr ""
+
+#: ../data/config.ui:33
+msgid "Input the shell command to spawn, then press <Enter>"
+msgstr ""
+
+#: ../data/config.ui:45
+msgid "Interval between 2 consecutive spawns"
+msgstr ""
+
+#: ../data/config.ui:60
+msgid "Period (ms) "
+msgstr ""
+
+#: ../data/config.ui:86
+msgid "Tick to display title label"
+msgstr ""
+
+#: ../data/config.ui:88
+msgid "(genmon)"
+msgstr ""
+
+#: ../data/config.ui:108 ../data/main.ui:17
+msgid "Title"
+msgstr ""
+
+#: ../data/genmon-budgie.desktop.plugin.in:5
+msgid ""
+"Cyclically spawns a script/program, captures its output and displays the "
+"resulting strin"
+msgstr ""
+
+#: ../data/genmon-budgie.desktop.plugin.in:6
+#: ../data/genmon-mate.desktop.plugin.in:11 ../data/genmon.desktop.plugin.in:5
+#: ../data/genmon-mate.desktop.in:11
+msgid "utilities-system-monitor-symbolic"
+msgstr ""
+
+#: ../data/genmon-mate.desktop.plugin.in:5 ../data/genmon-mate.desktop.in:5
+msgid "GenMon applet factory"
+msgstr ""
+
+#: ../data/genmon.desktop.xfce.in:5
+msgid "Generic Monitor"
+msgstr ""
+
+#: ../data/genmon.desktop.xfce.in:6
+msgid "Show output of a command."
+msgstr ""
+
+#: ../data/genmon.desktop.xfce.in:7
+msgid "utilities-system-monitor"
+msgstr ""

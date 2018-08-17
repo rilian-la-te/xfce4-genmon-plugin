@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Xfce Panel Plugins\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-14 14:47+0300\n"
-"PO-Revision-Date: 2018-08-14 14:48+0300\n"
+"POT-Creation-Date: 2018-08-17 16:01+0300\n"
+"PO-Revision-Date: 2018-08-17 16:03+0300\n"
 "Last-Translator: Simple88\n"
 "Language-Team: Russian (http://www.transifex.com/xfce/xfce-panel-plugins/"
 "language/ru/)\n"
@@ -23,76 +23,133 @@ msgstr ""
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
-#: ../src/cmdspawn.c:182
-#, c-format
-msgid "Error \"%s\" in command \"%s\""
-msgstr "Ошибка \"%s\" в команде \"%s\""
+#: ../src/mate-panel-genmon.c:37
+msgid "_Preferences"
+msgstr "_Настройки"
 
-#: ../src/config_gui.c:72
-msgid "Command"
-msgstr "Команда"
+#: ../src/mate-panel-genmon.c:41
+msgid "_About"
+msgstr "О _программе..."
 
-#: ../src/config_gui.c:84
-msgid "Input the shell command to spawn, then press <Enter>"
-msgstr "Введите команду оболочки для выполнения, затем нажмите <Enter>"
-
-#: ../src/config_gui.c:99
-msgid "Interval between 2 consecutive spawns"
-msgstr "Интервал между двумя ближайшими обновлениями"
-
-#: ../src/config_gui.c:102
-msgid "Period (ms) "
-msgstr "Период (мсек.)"
-
-#: ../src/config_gui.c:110
-msgid "Label"
-msgstr "Заголовок"
-
-#: ../src/config_gui.c:113
-msgid "Tick to display label"
-msgstr "Выберите для показа заголовка"
-
-#: ../src/config_gui.c:119
-msgid "Input the plugin label, then press <Enter>"
-msgstr "Введите заголовок плагина, затем нажмите <Enter>"
-
-#: ../src/config_gui.c:121
-msgid "(genmon)"
-msgstr "(монитор)"
-
-#: ../src/config_gui.c:130
-msgid "Press to change font for plugin..."
-msgstr "Нажмите для изменения шрифта плагина..."
-
-#: ../src/main.c:100 ../src/main.c:123 ../src/mon_widget.c:72
-#, c-format
-msgid "Could not run \"%s\""
-msgstr "Не удалось запустить \"%s\""
-
-#: ../src/main.c:787
-msgid "Font Selection"
-msgstr "Выбор шрифта"
-
-#: ../src/main.c:828
+#: ../src/mate-panel-genmon.c:96 ../src/xfce4-panel-genmon.c:108
 msgid "Configuration"
 msgstr "Конфигурация"
 
-#: ../src/main.c:838
+#: ../src/mate-panel-genmon.c:128 ../src/xfce4-panel-genmon.c:143
+#: ../data/genmon-budgie.desktop.plugin.in:3
+#: ../data/genmon-mate.desktop.plugin.in:9 ../data/genmon.desktop.plugin.in:3
+#: ../data/genmon-mate.desktop.in:9
+msgid "GenMon"
+msgstr "GenMon"
+
+#: ../src/mate-panel-genmon.c:130 ../src/xfce4-panel-genmon.c:145
+#: ../data/genmon-mate.desktop.plugin.in:10 ../data/genmon.desktop.plugin.in:4
+msgid ""
+"Cyclically spawns a script/program, captures its output and displays the "
+"resulting string in the panel"
+msgstr ""
+"Циклически выполняет программу/скрипт, захватывает вывод и отображает "
+"результирующую строку на панели"
+
+#: ../src/mate-panel-genmon.c:135 ../src/xfce4-panel-genmon.c:150
+msgid ""
+"Copyright © 2004 Roger Seguin\n"
+"Copyright © 2006 Julien Devemy\n"
+"Copyright © 2016 Tony Paulic\n"
+msgstr ""
+"Copyright © 2004 Роджер Сегин\n"
+"Copyright © 2006 Жюльен Девеми\n"
+"Copyright © 2016 Тони Паулик\n"
+
+#: ../data/config.ui:22
+msgid "Command"
+msgstr "Команда"
+
+#: ../data/config.ui:33
+msgid "Input the shell command to spawn, then press <Enter>"
+msgstr "Введите команду оболочки для выполнения, затем нажмите <Enter>"
+
+#: ../data/config.ui:45
+msgid "Interval between 2 consecutive spawns"
+msgstr "Интервал между двумя ближайшими обновлениями"
+
+#: ../data/config.ui:60
+msgid "Period (ms) "
+msgstr "Период (мсек.)"
+
+#: ../data/config.ui:86
+msgid "Tick to display title label"
+msgstr "Выберите для показа заголовка"
+
+#: ../data/config.ui:88
+msgid "(genmon)"
+msgstr "(монитор)"
+
+#: ../data/config.ui:108 ../data/main.ui:17
+msgid "Title"
+msgstr "Заголовок"
+
+#: ../data/genmon-budgie.desktop.plugin.in:5
+msgid ""
+"Cyclically spawns a script/program, captures its output and displays the "
+"resulting strin"
+msgstr ""
+"Периодически выполняет скрипт или программу, показывая при этом ее вывод на "
+"панели"
+
+#: ../data/genmon-budgie.desktop.plugin.in:6
+#: ../data/genmon-mate.desktop.plugin.in:11 ../data/genmon.desktop.plugin.in:5
+#: ../data/genmon-mate.desktop.in:11
+msgid "utilities-system-monitor-symbolic"
+msgstr "utilities-system-monitor-symbolic"
+
+#: ../data/genmon-mate.desktop.plugin.in:5 ../data/genmon-mate.desktop.in:5
+msgid "GenMon applet factory"
+msgstr "Фабрика апплета GenMon"
+
+#: ../data/genmon.desktop.xfce.in:5
 msgid "Generic Monitor"
 msgstr "Общий монитор"
 
-#: ../src/mon_widget.c:224
-#, c-format
-msgid ""
-"%s\n"
-"----------------\n"
-"%s\n"
-"Period (s): %1.3lf"
-msgstr ""
-"%s\n"
-"----------------\n"
-"%s\n"
-"Период (сек): %1.3lf"
+#: ../data/genmon.desktop.xfce.in:6
+msgid "Show output of a command."
+msgstr "Отображает результат команды"
+
+#: ../data/genmon.desktop.xfce.in:7
+msgid "utilities-system-monitor"
+msgstr "utilities-system-monitor"
+
+#~ msgid "Error \"%s\" in command \"%s\""
+#~ msgstr "Ошибка \"%s\" в команде \"%s\""
+
+#~ msgid "Label"
+#~ msgstr "Заголовок"
+
+#~ msgid "Tick to display label"
+#~ msgstr "Выберите для показа заголовка"
+
+#~ msgid "Input the plugin label, then press <Enter>"
+#~ msgstr "Введите заголовок плагина, затем нажмите <Enter>"
+
+#~ msgid "Press to change font for plugin..."
+#~ msgstr "Нажмите для изменения шрифта плагина..."
+
+#~ msgid "Could not run \"%s\""
+#~ msgstr "Не удалось запустить \"%s\""
+
+#~ msgid "Font Selection"
+#~ msgstr "Выбор шрифта"
+
+#~ msgid ""
+#~ "%s\n"
+#~ "----------------\n"
+#~ "%s\n"
+#~ "Period (s): %1.3lf"
+#~ msgstr ""
+#~ "%s\n"
+#~ "----------------\n"
+#~ "%s\n"
+#~ "Период (сек): %1.3lf"
 
 #~ msgid ""
 #~ "%s\n"
@@ -127,22 +184,3 @@ msgstr ""
 
 #~ msgid "Select the display font..."
 #~ msgstr "Выбрать шрифт для отображения..."
-
-#~ msgid ""
-#~ "Cyclically spawns a script/program, captures its output and displays the "
-#~ "resulting string in the panel"
-#~ msgstr ""
-#~ "Циклически выполняет программу/скрипт, захватывает вывод и отображает "
-#~ "результирующую строку на панели"
-
-#~ msgid ""
-#~ "Copyright © 2004 Roger Seguin\n"
-#~ "Copyright © 2006 Julien Devemy\n"
-#~ "Copyright © 2016 Tony Paulic\n"
-#~ msgstr ""
-#~ "Copyright © 2004 Роджер Сегин\n"
-#~ "Copyright © 2006 Жюльен Девеми\n"
-#~ "Copyright © 2016 Тони Паулик\n"
-
-#~ msgid "Show output of a command."
-#~ msgstr "Отображает результат команды"
