@@ -51,4 +51,5 @@ cmake_dependent_option(ENABLE_BUDGIE "Enable budgie-desktop plugin" ON
 
 add_subdirectory(data)
 add_subdirectory(po)
-add_subdirectory(src)
+add_subdirectory(lib)
+add_subdirectory(genmon)
