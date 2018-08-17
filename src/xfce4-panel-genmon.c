@@ -56,7 +56,7 @@ void genmon_applet_construct(XfcePanelPlugin *parent)
 
 	GenMonWidget *widget = genmon_widget_new();
 	self->widget         = widget;
-	gtk_container_add(GTK_CONTAINER(parent), GTK_WIDGET(self));
+	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(widget));
 	xfce_panel_plugin_add_action_widget(parent, GTK_WIDGET(widget));
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(self->widget),
 	                               xfce_panel_plugin_get_mode(parent) ==
@@ -91,8 +91,10 @@ void genmon_applet_construct(XfcePanelPlugin *parent)
 	xfconf_g_property_bind(self->channel, str, G_TYPE_BOOLEAN, widget, GENMON_PROP_USE_TITLE);
 	g_free(str);
 
-	gtk_widget_show_all(GTK_WIDGET(self));
+	gtk_widget_show(GTK_WIDGET(widget));
 	xfce_panel_plugin_set_shrink(parent, true);
+	xfce_panel_plugin_menu_show_configure(parent);
+	xfce_panel_plugin_menu_show_about(parent);
 	return;
 }
 
@@ -116,7 +118,7 @@ static void genmon_applet_configure_plugin(XfcePanelPlugin *base)
 	                   true,
 	                   0);
 
-	gtk_widget_show_all(GTK_WIDGET(config));
+	gtk_widget_show_all(GTK_WIDGET(dlg));
 
 	gtk_window_present(GTK_WINDOW(dlg));
 
@@ -138,7 +140,7 @@ static void genmon_applet_about(XfcePanelPlugin *plugin)
 	                      "version",
 	                      VERSION,
 	                      "program-name",
-	                      GETTEXT_PACKAGE,
+	                      _("GenMon"),
 	                      "comments",
 	                      _("Cyclically spawns a script/program, captures its output and "
 	                        "displays the resulting string in the panel"),
@@ -193,6 +195,12 @@ static void genmon_applet_init(GenMonApplet *self)
 {
 }
 
+static void genmon_applet_finalize(GObject *plugin)
+{
+	GenMonApplet *self = GENMON_APPLET(plugin);
+	g_clear_pointer(&self->channel, g_object_unref);
+}
+
 static void genmon_applet_class_init(GenMonAppletClass *klass)
 {
 	((XfcePanelPluginClass *)klass)->construct        = genmon_applet_construct;
@@ -201,6 +209,7 @@ static void genmon_applet_class_init(GenMonAppletClass *klass)
 	((XfcePanelPluginClass *)klass)->remote_event     = genmon_applet_remote_event;
 	((XfcePanelPluginClass *)klass)->size_changed     = genmon_set_size;
 	((XfcePanelPluginClass *)klass)->about            = genmon_applet_about;
+	((GObjectClass *)klass)->finalize                 = genmon_applet_finalize;
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)
