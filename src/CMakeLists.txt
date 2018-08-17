@@ -46,7 +46,6 @@ endif()
 #################
 set(PLUGIN_FILES_MATE
     mate-panel-genmon.c
-    mate-panel-genmon.h
     )
 if (ENABLE_MATE)
     #####

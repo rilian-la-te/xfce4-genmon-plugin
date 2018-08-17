@@ -4,7 +4,7 @@ Location=@CMAKE_INSTALL_FULL_LIBDIR@/mate-panel/libgenmon-mate.so
 Name=GenMon applet factory
 InProcess=true
 
-[SNTrayApplet]
+[GenMonApplet]
 Name=GenMon
 Description=Cyclically spawns a script/program, captures its output and displays the resulting string in the panel
 Icon=utilities-system-monitor-symbolic
