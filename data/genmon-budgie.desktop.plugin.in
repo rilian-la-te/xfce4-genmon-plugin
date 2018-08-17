@@ -1,7 +1,7 @@
 [Plugin]
 Name=GenMon
 Module=genmon-budgie.so
-Description=Cyclically spawns a script/program, captures its output and displays the resulting string in the panel
+Description=Generic Monitor (command runner)
 Icon=utilities-system-monitor-symbolic
 Authors=Roger Seguin <roger_seguin@msn.com>;Julien Devemy <jujucece@gmail.com>;Tony Paulic <tony.paulic@gmail.com>
 Website=http://goodies.xfce.org/projects/panel-plugins/xfce4-genmon-plugin
