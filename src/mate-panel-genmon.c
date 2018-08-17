@@ -197,5 +197,5 @@ static bool genmon_factory(MatePanelApplet *applet, const char *iid, gpointer da
 	return retval;
 }
 
-MATE_PANEL_APPLET_IN_PROCESS_FACTORY("GenMonAppletFactory", genmon_applet_get_type(),
+MATE_PANEL_APPLET_IN_PROCESS_FACTORY("GenMonAppletFactory", mate_panel_applet_get_type(),
                                      "GenericMonitor", genmon_factory, NULL)
