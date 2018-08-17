@@ -19,13 +19,15 @@
 #ifndef VALAPANELGENMON_H
 #define VALAPANELGENMON_H
 
-#include <vala-panel/client.h>
+#include <budgie-desktop/applet.h>
+#include <budgie-desktop/plugin.h>
+#include <libpeas/peas.h>
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(GenMonApplet, genmon_applet, GENMON, APPLET, ValaPanelApplet);
+G_DECLARE_FINAL_TYPE(GenMonApplet, genmon_applet, GENMON, APPLET, BudgieApplet);
 
-G_DECLARE_FINAL_TYPE(GenMonPlugin, genmon_plugin, GENMON, PLUGIN, ValaPanelAppletPlugin);
+G_DECLARE_FINAL_TYPE(GenMonPlugin, genmon_plugin, GENMON, PLUGIN, PeasExtensionBase);
 
 G_END_DECLS
 

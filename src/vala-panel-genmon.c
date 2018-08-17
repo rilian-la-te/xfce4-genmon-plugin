@@ -141,9 +141,9 @@ static ValaPanelApplet *genmon_plugin_get_applet_widget(ValaPanelAppletPlugin *b
 	return VALA_PANEL_APPLET(genmon_applet_new(toplevel, settings, uuid));
 }
 
-GenMonApplet *genmon_plugin_new(GType object_type)
+GenMonPlugin *genmon_plugin_new(GType object_type)
 {
-	return GENMON_APPLET(vala_panel_applet_plugin_construct(genmon_applet_get_type()));
+	return GENMON_PLUGIN(vala_panel_applet_plugin_construct(genmon_applet_get_type()));
 }
 
 static void genmon_plugin_class_init(GenMonPluginClass *klass)
