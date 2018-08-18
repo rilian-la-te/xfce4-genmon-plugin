@@ -51,6 +51,7 @@ void genmon_config_init(GenMonConfig *self)
 
 void genmon_config_class_init(GenMonConfigClass *klass)
 {
+	genmon_config_parent_class = g_type_class_peek_parent(klass);
 	gtk_widget_class_set_template_from_resource(GTK_WIDGET_CLASS(klass),
 	                                            "/org/genmon/config.ui");
 	gtk_widget_class_bind_template_child_full(GTK_WIDGET_CLASS(klass),
