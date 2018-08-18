@@ -6,5 +6,5 @@ Authors=Roger Seguin <roger_seguin@msn.com>;Julien Devemy <jujucece@gmail.com>;T
 Website=http://goodies.xfce.org/projects/panel-plugins/xfce4-genmon-plugin
 HelpURI=https://gitlab.com/vala-panel-project/xfce4-genmon-plugin
 License=lgpl
-Version=0.1.0
+Version=@VERSION@
 
