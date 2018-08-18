@@ -24,25 +24,38 @@
 
 #define BORDER 2
 
+enum
+{
+	PROP_ZERO,
+	PROP_UUID,
+	LAST_PROP = PROP_UUID
+};
+
+static GParamSpec *pspec;
+
 struct _GenMonApplet
 {
 	BudgieApplet parent;
 	GenMonWidget *widget;
 	GSettings *settings;
+	char *uuid;
 };
 
 G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, budgie_applet_get_type());
 
-GenMonApplet *genmon_applet_new(const char *uuid)
+static GObject *genmon_applet_constructor(GType type, guint n_construct_properties,
+                                          GObjectConstructParam *construct_properties)
 {
-	GenMonApplet *self =
-	    GENMON_APPLET(g_object_new(genmon_applet_get_type(), "uuid", uuid, NULL));
+	GObjectClass *parent_class = G_OBJECT_CLASS(genmon_applet_parent_class);
+	GObject *obj =
+	    parent_class->constructor(type, n_construct_properties, construct_properties);
+	GenMonApplet *self   = GENMON_APPLET(obj);
 	GenMonWidget *widget = genmon_widget_new();
-	self->widget         = widget;
+	self->widget         = GENMON_WIDGET(widget);
 	budgie_applet_set_settings_schema(BUDGIE_APPLET(self), "org.valapanel.genmon");
 	budgie_applet_set_settings_prefix(BUDGIE_APPLET(self),
-	                                  "/com/solus-project/budgie-panel/instance/sntray");
-	self->settings = budgie_applet_get_applet_settings(BUDGIE_APPLET(self), (char *)uuid);
+	                                  "/com/solus-project/budgie-panel/instance/genmon");
+	self->settings = budgie_applet_get_applet_settings(BUDGIE_APPLET(self), self->uuid);
 	g_settings_bind(self->settings,
 	                GENMON_PROP_USE_TITLE,
 	                widget,
@@ -72,8 +85,12 @@ GenMonApplet *genmon_applet_new(const char *uuid)
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(widget));
 	gtk_widget_show(GTK_WIDGET(widget));
 	gtk_widget_show(GTK_WIDGET(self));
+	return obj;
+}
 
-	return self;
+GenMonApplet *genmon_applet_new(const char *uuid)
+{
+	return GENMON_APPLET(g_object_new(genmon_applet_get_type(), "uuid", uuid, NULL));
 }
 
 static void genmon_applet_panel_position_changed(BudgieApplet *base, BudgiePanelPosition pos)
@@ -94,7 +111,7 @@ static GtkWidget *genmon_applet_get_settings_ui(BudgieApplet *base)
 	genmon_config_init_gsettings(config, self->settings);
 	gtk_widget_show_all(GTK_WIDGET(config));
 
-	return GTK_WIDGET(config);
+	return GTK_WIDGET(g_object_ref_sink(config));
 }
 
 static gboolean genmon_applet_supports_settings(BudgieApplet *base)
@@ -102,15 +119,80 @@ static gboolean genmon_applet_supports_settings(BudgieApplet *base)
 	return true;
 }
 
+static void genmon_applet_set_property(GObject *object, uint prop_id, const GValue *value,
+                                       GParamSpec *pspec)
+{
+	GenMonApplet *self = GENMON_APPLET(object);
+	switch (prop_id)
+	{
+	case PROP_UUID:
+		g_clear_pointer(&self->uuid, g_free);
+		self->uuid = g_value_dup_string(value);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+		break;
+	}
+}
+
+static void genmon_applet_get_property(GObject *object, uint prop_id, GValue *value,
+                                       GParamSpec *pspec)
+{
+	GenMonApplet *self = GENMON_APPLET(object);
+	switch (prop_id)
+	{
+	case PROP_UUID:
+		g_value_set_string(value, self->uuid);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+		break;
+	}
+}
+
 static void genmon_applet_init(GenMonApplet *self)
 {
 }
 
+static void genmon_applet_destroy(GtkWidget *object)
+{
+	GenMonApplet *self = GENMON_APPLET(object);
+	if (self->widget)
+	{
+		g_settings_unbind(self->widget, GENMON_PROP_USE_TITLE);
+		g_settings_unbind(self->widget, GENMON_PROP_TITLE_TEXT);
+		g_settings_unbind(self->widget, GENMON_PROP_CMD);
+		g_settings_unbind(self->widget, GENMON_PROP_UPDATE_PERIOD);
+		g_settings_unbind(self->widget, GENMON_PROP_FONT);
+	}
+	g_clear_pointer(&self->widget, gtk_widget_destroy);
+}
+
+static void genmon_applet_finalize(GObject *object)
+{
+	GenMonApplet *self = GENMON_APPLET(object);
+	g_clear_pointer(&self->uuid, g_free);
+	g_clear_object(&self->settings);
+}
+
 static void genmon_applet_class_init(GenMonAppletClass *klass)
 {
+	((GObjectClass *)klass)->constructor                 = genmon_applet_constructor;
+	((GObjectClass *)klass)->get_property                = genmon_applet_get_property;
+	((GObjectClass *)klass)->set_property                = genmon_applet_set_property;
+	((GObjectClass *)klass)->finalize                    = genmon_applet_finalize;
+	((GtkWidgetClass *)klass)->destroy                   = genmon_applet_destroy;
 	((BudgieAppletClass *)klass)->get_settings_ui        = genmon_applet_get_settings_ui;
 	((BudgieAppletClass *)klass)->panel_position_changed = genmon_applet_panel_position_changed;
 	((BudgieAppletClass *)klass)->supports_settings      = genmon_applet_supports_settings;
+	pspec                                                = g_param_spec_string("uuid",
+                                    "uuid",
+                                    "uuid",
+                                    "",
+                                    (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
+                                                  G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
+                                                  G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
+	g_object_class_install_property(((GObjectClass *)klass), PROP_UUID, pspec);
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)
@@ -136,7 +218,7 @@ static BudgieApplet *genmon_plugin_get_panel_widget(BudgiePlugin *base, char *uu
 {
 	g_return_val_if_fail(uuid != NULL, NULL);
 
-	return BUDGIE_APPLET(genmon_applet_new(uuid));
+	return BUDGIE_APPLET(g_object_ref_sink(genmon_applet_new(uuid)));
 }
 
 GenMonPlugin *genmon_plugin_new(GType object_type)

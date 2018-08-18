@@ -98,5 +98,5 @@ if (ENABLE_BUDGIE)
     target_link_libraries(genmon-budgie PRIVATE genmon-core PkgConfig::BUDGIE)
 
     # Install plugin stuffs
-    install(TARGETS genmon-budgie DESTINATION ${CMAKE_INSTALL_LIBDIR}/budgie-desktop/plugins)
+    install(TARGETS genmon-budgie DESTINATION ${CMAKE_INSTALL_LIBDIR}/budgie-desktop/plugins/budgie-genmon-plugin)
 endif()
