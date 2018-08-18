@@ -52,3 +52,18 @@ cmake_dependent_option(ENABLE_BUDGIE "Enable budgie-desktop plugin" ON
 add_subdirectory(data)
 add_subdirectory(po)
 add_subdirectory(src)
+
+# Add 'make dist' command for creating release tarball
+set (CPACK_PACKAGE_VERSION ${VERSION})
+set (CPACK_PACKAGE_RELEASE "1")
+set (CPACK_SOURCE_GENERATOR "TXZ")
+set (CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}")
+set (CPACK_SOURCE_IGNORE_FILES "/build/;/.git;/.gitignore;/.gitmodules;~$;${CPACK_SOURCE_IGNORE_FILES}")
+
+include (CPack)
+add_custom_target (dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
+#Add RPM build support
+#include (UseRPMTools)
+#if (RPMTools_FOUND)
+#   RPMTools_ADD_RPM_TARGETS(package ${CMAKE_SOURCE_DIR}/rpm/xfce4-sntray-plugin.spec.in)
+#endif(RPMTools_FOUND)
