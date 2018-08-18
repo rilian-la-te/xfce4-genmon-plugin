@@ -120,10 +120,10 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 /* Launch the command, get its output and display it in the panel-docked
    text field */
 {
+	g_return_if_fail(GENMON_IS_WIDGET(self));
 	char *begin;
 	char *end;
 	bool newVersion = false;
-
 	g_clear_pointer(&self->cmd_result, g_free);
 	self->cmd_result =
 	    self->command[0] > 0 ? genmon_spawn_with_error_window(self->command, 1) : NULL;
@@ -388,8 +388,7 @@ static void genmon_widget_init(GenMonWidget *self)
 static void genmon_widget_set_property(GObject *object, uint prop_id, const GValue *value,
                                        GParamSpec *pspec)
 {
-	GenMonWidget *self =
-	    G_TYPE_CHECK_INSTANCE_CAST(object, genmon_widget_get_type(), GenMonWidget);
+	GenMonWidget *self = GENMON_WIDGET(object);
 	GtkOrientation orient;
 	switch (prop_id)
 	{
@@ -478,12 +477,17 @@ GenMonWidget *genmon_widget_new()
 	return GENMON_WIDGET(g_object_new(genmon_widget_get_type(), NULL));
 }
 
-static void genmon_widget_finalize(GObject *obj)
+static void genmon_widget_destroy(GtkWidget *obj)
 {
 	GenMonWidget *self = GENMON_WIDGET(obj);
 	if (self->timer_id)
 		g_source_remove(self->timer_id);
+	self->timer_id = 0;
+}
 
+static void genmon_widget_finalize(GObject *obj)
+{
+	GenMonWidget *self = GENMON_WIDGET(obj);
 	g_clear_pointer(&self->command, g_free);
 	g_clear_pointer(&self->title, g_free);
 	g_clear_pointer(&self->font_value, g_free);
@@ -494,11 +498,14 @@ static void genmon_widget_finalize(GObject *obj)
 
 static void genmon_widget_class_init(GenMonWidgetClass *klass)
 {
-	GObjectClass *oclass = G_OBJECT_CLASS(klass);
-	oclass->constructor  = genmon_widget_constructor;
-	oclass->finalize     = genmon_widget_finalize;
-	oclass->set_property = genmon_widget_set_property;
-	oclass->get_property = genmon_widget_get_property;
+	genmon_widget_parent_class = g_type_class_peek_parent(klass);
+	GObjectClass *oclass       = G_OBJECT_CLASS(klass);
+	oclass->constructor        = genmon_widget_constructor;
+	oclass->finalize           = genmon_widget_finalize;
+	oclass->set_property       = genmon_widget_set_property;
+	oclass->get_property       = genmon_widget_get_property;
+	GtkWidgetClass *wclass     = GTK_WIDGET_CLASS(klass);
+	wclass->destroy            = genmon_widget_destroy;
 
 	g_object_class_override_property(oclass, PROP_ORIENTATION, "orientation");
 	pspecs[PROP_COMMAND] =
