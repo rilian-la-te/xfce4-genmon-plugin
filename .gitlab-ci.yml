@@ -16,5 +16,11 @@ cache:
 build:
   stage: build
   script:
-   - cmake . -DCMAKE_INSTALL_PREFIX=/usr -GNinja
+   - mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr -GNinja
    - ninja
+   - ninja install
+   - ninja dist
+  artifacts:
+    paths:
+    - "build/genmon*.tar.xz"
+    expire_in: 1 week
