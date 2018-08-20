@@ -5,6 +5,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 include(GNUInstallDirs)
+include(FeatureSummary)
 
 find_package(PkgConfig)
 set (GETTEXT_PACKAGE "genmon")
@@ -41,21 +42,23 @@ include(CMakeDependentOption)
 pkg_check_modules(VALAPANEL vala-panel>=0.4.60 IMPORTED_TARGET)
 cmake_dependent_option(ENABLE_VALAPANEL "Enable Vala Panel Integration" ON
     "VALAPANEL_FOUND" OFF)
+add_feature_info(ValaPanel ENABLE_VALAPANEL "Vala Panel Integration - 0.5.x")
 
-set(MATE_FOUND OFF)
-pkg_check_modules(MATE libmatepanelapplet-4.0>=1.20 IMPORTED_TARGET)
-cmake_dependent_option(ENABLE_MATE "Enable Mate Panel Integration" ON
-    "MATE_FOUND" OFF)
-
-set(XFCE_FOUND OFF)
 pkg_check_modules(XFCE libxfce4panel-2.0 libxfconf-0 IMPORTED_TARGET)
-cmake_dependent_option(ENABLE_XFCE "Enable Xfce4 Panel Integration" ON
+cmake_dependent_option(ENABLE_XFCE "Enable Xfce Panel Integration" ON
     "XFCE_FOUND" OFF)
+add_feature_info(Xfce ENABLE_XFCE "Xfce Panel Integration")
+
+pkg_check_modules(MATE libmatepanelapplet-4.0>=1.20 IMPORTED_TARGET)
+cmake_dependent_option(ENABLE_MATE "Enable mate-panel Integration" ON
+    "MATE_FOUND" OFF)
+add_feature_info(MATE ENABLE_MATE "MATE Panel Integration")
 
 set(BUDGIE_FOUND OFF)
 pkg_check_modules(BUDGIE budgie-1.0 libpeas-1.0 IMPORTED_TARGET)
 cmake_dependent_option(ENABLE_BUDGIE "Enable budgie-desktop plugin" ON
     "BUDGIE_FOUND" OFF)
+add_feature_info(Budgie ENABLE_BUDGIE "Budgie Desktop Integration")
 
 add_subdirectory(data)
 add_subdirectory(po)
@@ -75,3 +78,5 @@ add_custom_target (dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 #if (RPMTools_FOUND)
 #   RPMTools_ADD_RPM_TARGETS(package ${CMAKE_SOURCE_DIR}/rpm/xfce4-sntray-plugin.spec.in)
 #endif(RPMTools_FOUND)
+
+feature_summary(WHAT ALL)
