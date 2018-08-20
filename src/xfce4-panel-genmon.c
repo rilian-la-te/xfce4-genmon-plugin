@@ -118,7 +118,7 @@ static void genmon_applet_configure_plugin(XfcePanelPlugin *base)
 	                   true,
 	                   0);
 
-	gtk_widget_show_all(GTK_WIDGET(dlg));
+	gtk_widget_show(GTK_WIDGET(dlg));
 
 	gtk_window_present(GTK_WINDOW(dlg));
 

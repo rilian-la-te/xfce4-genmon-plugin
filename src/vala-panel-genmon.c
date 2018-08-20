@@ -78,7 +78,7 @@ static GtkWidget *genmon_applet_get_settings_ui(ValaPanelApplet *base)
 {
 	GenMonConfig *config = genmon_config_new(); /* Configuration/option dialog */
 	genmon_config_init_gsettings(config, vala_panel_applet_get_settings(base));
-	gtk_widget_show_all(GTK_WIDGET(config));
+	gtk_widget_show(GTK_WIDGET(config));
 
 	return GTK_WIDGET(config);
 }

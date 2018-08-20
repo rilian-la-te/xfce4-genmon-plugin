@@ -103,7 +103,7 @@ static void genmon_applet_get_settings_ui(GtkAction *action, GSettings *settings
 	                   true,
 	                   0);
 
-	gtk_widget_show_all(GTK_WIDGET(config));
+	gtk_widget_show(GTK_WIDGET(config));
 
 	gtk_window_present(GTK_WINDOW(dlg));
 

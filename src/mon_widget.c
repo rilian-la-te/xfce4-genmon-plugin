@@ -141,6 +141,7 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 		char *buf = g_strndup(begin + 5, end - begin - 5);
 		gtk_image_set_from_file(GTK_IMAGE(self->image), buf);
 		gtk_image_set_from_file(GTK_IMAGE(self->button_image), buf);
+		gtk_widget_show(GTK_WIDGET(self->button_image));
 		g_free(buf);
 
 		/* Test if the result has a clickable Image (button) */
@@ -152,7 +153,7 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 			g_free(self->click_command);
 			self->click_command = g_strndup(begin + 7, end - begin - 7);
 
-			gtk_widget_show_all(GTK_WIDGET(self->button));
+			gtk_widget_show(GTK_WIDGET(self->button));
 			gtk_widget_hide(GTK_WIDGET(self->image));
 		}
 		else
@@ -176,6 +177,7 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 		/* Get the text */
 		g_autofree char *buf = g_strndup(begin + 5, end - begin - 5);
 		gtk_label_set_markup(GTK_LABEL(self->value_label), buf);
+		gtk_widget_show(GTK_WIDGET(self->value_button_label));
 
 		/* Test if the result has a clickable Value (button) */
 		begin = strstr(self->cmd_result, "<txtclick>");
@@ -189,7 +191,7 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 			g_free(self->value_click_command);
 			self->value_click_command = g_strndup(begin + 10, end - begin - 10);
 
-			gtk_widget_show_all(GTK_WIDGET(self->value_button));
+			gtk_widget_show(GTK_WIDGET(self->value_button));
 			gtk_widget_hide(GTK_WIDGET(self->value_label));
 		}
 		else
