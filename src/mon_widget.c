@@ -295,8 +295,8 @@ static void genmon_widget_build(GenMonWidget *self)
 	//	xfce_panel_plugin_add_action_widget(plugin, self->button);
 
 	/* Add Image Button*/
-	genmon_setup_button(self->button, self->button_image, "");
-	genmon_setup_button(self->value_button, NULL, NULL);
+	vala_panel_setup_button(self->button, self->button_image, "");
+	vala_panel_setup_button(self->value_button, NULL, NULL);
 
 	/* Add Bar */
 	if (orientation == GTK_ORIENTATION_HORIZONTAL)

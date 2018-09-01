@@ -19,12 +19,14 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <gio/gdesktopappinfo.h>
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-void genmon_setup_button(GtkButton *b, GtkImage *img, const char *label);
+void vala_panel_setup_button(GtkButton *b, GtkImage *img, const char *label);
 void css_apply_with_class(GtkWidget *widget, const char *css, const char *klass, bool remove);
+bool vala_panel_launch_with_context(GDesktopAppInfo *app_info, GAppLaunchContext *cxt, GList *uris);
 
 G_END_DECLS
 

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Code borrowed from vala-panel to avoid dependency on it */
 #include <stdbool.h>
 
 #include "util.h"
@@ -71,7 +72,7 @@ static void setup_button_notify_connect(GObject *_sender, GParamSpec *b, gpointe
 	}
 }
 
-void genmon_setup_button(GtkButton *b, GtkImage *img, const char *label)
+void vala_panel_setup_button(GtkButton *b, GtkImage *img, const char *label)
 {
 	const char *css =
 	    ".-panel-button"
@@ -90,4 +91,28 @@ void genmon_setup_button(GtkButton *b, GtkImage *img, const char *label)
 	if (label != NULL)
 		gtk_button_set_label(b, label);
 	gtk_button_set_relief(b, GTK_RELIEF_NONE);
+}
+
+static void child_spawn_func(void *data)
+{
+	setpgid(0, getpgid(getppid()));
+}
+
+bool vala_panel_launch_with_context(GDesktopAppInfo *app_info, GAppLaunchContext *cxt, GList *uris)
+{
+	g_autoptr(GError) err = NULL;
+	if (app_info == NULL)
+		return false;
+	bool ret = g_desktop_app_info_launch_uris_as_manager(G_DESKTOP_APP_INFO(app_info),
+	                                                     uris,
+	                                                     cxt,
+	                                                     G_SPAWN_SEARCH_PATH,
+	                                                     child_spawn_func,
+	                                                     NULL,
+	                                                     NULL,
+	                                                     NULL,
+	                                                     &err);
+	if (err)
+		g_warning("%s\n", err->message);
+	return ret;
 }

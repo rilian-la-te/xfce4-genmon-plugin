@@ -35,6 +35,7 @@
 #include "cmdspawn.h"
 
 #include "config.h"
+#include "util.h"
 
 #include <errno.h>
 #include <glib.h>
@@ -48,6 +49,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -196,30 +198,6 @@ char *genmon_spawn_with_error_window(const char *p_pcCmdLine, int wait)
 	return genmon_spawn(argv, wait);
 } // SpawnCmd()
 
-static void child_spawn_func(void *data)
-{
-	setpgid(0, getpgid(getppid()));
-}
-
-static bool vala_panel_launch(GDesktopAppInfo *app_info, GList *uris, GtkWidget *parent)
-{
-	g_autoptr(GError) err            = NULL;
-	g_autoptr(GAppLaunchContext) cxt = G_APP_LAUNCH_CONTEXT(
-	    gdk_display_get_app_launch_context(gtk_widget_get_display(parent)));
-	bool ret = g_desktop_app_info_launch_uris_as_manager(G_DESKTOP_APP_INFO(app_info),
-	                                                     uris,
-	                                                     cxt,
-	                                                     G_SPAWN_SEARCH_PATH,
-	                                                     child_spawn_func,
-	                                                     NULL,
-	                                                     NULL,
-	                                                     NULL,
-	                                                     &err);
-	if (err)
-		g_warning("%s\n", err->message);
-	return ret;
-}
-
 bool genmon_launch_command_on_screen(const char *command, GtkWidget *parent)
 {
 	g_autoptr(GError) err            = NULL;
@@ -232,5 +210,5 @@ bool genmon_launch_command_on_screen(const char *command, GtkWidget *parent)
 		g_warning("%s\n", err->message);
 		return false;
 	}
-	return vala_panel_launch(info, NULL, parent);
+	return vala_panel_launch_with_context(info, cxt, NULL);
 }
