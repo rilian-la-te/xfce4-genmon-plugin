@@ -84,19 +84,19 @@ static void gtk_orientable_interface_init(GtkOrientableIface *iface)
 
 static void genmon_widget_exec_with_error_dialog(GenMonWidget *self, const char *cmd)
 {
-	bool fail = genmon_launch_command_on_screen(cmd, gtk_widget_get_parent(GTK_WIDGET(self)));
-	if (fail)
+	bool run = genmon_launch_command_on_screen(cmd, gtk_widget_get_parent(GTK_WIDGET(self)));
+	if (!run)
 	{
 		g_autofree char *first =
 		    g_strdup_printf(g_dgettext(GETTEXT_PACKAGE, "Could not run \"%s\""), cmd);
-		g_autoptr(GtkDialog) dlg =
-		    GTK_DIALOG(gtk_message_dialog_new(NULL,
-		                                      GTK_DIALOG_DESTROY_WITH_PARENT,
-		                                      GTK_MESSAGE_ERROR,
-		                                      GTK_BUTTONS_CLOSE,
-		                                      "%s",
-		                                      first));
-		gtk_dialog_run(dlg);
+		GtkDialog *dlg = GTK_DIALOG(gtk_message_dialog_new(NULL,
+		                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
+		                                                   GTK_MESSAGE_ERROR,
+		                                                   GTK_BUTTONS_CLOSE,
+		                                                   "%s",
+		                                                   first));
+		gtk_window_present(GTK_WINDOW(dlg));
+		g_signal_connect(dlg, "response", gtk_widget_destroy, NULL);
 	}
 }
 
@@ -319,7 +319,7 @@ static void genmon_widget_build(GenMonWidget *self)
             progressbar.horizontal progress { min-height: 6px; }\
             progressbar.vertical trough { min-width: 6px; }\
             progressbar.vertical progress { min-width: 6px; }");
-	css_apply_with_class(GTK_WIDGET(self->progress), css, NULL, false);
+	css_apply_with_class(GTK_WIDGET(self->progress), css, "", false);
 }
 
 static int genmon_widget_set_font_value(GenMonWidget *poPlugin)

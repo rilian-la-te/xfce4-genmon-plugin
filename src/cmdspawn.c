@@ -184,14 +184,14 @@ char *genmon_spawn_with_error_window(const char *p_pcCmdLine, int wait)
 		    g_strdup_printf(g_dgettext(GETTEXT_PACKAGE, "Error \"%s\" in command \"%s\""),
 		                    error->message,
 		                    p_pcCmdLine);
-		g_autoptr(GtkDialog) dlg =
-		    GTK_DIALOG(gtk_message_dialog_new(NULL,
-		                                      GTK_DIALOG_DESTROY_WITH_PARENT,
-		                                      GTK_MESSAGE_ERROR,
-		                                      GTK_BUTTONS_CLOSE,
-		                                      "%s",
-		                                      first));
-		gtk_dialog_run(dlg);
+		GtkDialog *dlg = GTK_DIALOG(gtk_message_dialog_new(NULL,
+		                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
+		                                                   GTK_MESSAGE_ERROR,
+		                                                   GTK_BUTTONS_CLOSE,
+		                                                   "%s",
+		                                                   first));
+		gtk_window_present(GTK_WINDOW(dlg));
+		g_signal_connect(dlg, "response", gtk_widget_destroy, NULL);
 		return (NULL);
 	}
 	/* Spawn the command and free allocated memory */
