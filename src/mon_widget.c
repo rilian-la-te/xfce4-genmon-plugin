@@ -348,22 +348,22 @@ static int genmon_widget_set_font_value(GenMonWidget *poPlugin)
 		    g_strdup_printf(".-genmon-widget-private { font: %s; }", poPlugin->font_value);
 
 	/* Setup Gtk style */
-	bool enable = true;
+	bool disable = false;
 	if (poPlugin->font_value == NULL || !g_strcmp0(poPlugin->font_value, ""))
-		enable = false;
+		disable = true;
 
 	css_apply_with_class(GTK_WIDGET(poPlugin->title_label),
 	                     css,
 	                     "-genmon-widget-private",
-	                     enable);
+	                     disable);
 	css_apply_with_class(GTK_WIDGET(poPlugin->value_label),
 	                     css,
 	                     "-genmon-widget-private",
-	                     enable);
+	                     disable);
 	css_apply_with_class(GTK_WIDGET(poPlugin->value_button_label),
 	                     css,
 	                     "-genmon-widget-private",
-	                     enable);
+	                     disable);
 
 	g_free(css);
 
