@@ -35,7 +35,7 @@ void css_apply_with_class(GtkWidget *widget, const char *css, const char *klass,
 		gtk_css_provider_load_from_data(provider, css, -1, NULL);
 		gtk_style_context_add_provider(context,
 		                               GTK_STYLE_PROVIDER(provider),
-		                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+		                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION + 1);
 		if (klass)
 			gtk_style_context_add_class(context, klass);
 	}
