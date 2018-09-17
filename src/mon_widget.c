@@ -324,9 +324,7 @@ static void genmon_widget_build(GenMonWidget *self)
 
 static int genmon_widget_set_font_value(GenMonWidget *poPlugin)
 {
-	char *css;
-	if (!g_strcmp0(poPlugin->font_value, ""))
-		return 0;
+	char *css                  = NULL;
 	PangoFontDescription *font = pango_font_description_from_string(poPlugin->font_value);
 	if (G_LIKELY(font))
 	{
