@@ -57,6 +57,7 @@ struct _GenMonWidget
 	GtkLabel *value_button_label;
 	GtkImage *image;
 	GtkProgressBar *progress;
+	GtkLevelBar *level;
 	GtkButton *button;
 	GtkImage *button_image;
 	char *click_command;
@@ -226,6 +227,26 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 	else
 		gtk_widget_hide(GTK_WIDGET(self->progress));
 
+	begin = strstr(self->cmd_result, "<level>");
+	end   = strstr(self->cmd_result, "</level>");
+	if (begin && end && begin < end)
+	{
+		/* Get the text */
+		g_autofree char *buf = g_strndup(begin + 7, end - begin - 7);
+		int value            = atoi(buf);
+		value                = (value < 0) ? 0 : (value > 100) ? 100 : value;
+		gtk_level_bar_add_offset_value(self->level, "empty", 10);
+		gtk_level_bar_add_offset_value(self->level, "low", 30);
+		gtk_level_bar_add_offset_value(self->level, "high", 50);
+		gtk_level_bar_add_offset_value(self->level, "full", 80);
+		gtk_level_bar_set_value(self->level, (double)value);
+		gtk_widget_show(GTK_WIDGET(self->level));
+
+		newVersion = true;
+	}
+	else
+		gtk_widget_hide(GTK_WIDGET(self->level));
+
 	if (!newVersion)
 	{
 		gtk_widget_show(GTK_WIDGET(self->value_label));
@@ -294,22 +315,29 @@ static void genmon_widget_build(GenMonWidget *self)
 
 	//	xfce_panel_plugin_add_action_widget(plugin, self->button);
 
-	/* Add Image Button*/
+	/* Setup Buttons*/
 	vala_panel_setup_button(self->button, self->button_image, "");
 	vala_panel_setup_button(self->value_button, NULL, NULL);
 
-	/* Add Bar */
+	/* Setup bars */
+
 	if (orientation == GTK_ORIENTATION_HORIZONTAL)
 	{
 		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->progress),
 		                               GTK_ORIENTATION_VERTICAL);
 		gtk_progress_bar_set_inverted(GTK_PROGRESS_BAR(self->progress), true);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->level),
+		                               GTK_ORIENTATION_VERTICAL);
+		gtk_level_bar_set_inverted(GTK_PROGRESS_BAR(self->level), true);
 	}
 	else
 	{
 		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->progress),
 		                               GTK_ORIENTATION_HORIZONTAL);
 		gtk_progress_bar_set_inverted(GTK_PROGRESS_BAR(self->progress), false);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->level),
+		                               GTK_ORIENTATION_HORIZONTAL);
+		gtk_level_bar_set_inverted(GTK_PROGRESS_BAR(self->level), false);
 	}
 
 	/* make widget padding consistent */
@@ -389,7 +417,7 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
                                        GParamSpec *pspec)
 {
 	GenMonWidget *self = GENMON_WIDGET(object);
-	GtkOrientation orient;
+	GtkOrientation orient, invert_orient;
 	switch (prop_id)
 	{
 	case PROP_COMMAND:
@@ -424,15 +452,15 @@ static void genmon_widget_set_property(GObject *object, uint prop_id, const GVal
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	case PROP_ORIENTATION:
-		orient = (GtkOrientation)g_value_get_enum(value);
+		orient        = (GtkOrientation)g_value_get_enum(value);
+		invert_orient = orient == GTK_ORIENTATION_HORIZONTAL ? GTK_ORIENTATION_VERTICAL
+		                                                     : GTK_ORIENTATION_HORIZONTAL;
 		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->main_box), orient);
 		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->image_box), orient);
-		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->progress),
-		                               orient == GTK_ORIENTATION_HORIZONTAL
-		                                   ? GTK_ORIENTATION_VERTICAL
-		                                   : GTK_ORIENTATION_HORIZONTAL);
-		gtk_progress_bar_set_inverted(self->progress,
-		                              orient == GTK_ORIENTATION_HORIZONTAL ? true : false);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->progress), invert_orient);
+		gtk_progress_bar_set_inverted(self->progress, invert_orient);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->level), invert_orient);
+		gtk_level_bar_set_inverted(self->level, invert_orient);
 		g_object_notify_by_pspec(object, pspec);
 		break;
 	default:
@@ -577,6 +605,10 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	                                          "progress",
 	                                          FALSE,
 	                                          G_STRUCT_OFFSET(GenMonWidget, progress));
+	gtk_widget_class_bind_template_child_full(GTK_WIDGET_CLASS(klass),
+	                                          "level",
+	                                          FALSE,
+	                                          G_STRUCT_OFFSET(GenMonWidget, level));
 	gtk_widget_class_bind_template_child_full(GTK_WIDGET_CLASS(klass),
 	                                          "button",
 	                                          FALSE,
