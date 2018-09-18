@@ -350,7 +350,7 @@ static void genmon_widget_build(GenMonWidget *self)
 	css =
 	    " levelbar block { min-width: 1px; min-height: 1px; } \
             levelbar.vertical block { min-width: 1px; min-height: 1px; }\
-            levelbar trough { border: none; padding: 0px; border-radius: 0px; }";
+            levelbar trough { border: none; padding: 0px; border-radius: 0px; background-color: rgba(0, 0, 0, 0); }";
 	css_apply_with_class(GTK_WIDGET(self->level), css, "", false);
 }
 
