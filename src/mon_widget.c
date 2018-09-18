@@ -348,8 +348,8 @@ static void genmon_widget_build(GenMonWidget *self)
             progressbar.vertical progress { min-width: 6px; }";
 	css_apply_with_class(GTK_WIDGET(self->progress), css, "", false);
 	css =
-	    " levelbar block { min-width: 1px; min-height: 1px; } \
-            levelbar.vertical block { min-width: 1px; min-height: 1px; }\
+	    " levelbar block { min-width: 1px; min-height: 3px; } \
+            levelbar.vertical block { min-width: 3px; min-height: 1px; }\
             levelbar trough { border: none; padding: 0px; border-radius: 0px; background-color: rgba(0, 0, 0, 0); }";
 	css_apply_with_class(GTK_WIDGET(self->level), css, "", false);
 }
