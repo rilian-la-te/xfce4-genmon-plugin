@@ -325,19 +325,19 @@ static void genmon_widget_build(GenMonWidget *self)
 	{
 		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->progress),
 		                               GTK_ORIENTATION_VERTICAL);
-		gtk_progress_bar_set_inverted(GTK_PROGRESS_BAR(self->progress), true);
+		gtk_progress_bar_set_inverted(self->progress, true);
 		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->level),
 		                               GTK_ORIENTATION_VERTICAL);
-		gtk_level_bar_set_inverted(GTK_PROGRESS_BAR(self->level), true);
+		gtk_level_bar_set_inverted(self->level, true);
 	}
 	else
 	{
 		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->progress),
 		                               GTK_ORIENTATION_HORIZONTAL);
-		gtk_progress_bar_set_inverted(GTK_PROGRESS_BAR(self->progress), false);
+		gtk_progress_bar_set_inverted(self->progress, false);
 		gtk_orientable_set_orientation(GTK_ORIENTABLE(self->level),
 		                               GTK_ORIENTATION_HORIZONTAL);
-		gtk_level_bar_set_inverted(GTK_PROGRESS_BAR(self->level), false);
+		gtk_level_bar_set_inverted(self->level, false);
 	}
 
 	/* make widget padding consistent */

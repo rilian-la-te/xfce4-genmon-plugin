@@ -140,10 +140,6 @@
           <object class="GtkLevelBar" id="level">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="max_value">100</property>
-            <style>
-              <class name="genmon_levelbar"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
