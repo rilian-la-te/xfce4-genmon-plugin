@@ -235,10 +235,9 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 		g_autofree char *buf = g_strndup(begin + 7, end - begin - 7);
 		int value            = atoi(buf);
 		value                = (value < 0) ? 0 : (value > 100) ? 100 : value;
-		gtk_level_bar_add_offset_value(self->level, "empty", 10);
-		gtk_level_bar_add_offset_value(self->level, "low", 30);
-		gtk_level_bar_add_offset_value(self->level, "high", 50);
-		gtk_level_bar_add_offset_value(self->level, "full", 80);
+		gtk_level_bar_add_offset_value(self->level, GTK_LEVEL_BAR_OFFSET_LOW, 30);
+		gtk_level_bar_add_offset_value(self->level, GTK_LEVEL_BAR_OFFSET_HIGH, 50);
+		gtk_level_bar_add_offset_value(self->level, GTK_LEVEL_BAR_OFFSET_FULL, 80);
 		gtk_level_bar_set_value(self->level, (double)value);
 		gtk_widget_show(GTK_WIDGET(self->level));
 
@@ -341,13 +340,18 @@ static void genmon_widget_build(GenMonWidget *self)
 	}
 
 	/* make widget padding consistent */
-	g_autofree char *css = g_strdup_printf(
+	const char *css =
 	    "\
             progressbar.horizontal trough { min-height: 6px; }\
             progressbar.horizontal progress { min-height: 6px; }\
             progressbar.vertical trough { min-width: 6px; }\
-            progressbar.vertical progress { min-width: 6px; }");
+            progressbar.vertical progress { min-width: 6px; }";
 	css_apply_with_class(GTK_WIDGET(self->progress), css, "", false);
+	css =
+	    " levelbar block { min-width: 1px; min-height: 1px; } \
+            levelbar.vertical block { min-width: 1px; min-height: 1px; }\
+            levelbar trough { border: none; padding: 0px; border-radius: 0px; }";
+	css_apply_with_class(GTK_WIDGET(self->level), css, "", false);
 }
 
 static int genmon_widget_set_font_value(GenMonWidget *poPlugin)
