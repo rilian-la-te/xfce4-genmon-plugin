@@ -26,6 +26,8 @@ G_BEGIN_DECLS
 
 void vala_panel_setup_button(GtkButton *b, GtkImage *img, const char *label);
 void css_apply_with_class(GtkWidget *widget, const char *css, const char *klass, bool remove);
+void css_apply_from_file_with_class(GtkWidget *widget, const char *file, const char *klass,
+                                    bool remove);
 bool vala_panel_launch_with_context(GDesktopAppInfo *app_info, GAppLaunchContext *cxt, GList *uris);
 
 G_END_DECLS

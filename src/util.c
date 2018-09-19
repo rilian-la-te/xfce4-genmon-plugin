@@ -21,6 +21,33 @@
 
 #include "util.h"
 
+void css_apply_from_file_with_class(GtkWidget *widget, const char *file, const char *klass,
+                                    bool remove)
+{
+	g_autoptr(GError) error  = NULL;
+	GtkStyleContext *context = gtk_widget_get_style_context(widget);
+	gtk_widget_reset_style(widget);
+	if (remove)
+	{
+		gtk_style_context_remove_class(context, klass);
+	}
+	else
+	{
+		g_autoptr(GtkCssProvider) provider = gtk_css_provider_new();
+		gtk_css_provider_load_from_path(provider, file, &error);
+		if (error)
+		{
+			g_warning("%s\n", error->message);
+			return;
+		}
+		gtk_style_context_add_provider(context,
+		                               GTK_STYLE_PROVIDER(provider),
+		                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION + 2);
+		if (klass)
+			gtk_style_context_add_class(context, klass);
+	}
+}
+
 void css_apply_with_class(GtkWidget *widget, const char *css, const char *klass, bool remove)
 {
 	GtkStyleContext *context = gtk_widget_get_style_context(widget);
