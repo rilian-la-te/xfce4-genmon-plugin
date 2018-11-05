@@ -173,7 +173,7 @@ void g_io_genmon_load(GTypeModule *module)
 	g_type_module_use(module);
 	g_io_extension_point_implement(VALA_PANEL_APPLET_EXTENSION_POINT,
 	                               genmon_plugin_get_type(),
-	                               "genmon",
+	                               "org.valapanel.genmon",
 	                               10);
 }
 
