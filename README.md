@@ -117,8 +117,8 @@ If you find a bug, fix it, then tell me how you did it :-)
 
 
 Enjoy!
-Roger Seguin
-roger_seguin@msn.com
+Roger Seguin <roger_seguin@msn.com>
 
 Julien Devemy <jujucece@gmail.com>
-Konstantin Pugin <ria.freelander@gmail.com>s
+
+Konstantin Pugin <ria.freelander@gmail.com>
