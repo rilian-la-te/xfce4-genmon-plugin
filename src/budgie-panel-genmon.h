@@ -28,23 +28,7 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE(GenMonPlugin, genmon_plugin, GENMON, PLUGIN, PeasExtensionBase);
 
-GType genmon_applet_get_type(void);
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-typedef struct _GenMonApplet GenMonApplet;
-typedef struct
-{
-	BudgieAppletClass parent_class;
-} GenMonAppletClass;
-
-static inline GenMonApplet *GENMON_APPLET(gpointer ptr)
-{
-	return G_TYPE_CHECK_INSTANCE_CAST(ptr, genmon_applet_get_type(), GenMonApplet);
-}
-static inline bool GENMON_IS_APPLET(gpointer ptr)
-{
-	return G_TYPE_CHECK_INSTANCE_TYPE(ptr, genmon_applet_get_type());
-}
-G_GNUC_END_IGNORE_DEPRECATIONS
+G_DECLARE_FINAL_TYPE(GenMonApplet, genmon_applet, GENMON, APPLET, BudgieApplet)
 
 G_END_DECLS
 
