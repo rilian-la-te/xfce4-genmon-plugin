@@ -94,7 +94,8 @@ static void genmon_applet_get_settings_ui(GtkAction *action, GSettings *settings
 	GenMonConfig *config = genmon_config_new(); /* Configuration/option dialog */
 
 	GtkDialog *dlg = GTK_DIALOG(gtk_dialog_new());
-	gtk_window_set_title(GTK_WINDOW(dlg), _("Configuration"));
+	gtk_window_set_deletable(dlg, true);
+	gtk_window_set_title(GTK_WINDOW(dlg), g_dgettext(GETTEXT_PACKAGE, "Configuration"));
 	genmon_config_init_gsettings(config, settings);
 
 	g_signal_connect(dlg, "unmap", G_CALLBACK(gtk_widget_destroy), dlg);

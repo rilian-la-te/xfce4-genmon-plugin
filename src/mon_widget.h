@@ -1,5 +1,9 @@
 /*
  * generic-monitor-plugin
+ * Copyright (c) 2004 Roger Seguin <roger_seguin@msn.com>
+ *                                 <http://rmlx.dyndns.org>
+ * Copyright (c) 2006 Julien Devemy <jujucece@gmail.com>
+ * Copyright (c) 2012 John Lindgren <john.lindgren@aol.com>
  * Copyright (C) 2015-2018 Konstantin Pugin <ria.freelander@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify

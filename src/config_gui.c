@@ -1,8 +1,9 @@
 /*
- *  Generic Monitor plugin for the Xfce4 panel
+ *  Generic Monitor plugin
  *  Construct the configure GUI
  *  Copyright (c) 2004 Roger Seguin <roger_seguin@msn.com>
  *                                  <http://rmlx.dyndns.org>
+ *  Copyright (C) 2015-2018 Konstantin Pugin <ria.freelander@gmail.com>
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
