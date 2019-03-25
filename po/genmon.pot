@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-18 01:51+0300\n"
+"POT-Creation-Date: 2019-03-25 11:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,29 +25,31 @@ msgstr ""
 msgid "_About"
 msgstr ""
 
-#: ../src/mate-panel-genmon.c:96 ../src/xfce4-panel-genmon.c:108
-msgid "Configuration"
-msgstr ""
-
-#: ../src/mate-panel-genmon.c:128 ../src/xfce4-panel-genmon.c:143
+#: ../src/mate-panel-genmon.c:130 ../src/xfce4-panel-genmon.c:150
 #: ../data/genmon-budgie.desktop.plugin.in:3
 #: ../data/genmon-mate.desktop.plugin.in:9 ../data/genmon.desktop.plugin.in:3
+#: ../data/org.valapanel.genmon.desktop.plugin.in:3
 #: ../data/genmon-mate.desktop.in:9
 msgid "GenMon"
 msgstr ""
 
-#: ../src/mate-panel-genmon.c:130 ../src/xfce4-panel-genmon.c:145
+#: ../src/mate-panel-genmon.c:132 ../src/xfce4-panel-genmon.c:152
 #: ../data/genmon-mate.desktop.plugin.in:10 ../data/genmon.desktop.plugin.in:4
+#: ../data/org.valapanel.genmon.desktop.plugin.in:4
 msgid ""
 "Cyclically spawns a script/program, captures its output and displays the "
 "resulting string in the panel"
 msgstr ""
 
-#: ../src/mate-panel-genmon.c:135 ../src/xfce4-panel-genmon.c:150
+#: ../src/mate-panel-genmon.c:137 ../src/xfce4-panel-genmon.c:157
 msgid ""
 "Copyright © 2004 Roger Seguin\n"
 "Copyright © 2006 Julien Devemy\n"
 "Copyright © 2016 Tony Paulic\n"
+msgstr ""
+
+#: ../src/xfce4-panel-genmon.c:115
+msgid "Configuration"
 msgstr ""
 
 #: ../data/config.ui:22
@@ -84,6 +86,7 @@ msgstr ""
 
 #: ../data/genmon-budgie.desktop.plugin.in:6
 #: ../data/genmon-mate.desktop.plugin.in:11 ../data/genmon.desktop.plugin.in:5
+#: ../data/org.valapanel.genmon.desktop.plugin.in:5
 #: ../data/genmon-mate.desktop.in:11
 msgid "utilities-system-monitor-symbolic"
 msgstr ""
