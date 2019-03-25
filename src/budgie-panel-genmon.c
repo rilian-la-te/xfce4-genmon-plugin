@@ -189,9 +189,8 @@ static void genmon_applet_class_init(GenMonAppletClass *klass)
                                     "uuid",
                                     "uuid",
                                     "",
-                                    (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-                                                  G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
-                                                  G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
+                                    (GParamFlags)(G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE |
+                                                  G_PARAM_CONSTRUCT));
 	g_object_class_install_property(((GObjectClass *)klass), PROP_UUID, pspec);
 }
 

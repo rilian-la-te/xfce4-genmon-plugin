@@ -545,25 +545,22 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	                        GENMON_PROP_CMD,
 	                        GENMON_PROP_CMD,
 	                        "",
-	                        (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-	                                      G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
-	                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
+	                        (GParamFlags)(G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE |
+	                                      G_PARAM_CONSTRUCT));
 	pspecs[PROP_FONT_VALUE] =
 	    g_param_spec_string(GENMON_PROP_FONT,
 	                        GENMON_PROP_FONT,
 	                        GENMON_PROP_FONT,
 	                        "",
-	                        (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-	                                      G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
-	                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
+	                        (GParamFlags)(G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE |
+	                                      G_PARAM_CONSTRUCT));
 	pspecs[PROP_TITLE] =
 	    g_param_spec_string(GENMON_PROP_TITLE_TEXT,
 	                        GENMON_PROP_TITLE_TEXT,
 	                        GENMON_PROP_TITLE_TEXT,
 	                        "(x)",
-	                        (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-	                                      G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
-	                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
+	                        (GParamFlags)(G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE |
+	                                      G_PARAM_CONSTRUCT));
 	pspecs[PROP_UPDATE_INTERVAL_MS] =
 	    g_param_spec_uint(GENMON_PROP_UPDATE_PERIOD,
 	                      GENMON_PROP_UPDATE_PERIOD,
@@ -571,27 +568,17 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	                      200,
 	                      G_MAXUINT,
 	                      30 * 1000,
-	                      (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-	                                    G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
-	                                    G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
+	                      (GParamFlags)(G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE |
+	                                    G_PARAM_CONSTRUCT));
 
 	pspecs[PROP_IS_TITLE_DISPAYED] =
 	    g_param_spec_boolean(GENMON_PROP_USE_TITLE,
 	                         GENMON_PROP_USE_TITLE,
 	                         GENMON_PROP_USE_TITLE,
 	                         FALSE,
-	                         (GParamFlags)(G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-	                                       G_PARAM_STATIC_BLURB | G_PARAM_READABLE |
-	                                       G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
-	g_object_class_install_property(oclass, PROP_COMMAND, pspecs[PROP_COMMAND]);
-	g_object_class_install_property(oclass, PROP_FONT_VALUE, pspecs[PROP_FONT_VALUE]);
-	g_object_class_install_property(oclass,
-	                                PROP_IS_TITLE_DISPAYED,
-	                                pspecs[PROP_IS_TITLE_DISPAYED]);
-	g_object_class_install_property(oclass, PROP_TITLE, pspecs[PROP_TITLE]);
-	g_object_class_install_property(oclass,
-	                                PROP_UPDATE_INTERVAL_MS,
-	                                pspecs[PROP_UPDATE_INTERVAL_MS]);
+	                         (GParamFlags)(G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE |
+	                                       G_PARAM_CONSTRUCT));
+	g_object_class_install_properties(oclass, LAST_PROP, pspecs);
 	gtk_widget_class_set_template_from_resource(GTK_WIDGET_CLASS(klass), "/org/genmon/main.ui");
 	gtk_widget_class_bind_template_child_full(GTK_WIDGET_CLASS(klass),
 	                                          "main-box",

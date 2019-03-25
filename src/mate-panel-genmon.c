@@ -31,14 +31,15 @@ static void genmon_applet_about(GtkAction *action, GSettings *unused);
 
 #define genmon_applet_get_widget(applet) GENMON_WIDGET(gtk_bin_get_child(applet))
 
-static const GtkActionEntry genmon_menu_verbs[] =
-    { { "GenMonPreferences",
-	"document-properties",
-	N_("_Preferences"),
-	NULL,
-	NULL,
-	G_CALLBACK(genmon_applet_get_settings_ui) },
-      { "GenMonAbout", "help-about", N_("_About"), NULL, NULL, G_CALLBACK(genmon_applet_about) } };
+static const GtkActionEntry genmon_menu_verbs[] = {
+	{ "GenMonPreferences",
+	  "document-properties",
+	  N_("_Preferences"),
+	  NULL,
+	  NULL,
+	  G_CALLBACK(genmon_applet_get_settings_ui) },
+	{ "GenMonAbout", "help-about", N_("_About"), NULL, NULL, G_CALLBACK(genmon_applet_about) }
+};
 
 G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 static void genmon_applet_update_context_menu(MatePanelApplet *self, GSettings *settings)
