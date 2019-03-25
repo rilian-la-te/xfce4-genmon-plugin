@@ -24,11 +24,13 @@
 #include <libpeas/peas.h>
 #include <stdbool.h>
 
+#include "definitions.h"
+
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(GenMonPlugin, genmon_plugin, GENMON, PLUGIN, PeasExtensionBase);
+G_DECLARE_FINAL_TYPE(GenMonPlugin, genmon_plugin, GENMON, PLUGIN, PeasExtensionBase)
 
-G_DECLARE_FINAL_TYPE(GenMonApplet, genmon_applet, GENMON, APPLET, BudgieApplet)
+GENMON_DECLARE_FINAL_TYPE(GenMonApplet, genmon_applet, GENMON, APPLET, BudgieApplet)
 
 G_END_DECLS
 

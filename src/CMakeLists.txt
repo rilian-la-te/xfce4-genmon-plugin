@@ -9,6 +9,7 @@ set(PLUGIN_FILES_CORE
         util.h
         mon_widget.c
         mon_widget.h
+        definitions.h
 )
 
 add_library(genmon-core STATIC ${PLUGIN_FILES_CORE})

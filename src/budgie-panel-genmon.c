@@ -41,7 +41,7 @@ struct _GenMonApplet
 	char *uuid;
 };
 
-G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, budgie_applet_get_type());
+G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, budgie_applet_get_type())
 
 static GObject *genmon_applet_constructor(GType type, guint n_construct_properties,
                                           GObjectConstructParam *construct_properties)
