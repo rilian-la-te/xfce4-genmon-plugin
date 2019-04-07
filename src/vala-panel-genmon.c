@@ -38,6 +38,7 @@ GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings
 }
 static void genmon_applet_constructed(GObject *obj)
 {
+	G_OBJECT_CLASS(genmon_applet_parent_class)->constructed(obj);
 	GenMonApplet *self          = GENMON_APPLET(obj);
 	GSettings *settings         = vala_panel_applet_get_settings(self);
 	ValaPanelToplevel *toplevel = vala_panel_applet_get_toplevel(self);
