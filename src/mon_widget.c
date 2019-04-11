@@ -515,9 +515,10 @@ GenMonWidget *genmon_widget_new()
 static void genmon_widget_destroy(GObject *obj)
 {
 	GenMonWidget *self = GENMON_WIDGET(obj);
-    if (self->timer_id != 0)
+	if (self->timer_id != 0)
 		g_source_remove(self->timer_id);
 	self->timer_id = 0;
+	G_OBJECT_CLASS(genmon_widget_parent_class)->dispose(obj);
 }
 
 static void genmon_widget_finalize(GObject *obj)
@@ -529,16 +530,17 @@ static void genmon_widget_finalize(GObject *obj)
 	g_clear_pointer(&self->cmd_result, g_free);
 	g_clear_pointer(&self->click_command, g_free);
 	g_clear_pointer(&self->value_click_command, g_free);
+	G_OBJECT_CLASS(genmon_widget_parent_class)->finalize(obj);
 }
 
 static void genmon_widget_class_init(GenMonWidgetClass *klass)
 {
-	GObjectClass *oclass       = G_OBJECT_CLASS(klass);
-	oclass->constructor        = genmon_widget_constructor;
-	oclass->finalize           = genmon_widget_finalize;
-	oclass->set_property       = genmon_widget_set_property;
-	oclass->get_property       = genmon_widget_get_property;
-	oclass->dispose            = genmon_widget_destroy;
+	GObjectClass *oclass = G_OBJECT_CLASS(klass);
+	oclass->constructor  = genmon_widget_constructor;
+	oclass->finalize     = genmon_widget_finalize;
+	oclass->set_property = genmon_widget_set_property;
+	oclass->get_property = genmon_widget_get_property;
+	oclass->dispose      = genmon_widget_destroy;
 
 	g_object_class_override_property(oclass, PROP_ORIENTATION, "orientation");
 	pspecs[PROP_COMMAND] =
