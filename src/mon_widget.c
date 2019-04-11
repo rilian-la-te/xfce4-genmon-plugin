@@ -278,10 +278,9 @@ void genmon_widget_display_command_output(GenMonWidget *self)
 /* Recurrently update the panel-docked monitor through a timer */
 /* Warning : should not be called directly (except the 1st time) */
 /* To avoid multiple timers */
-static bool genmon_widget_set_timer(void *data)
+static int genmon_widget_set_timer(void *data)
 {
 	GenMonWidget *self = GENMON_WIDGET(data);
-
 	genmon_widget_display_command_output(self);
 
 	if (self->timer_id == 0)
@@ -289,10 +288,10 @@ static bool genmon_widget_set_timer(void *data)
 		self->timer_id = g_timeout_add(self->update_interval_ms,
 		                               (GSourceFunc)genmon_widget_set_timer,
 		                               self);
-		return false;
+		return G_SOURCE_REMOVE;
 	}
 
-	return true;
+	return G_SOURCE_CONTINUE;
 } /* SetTimer() */
 
 /* Create the plugin widgets*/
@@ -513,10 +512,10 @@ GenMonWidget *genmon_widget_new()
 	return GENMON_WIDGET(g_object_new(genmon_widget_get_type(), NULL));
 }
 
-static void genmon_widget_destroy(GtkWidget *obj)
+static void genmon_widget_destroy(GObject *obj)
 {
 	GenMonWidget *self = GENMON_WIDGET(obj);
-	if (self->timer_id)
+    if (self->timer_id != 0)
 		g_source_remove(self->timer_id);
 	self->timer_id = 0;
 }
@@ -540,8 +539,7 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	oclass->finalize           = genmon_widget_finalize;
 	oclass->set_property       = genmon_widget_set_property;
 	oclass->get_property       = genmon_widget_get_property;
-	GtkWidgetClass *wclass     = GTK_WIDGET_CLASS(klass);
-	wclass->destroy            = genmon_widget_destroy;
+	oclass->dispose            = genmon_widget_destroy;
 
 	g_object_class_override_property(oclass, PROP_ORIENTATION, "orientation");
 	pspecs[PROP_COMMAND] =
