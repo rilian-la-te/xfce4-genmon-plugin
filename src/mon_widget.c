@@ -533,7 +533,6 @@ static void genmon_widget_finalize(GObject *obj)
 
 static void genmon_widget_class_init(GenMonWidgetClass *klass)
 {
-	genmon_widget_parent_class = g_type_class_peek_parent(klass);
 	GObjectClass *oclass       = G_OBJECT_CLASS(klass);
 	oclass->constructor        = genmon_widget_constructor;
 	oclass->finalize           = genmon_widget_finalize;
