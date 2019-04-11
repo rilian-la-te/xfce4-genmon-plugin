@@ -25,21 +25,21 @@
 #include <stdbool.h>
 
 #define BORDER 2
+#define SETTINGS_DATA "genmon-mate-panel-gsettings"
 
 static void genmon_applet_get_settings_ui(GtkAction *action, GSettings *settings);
 static void genmon_applet_about(GtkAction *action, GSettings *unused);
 
 #define genmon_applet_get_widget(applet) GENMON_WIDGET(gtk_bin_get_child(applet))
 
-static const GtkActionEntry genmon_menu_verbs[] = {
-	{ "GenMonPreferences",
-	  "document-properties",
-	  N_("_Preferences"),
-	  NULL,
-	  NULL,
-	  G_CALLBACK(genmon_applet_get_settings_ui) },
-	{ "GenMonAbout", "help-about", N_("_About"), NULL, NULL, G_CALLBACK(genmon_applet_about) }
-};
+static const GtkActionEntry genmon_menu_verbs[] =
+    { { "GenMonPreferences",
+	"document-properties",
+	N_("_Preferences"),
+	NULL,
+	NULL,
+	G_CALLBACK(genmon_applet_get_settings_ui) },
+      { "GenMonAbout", "help-about", N_("_About"), NULL, NULL, G_CALLBACK(genmon_applet_about) } };
 
 G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 static void genmon_applet_update_context_menu(MatePanelApplet *self, GSettings *settings)
@@ -60,7 +60,8 @@ G_GNUC_END_IGNORE_DEPRECATIONS
 
 bool genmon_applet_panel_init(MatePanelApplet *self)
 {
-	GSettings *settings  = mate_panel_applet_settings_new(self, "org.valapanel.genmon");
+	GSettings *settings = mate_panel_applet_settings_new(self, "org.valapanel.genmon");
+	g_object_set_data_full(self, SETTINGS_DATA, settings, g_object_unref);
 	GenMonWidget *widget = genmon_widget_new();
 	g_settings_bind(settings,
 	                GENMON_PROP_USE_TITLE,
