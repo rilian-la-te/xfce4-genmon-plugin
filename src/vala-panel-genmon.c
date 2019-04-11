@@ -28,12 +28,20 @@ struct _GenMonApplet
 	GenMonWidget *widget;
 };
 
-G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, vala_panel_applet_get_type());
+G_DEFINE_DYNAMIC_TYPE(GenMonApplet, genmon_applet, vala_panel_applet_get_type())
 
 GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings, const char *uuid)
 {
 	GenMonApplet *self = GENMON_APPLET(
 	    vala_panel_applet_construct(genmon_applet_get_type(), toplevel, settings, uuid));
+	return self;
+}
+static void genmon_applet_constructed(GObject *obj)
+{
+	G_OBJECT_CLASS(genmon_applet_parent_class)->constructed(obj);
+	GenMonApplet *self          = GENMON_APPLET(obj);
+	GSettings *settings         = vala_panel_applet_get_settings(self);
+	ValaPanelToplevel *toplevel = vala_panel_applet_get_toplevel(self);
 	GActionMap *map = G_ACTION_MAP(vala_panel_applet_get_action_group(VALA_PANEL_APPLET(self)));
 	g_simple_action_set_enabled(
 	    G_SIMPLE_ACTION(g_action_map_lookup_action(map, VALA_PANEL_APPLET_ACTION_CONFIGURE)),
@@ -70,8 +78,6 @@ GenMonApplet *genmon_applet_new(ValaPanelToplevel *toplevel, GSettings *settings
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(widget));
 	gtk_widget_show(GTK_WIDGET(widget));
 	gtk_widget_show(GTK_WIDGET(self));
-
-	return self;
 }
 
 static GtkWidget *genmon_applet_get_settings_ui(ValaPanelApplet *base)
@@ -114,6 +120,7 @@ static void genmon_applet_class_init(GenMonAppletClass *klass)
 	((ValaPanelAppletClass *)klass)->get_settings_ui     = genmon_applet_get_settings_ui;
 	((ValaPanelAppletClass *)klass)->remote_command      = genmon_applet_remote_command;
 	((ValaPanelAppletClass *)klass)->update_context_menu = genmon_applet_update_context_menu;
+	G_OBJECT_CLASS(klass)->constructed                   = genmon_applet_constructed;
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)
@@ -129,7 +136,7 @@ struct _GenMonPlugin
 	ValaPanelAppletPlugin parent;
 };
 
-G_DEFINE_DYNAMIC_TYPE(GenMonPlugin, genmon_plugin, vala_panel_applet_plugin_get_type());
+G_DEFINE_DYNAMIC_TYPE(GenMonPlugin, genmon_plugin, vala_panel_applet_plugin_get_type())
 
 static ValaPanelApplet *genmon_plugin_get_applet_widget(ValaPanelAppletPlugin *base,
                                                         ValaPanelToplevel *toplevel,
