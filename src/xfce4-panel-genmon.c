@@ -18,6 +18,7 @@
 
 #include "xfce4-panel-genmon.h"
 #include "config.h"
+#include "version.h"
 #include "config_gui.h"
 #include "mon_widget.h"
 
