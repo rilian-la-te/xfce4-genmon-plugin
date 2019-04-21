@@ -1,0 +1,4 @@
+option('valapanel', type: 'feature', value: 'auto', description: 'Vala Panel Integration - 0.5.x')
+option('xfce', type: 'feature', value: 'auto', description: 'Xfce Panel Integration')
+option('mate', type: 'feature', value: 'auto', description: 'MATE Panel Integration')
+option('budgie', type: 'feature', value: 'auto', description: 'Budgie Desktop Integration')
