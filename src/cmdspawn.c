@@ -191,7 +191,7 @@ char *genmon_spawn_with_error_window(const char *p_pcCmdLine, int wait)
 		                                                   "%s",
 		                                                   first));
 		gtk_window_present(GTK_WINDOW(dlg));
-		g_signal_connect(dlg, "response", gtk_widget_destroy, NULL);
+		g_signal_connect(dlg, "response", G_CALLBACK(gtk_widget_destroy), NULL);
 		return (NULL);
 	}
 	/* Spawn the command and free allocated memory */

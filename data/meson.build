@@ -12,7 +12,7 @@ if vala_panel_found
     )
     i18n.merge_file(
       input: desktop,
-      output: 'genmon.plugin',
+      output: 'org.valapanel.genmon.plugin',
       type: 'desktop',
       po_dir: join_paths(meson.source_root(),'po'),
       install: true,

@@ -57,30 +57,22 @@ static GObject *genmon_applet_constructor(GType type, guint n_construct_properti
 	                                  "/com/solus-project/budgie-panel/instance/genmon");
 	self->settings = budgie_applet_get_applet_settings(BUDGIE_APPLET(self), self->uuid);
 	g_settings_bind(self->settings,
-	                GENMON_PROP_USE_TITLE,
+	                GENMON_USE_TITLE,
 	                widget,
-	                GENMON_PROP_USE_TITLE,
+	                GENMON_USE_TITLE,
 	                G_SETTINGS_BIND_GET);
 	g_settings_bind(self->settings,
-	                GENMON_PROP_TITLE_TEXT,
+	                GENMON_TITLE_TEXT,
 	                widget,
-	                GENMON_PROP_TITLE_TEXT,
+	                GENMON_TITLE_TEXT,
 	                G_SETTINGS_BIND_GET);
 	g_settings_bind(self->settings,
-	                GENMON_PROP_UPDATE_PERIOD,
+	                GENMON_UPDATE_PERIOD,
 	                widget,
-	                GENMON_PROP_UPDATE_PERIOD,
+	                GENMON_UPDATE_PERIOD,
 	                G_SETTINGS_BIND_GET);
-	g_settings_bind(self->settings,
-	                GENMON_PROP_CMD,
-	                widget,
-	                GENMON_PROP_CMD,
-	                G_SETTINGS_BIND_GET);
-	g_settings_bind(self->settings,
-	                GENMON_PROP_FONT,
-	                widget,
-	                GENMON_PROP_FONT,
-	                G_SETTINGS_BIND_GET);
+	g_settings_bind(self->settings, GENMON_CMD, widget, GENMON_CMD, G_SETTINGS_BIND_GET);
+	g_settings_bind(self->settings, GENMON_FONT, widget, GENMON_FONT, G_SETTINGS_BIND_GET);
 
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(widget));
 	gtk_widget_show(GTK_WIDGET(widget));
@@ -159,13 +151,13 @@ static void genmon_applet_destroy(GtkWidget *object)
 	GenMonApplet *self = GENMON_APPLET(object);
 	if (self->widget)
 	{
-		g_settings_unbind(self->widget, GENMON_PROP_USE_TITLE);
-		g_settings_unbind(self->widget, GENMON_PROP_TITLE_TEXT);
-		g_settings_unbind(self->widget, GENMON_PROP_CMD);
-		g_settings_unbind(self->widget, GENMON_PROP_UPDATE_PERIOD);
-		g_settings_unbind(self->widget, GENMON_PROP_FONT);
+		g_settings_unbind(self->widget, GENMON_USE_TITLE);
+		g_settings_unbind(self->widget, GENMON_TITLE_TEXT);
+		g_settings_unbind(self->widget, GENMON_CMD);
+		g_settings_unbind(self->widget, GENMON_UPDATE_PERIOD);
+		g_settings_unbind(self->widget, GENMON_FONT);
 	}
-	g_clear_pointer(&self->widget, gtk_widget_destroy);
+	GTK_WIDGET_CLASS(genmon_applet_parent_class)->destroy(object);
 }
 
 static void genmon_applet_finalize(GObject *object)
@@ -173,19 +165,20 @@ static void genmon_applet_finalize(GObject *object)
 	GenMonApplet *self = GENMON_APPLET(object);
 	g_clear_pointer(&self->uuid, g_free);
 	g_clear_object(&self->settings);
+	G_OBJECT_CLASS(genmon_applet_parent_class)->finalize(object);
 }
 
 static void genmon_applet_class_init(GenMonAppletClass *klass)
 {
-	((GObjectClass *)klass)->constructor                 = genmon_applet_constructor;
-	((GObjectClass *)klass)->get_property                = genmon_applet_get_property;
-	((GObjectClass *)klass)->set_property                = genmon_applet_set_property;
-	((GObjectClass *)klass)->finalize                    = genmon_applet_finalize;
-	((GtkWidgetClass *)klass)->destroy                   = genmon_applet_destroy;
-	((BudgieAppletClass *)klass)->get_settings_ui        = genmon_applet_get_settings_ui;
-	((BudgieAppletClass *)klass)->panel_position_changed = genmon_applet_panel_position_changed;
-	((BudgieAppletClass *)klass)->supports_settings      = genmon_applet_supports_settings;
-	pspec                                                = g_param_spec_string("uuid",
+	G_OBJECT_CLASS(klass)->constructor                 = genmon_applet_constructor;
+	G_OBJECT_CLASS(klass)->get_property                = genmon_applet_get_property;
+	G_OBJECT_CLASS(klass)->set_property                = genmon_applet_set_property;
+	G_OBJECT_CLASS(klass)->finalize                    = genmon_applet_finalize;
+	GTK_WIDGET_CLASS(klass)->destroy                   = genmon_applet_destroy;
+	BUDGIE_APPLET_CLASS(klass)->get_settings_ui        = genmon_applet_get_settings_ui;
+	BUDGIE_APPLET_CLASS(klass)->panel_position_changed = genmon_applet_panel_position_changed;
+	BUDGIE_APPLET_CLASS(klass)->supports_settings      = genmon_applet_supports_settings;
+	pspec                                              = g_param_spec_string("uuid",
                                     "uuid",
                                     "uuid",
                                     "",

@@ -18,9 +18,9 @@
 
 #include "xfce4-panel-genmon.h"
 #include "config.h"
-#include "version.h"
 #include "config_gui.h"
 #include "mon_widget.h"
+#include "version.h"
 
 #include <glib/gi18n.h>
 #include <locale.h>
@@ -69,27 +69,25 @@ void genmon_applet_construct(XfcePanelPlugin *parent)
 
 	self->channel = xfce_panel_plugin_xfconf_channel_new(parent);
 	char *str =
-	    g_strdup_printf("%s/%s", xfce_panel_plugin_get_property_base(parent), GENMON_PROP_CMD);
-	xfconf_g_property_bind(self->channel, str, G_TYPE_STRING, widget, GENMON_PROP_CMD);
+	    g_strdup_printf("%s/%s", xfce_panel_plugin_get_property_base(parent), GENMON_CMD);
+	xfconf_g_property_bind(self->channel, str, G_TYPE_STRING, widget, GENMON_CMD);
 	g_free(str);
 	str = g_strdup_printf("%s/%s",
 	                      xfce_panel_plugin_get_property_base(parent),
-	                      GENMON_PROP_TITLE_TEXT);
-	xfconf_g_property_bind(self->channel, str, G_TYPE_STRING, widget, GENMON_PROP_TITLE_TEXT);
+	                      GENMON_TITLE_TEXT);
+	xfconf_g_property_bind(self->channel, str, G_TYPE_STRING, widget, GENMON_TITLE_TEXT);
 	g_free(str);
 	str = g_strdup_printf("%s/%s",
 	                      xfce_panel_plugin_get_property_base(parent),
-	                      GENMON_PROP_UPDATE_PERIOD);
-	xfconf_g_property_bind(self->channel, str, G_TYPE_UINT, widget, GENMON_PROP_UPDATE_PERIOD);
+	                      GENMON_UPDATE_PERIOD);
+	xfconf_g_property_bind(self->channel, str, G_TYPE_UINT, widget, GENMON_UPDATE_PERIOD);
+	g_free(str);
+	str = g_strdup_printf("%s/%s", xfce_panel_plugin_get_property_base(parent), GENMON_FONT);
+	xfconf_g_property_bind(self->channel, str, G_TYPE_STRING, widget, GENMON_FONT);
 	g_free(str);
 	str =
-	    g_strdup_printf("%s/%s", xfce_panel_plugin_get_property_base(parent), GENMON_PROP_FONT);
-	xfconf_g_property_bind(self->channel, str, G_TYPE_STRING, widget, GENMON_PROP_FONT);
-	g_free(str);
-	str = g_strdup_printf("%s/%s",
-	                      xfce_panel_plugin_get_property_base(parent),
-	                      GENMON_PROP_USE_TITLE);
-	xfconf_g_property_bind(self->channel, str, G_TYPE_BOOLEAN, widget, GENMON_PROP_USE_TITLE);
+	    g_strdup_printf("%s/%s", xfce_panel_plugin_get_property_base(parent), GENMON_USE_TITLE);
+	xfconf_g_property_bind(self->channel, str, G_TYPE_BOOLEAN, widget, GENMON_USE_TITLE);
 	g_free(str);
 
 	gtk_widget_show(GTK_WIDGET(widget));
@@ -207,17 +205,18 @@ static void genmon_applet_finalize(GObject *plugin)
 {
 	GenMonApplet *self = GENMON_APPLET(plugin);
 	g_clear_pointer(&self->channel, g_object_unref);
+	G_OBJECT_CLASS(genmon_applet_parent_class)->finalize(plugin);
 }
 
 static void genmon_applet_class_init(GenMonAppletClass *klass)
 {
-	((XfcePanelPluginClass *)klass)->construct        = genmon_applet_construct;
-	((XfcePanelPluginClass *)klass)->configure_plugin = genmon_applet_configure_plugin;
-	((XfcePanelPluginClass *)klass)->mode_changed     = genmon_applet_mode_changed;
-	((XfcePanelPluginClass *)klass)->remote_event     = genmon_applet_remote_event;
-	((XfcePanelPluginClass *)klass)->size_changed     = genmon_set_size;
-	((XfcePanelPluginClass *)klass)->about            = genmon_applet_about;
-	((GObjectClass *)klass)->finalize                 = genmon_applet_finalize;
+	XFCE_PANEL_PLUGIN_CLASS(klass)->construct        = genmon_applet_construct;
+	XFCE_PANEL_PLUGIN_CLASS(klass)->configure_plugin = genmon_applet_configure_plugin;
+	XFCE_PANEL_PLUGIN_CLASS(klass)->mode_changed     = genmon_applet_mode_changed;
+	XFCE_PANEL_PLUGIN_CLASS(klass)->remote_event     = genmon_applet_remote_event;
+	XFCE_PANEL_PLUGIN_CLASS(klass)->size_changed     = genmon_set_size;
+	XFCE_PANEL_PLUGIN_CLASS(klass)->about            = genmon_applet_about;
+	G_OBJECT_CLASS(klass)->finalize                  = genmon_applet_finalize;
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)

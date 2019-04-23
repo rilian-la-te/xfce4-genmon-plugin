@@ -101,7 +101,7 @@ static void genmon_widget_exec_with_error_dialog(GenMonWidget *self, const char 
 		                                                   "%s",
 		                                                   first));
 		gtk_window_present(GTK_WINDOW(dlg));
-		g_signal_connect(dlg, "response", gtk_widget_destroy, NULL);
+		g_signal_connect(dlg, "response", G_CALLBACK(gtk_widget_destroy), NULL);
 	}
 }
 
@@ -304,13 +304,13 @@ static void genmon_widget_build(GenMonWidget *self)
 
 	gtk_widget_show(GTK_WIDGET(self->main_box));
 	g_object_bind_property(self,
-	                       GENMON_PROP_TITLE_TEXT,
+	                       GENMON_TITLE_TEXT,
 	                       self->title_label,
 	                       "label",
 	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
 
 	g_object_bind_property(self,
-	                       GENMON_PROP_USE_TITLE,
+	                       GENMON_USE_TITLE,
 	                       self->title_label,
 	                       "visible",
 	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
@@ -544,30 +544,30 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 
 	g_object_class_override_property(oclass, PROP_ORIENTATION, "orientation");
 	pspecs[PROP_COMMAND] =
-	    g_param_spec_string(GENMON_PROP_CMD,
-	                        GENMON_PROP_CMD,
-	                        GENMON_PROP_CMD,
+	    g_param_spec_string(GENMON_CMD,
+	                        GENMON_CMD,
+	                        GENMON_CMD,
 	                        "",
 	                        (GParamFlags)(G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE |
 	                                      G_PARAM_CONSTRUCT));
 	pspecs[PROP_FONT_VALUE] =
-	    g_param_spec_string(GENMON_PROP_FONT,
-	                        GENMON_PROP_FONT,
-	                        GENMON_PROP_FONT,
+	    g_param_spec_string(GENMON_FONT,
+	                        GENMON_FONT,
+	                        GENMON_FONT,
 	                        "",
 	                        (GParamFlags)(G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE |
 	                                      G_PARAM_CONSTRUCT));
 	pspecs[PROP_TITLE] =
-	    g_param_spec_string(GENMON_PROP_TITLE_TEXT,
-	                        GENMON_PROP_TITLE_TEXT,
-	                        GENMON_PROP_TITLE_TEXT,
+	    g_param_spec_string(GENMON_TITLE_TEXT,
+	                        GENMON_TITLE_TEXT,
+	                        GENMON_TITLE_TEXT,
 	                        "(x)",
 	                        (GParamFlags)(G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE |
 	                                      G_PARAM_CONSTRUCT));
 	pspecs[PROP_UPDATE_INTERVAL_MS] =
-	    g_param_spec_uint(GENMON_PROP_UPDATE_PERIOD,
-	                      GENMON_PROP_UPDATE_PERIOD,
-	                      GENMON_PROP_UPDATE_PERIOD,
+	    g_param_spec_uint(GENMON_UPDATE_PERIOD,
+	                      GENMON_UPDATE_PERIOD,
+	                      GENMON_UPDATE_PERIOD,
 	                      200,
 	                      G_MAXUINT,
 	                      30 * 1000,
@@ -575,9 +575,9 @@ static void genmon_widget_class_init(GenMonWidgetClass *klass)
 	                                    G_PARAM_CONSTRUCT));
 
 	pspecs[PROP_IS_TITLE_DISPAYED] =
-	    g_param_spec_boolean(GENMON_PROP_USE_TITLE,
-	                         GENMON_PROP_USE_TITLE,
-	                         GENMON_PROP_USE_TITLE,
+	    g_param_spec_boolean(GENMON_USE_TITLE,
+	                         GENMON_USE_TITLE,
+	                         GENMON_USE_TITLE,
 	                         FALSE,
 	                         (GParamFlags)(G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE |
 	                                       G_PARAM_CONSTRUCT));

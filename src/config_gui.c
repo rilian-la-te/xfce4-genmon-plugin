@@ -83,20 +83,20 @@ GenMonConfig *genmon_config_new()
 
 void genmon_config_init_gsettings(GenMonConfig *ui, GSettings *settings)
 {
-	g_settings_bind(settings, GENMON_PROP_CMD, ui->entry_cmd, "text", G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind(settings, GENMON_PROP_FONT, ui->fntbutton, "font", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings, GENMON_CMD, ui->entry_cmd, "text", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings, GENMON_FONT, ui->fntbutton, "font", G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind(settings,
-	                GENMON_PROP_TITLE_TEXT,
+	                GENMON_TITLE_TEXT,
 	                ui->entry_title,
 	                "text",
 	                G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind(settings,
-	                GENMON_PROP_UPDATE_PERIOD,
+	                GENMON_UPDATE_PERIOD,
 	                ui->spin_interval,
 	                "value",
 	                G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind(settings,
-	                GENMON_PROP_USE_TITLE,
+	                GENMON_USE_TITLE,
 	                ui->check_title,
 	                "active",
 	                G_SETTINGS_BIND_DEFAULT);
@@ -107,27 +107,27 @@ void genmon_config_init_gsettings(GenMonConfig *ui, GSettings *settings)
 void genmon_config_init_properties(GenMonConfig *self, GenMonWidget *widget)
 {
 	g_object_bind_property(widget,
-	                       GENMON_PROP_USE_TITLE,
+	                       GENMON_USE_TITLE,
 	                       self->check_title,
 	                       "active",
 	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
 	g_object_bind_property(widget,
-	                       GENMON_PROP_CMD,
+	                       GENMON_CMD,
 	                       self->entry_cmd,
 	                       "text",
 	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
 	g_object_bind_property(widget,
-	                       GENMON_PROP_FONT,
+	                       GENMON_FONT,
 	                       self->fntbutton,
 	                       "font",
 	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
 	g_object_bind_property(widget,
-	                       GENMON_PROP_TITLE_TEXT,
+	                       GENMON_TITLE_TEXT,
 	                       self->entry_title,
 	                       "text",
 	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));
 	g_object_bind_property(widget,
-	                       GENMON_PROP_UPDATE_PERIOD,
+	                       GENMON_UPDATE_PERIOD,
 	                       self->spin_interval,
 	                       "value",
 	                       (GBindingFlags)(G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE));

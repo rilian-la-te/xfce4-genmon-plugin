@@ -29,7 +29,6 @@ add_definitions(-Wall -Wextra
                 -Wno-unused-parameter# Vala loves to create variables
 #				-pedantic
                 -Wno-ignored-qualifiers
-                -Wno-incompatible-pointer-types
                 -Wno-missing-field-initializers
                 -Wno-sign-compare
                 ) #Vala often forgot cast to GtkWidget or gpointer

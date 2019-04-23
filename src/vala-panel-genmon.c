@@ -40,9 +40,10 @@ static void genmon_applet_constructed(GObject *obj)
 {
 	G_OBJECT_CLASS(genmon_applet_parent_class)->constructed(obj);
 	GenMonApplet *self          = GENMON_APPLET(obj);
-	GSettings *settings         = vala_panel_applet_get_settings(self);
-	ValaPanelToplevel *toplevel = vala_panel_applet_get_toplevel(self);
-	GActionMap *map = G_ACTION_MAP(vala_panel_applet_get_action_group(VALA_PANEL_APPLET(self)));
+	ValaPanelApplet *base       = VALA_PANEL_APPLET(self);
+	GSettings *settings         = vala_panel_applet_get_settings(base);
+	ValaPanelToplevel *toplevel = vala_panel_applet_get_toplevel(base);
+	GActionMap *map             = G_ACTION_MAP(vala_panel_applet_get_action_group(base));
 	g_simple_action_set_enabled(
 	    G_SIMPLE_ACTION(g_action_map_lookup_action(map, VALA_PANEL_APPLET_ACTION_CONFIGURE)),
 	    true);
@@ -51,23 +52,19 @@ static void genmon_applet_constructed(GObject *obj)
 	    true);
 	GenMonWidget *widget = genmon_widget_new();
 	self->widget         = widget;
+	g_settings_bind(settings, GENMON_USE_TITLE, widget, GENMON_USE_TITLE, G_SETTINGS_BIND_GET);
 	g_settings_bind(settings,
-	                GENMON_PROP_USE_TITLE,
+	                GENMON_TITLE_TEXT,
 	                widget,
-	                GENMON_PROP_USE_TITLE,
+	                GENMON_TITLE_TEXT,
 	                G_SETTINGS_BIND_GET);
 	g_settings_bind(settings,
-	                GENMON_PROP_TITLE_TEXT,
+	                GENMON_UPDATE_PERIOD,
 	                widget,
-	                GENMON_PROP_TITLE_TEXT,
+	                GENMON_UPDATE_PERIOD,
 	                G_SETTINGS_BIND_GET);
-	g_settings_bind(settings,
-	                GENMON_PROP_UPDATE_PERIOD,
-	                widget,
-	                GENMON_PROP_UPDATE_PERIOD,
-	                G_SETTINGS_BIND_GET);
-	g_settings_bind(settings, GENMON_PROP_CMD, widget, GENMON_PROP_CMD, G_SETTINGS_BIND_GET);
-	g_settings_bind(settings, GENMON_PROP_FONT, widget, GENMON_PROP_FONT, G_SETTINGS_BIND_GET);
+	g_settings_bind(settings, GENMON_CMD, widget, GENMON_CMD, G_SETTINGS_BIND_GET);
+	g_settings_bind(settings, GENMON_FONT, widget, GENMON_FONT, G_SETTINGS_BIND_GET);
 
 	g_object_bind_property(toplevel,
 	                       VP_KEY_ORIENTATION,
@@ -117,10 +114,10 @@ static void genmon_applet_init(GenMonApplet *self)
 
 static void genmon_applet_class_init(GenMonAppletClass *klass)
 {
-	((ValaPanelAppletClass *)klass)->get_settings_ui     = genmon_applet_get_settings_ui;
-	((ValaPanelAppletClass *)klass)->remote_command      = genmon_applet_remote_command;
-	((ValaPanelAppletClass *)klass)->update_context_menu = genmon_applet_update_context_menu;
-	G_OBJECT_CLASS(klass)->constructed                   = genmon_applet_constructed;
+	VALA_PANEL_APPLET_CLASS(klass)->get_settings_ui     = genmon_applet_get_settings_ui;
+	VALA_PANEL_APPLET_CLASS(klass)->remote_command      = genmon_applet_remote_command;
+	VALA_PANEL_APPLET_CLASS(klass)->update_context_menu = genmon_applet_update_context_menu;
+	G_OBJECT_CLASS(klass)->constructed                  = genmon_applet_constructed;
 }
 
 static void genmon_applet_class_finalize(GenMonAppletClass *klass)

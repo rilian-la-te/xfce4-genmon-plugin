@@ -17,9 +17,9 @@
  */
 
 #include "config.h"
-#include "version.h"
 #include "config_gui.h"
 #include "mon_widget.h"
+#include "version.h"
 
 #include <glib/gi18n.h>
 #include <mate-panel-applet-gsettings.h>
@@ -30,17 +30,20 @@
 
 static void genmon_applet_get_settings_ui(GtkAction *action, GSettings *settings);
 static void genmon_applet_about(GtkAction *action, GSettings *unused);
+static void genmon_applet_change_orient(MatePanelApplet *base, MatePanelAppletOrient orientation,
+                                        void *data);
 
-#define genmon_applet_get_widget(applet) GENMON_WIDGET(gtk_bin_get_child(applet))
+#define genmon_applet_get_widget(applet) GENMON_WIDGET(gtk_bin_get_child(GTK_BIN(applet)))
 
-static const GtkActionEntry genmon_menu_verbs[] =
-    { { "GenMonPreferences",
-	"document-properties",
-	N_("_Preferences"),
-	NULL,
-	NULL,
-	G_CALLBACK(genmon_applet_get_settings_ui) },
-      { "GenMonAbout", "help-about", N_("_About"), NULL, NULL, G_CALLBACK(genmon_applet_about) } };
+static const GtkActionEntry genmon_menu_verbs[] = {
+	{ "GenMonPreferences",
+	  "document-properties",
+	  N_("_Preferences"),
+	  NULL,
+	  NULL,
+	  G_CALLBACK(genmon_applet_get_settings_ui) },
+	{ "GenMonAbout", "help-about", N_("_About"), NULL, NULL, G_CALLBACK(genmon_applet_about) }
+};
 
 G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 static void genmon_applet_update_context_menu(MatePanelApplet *self, GSettings *settings)
@@ -62,25 +65,25 @@ G_GNUC_END_IGNORE_DEPRECATIONS
 bool genmon_applet_panel_init(MatePanelApplet *self)
 {
 	GSettings *settings = mate_panel_applet_settings_new(self, "org.valapanel.genmon");
-	g_object_set_data_full(self, SETTINGS_DATA, settings, g_object_unref);
+	g_object_set_data_full(G_OBJECT(self), SETTINGS_DATA, settings, g_object_unref);
 	GenMonWidget *widget = genmon_widget_new();
+	g_settings_bind(settings, GENMON_USE_TITLE, widget, GENMON_USE_TITLE, G_SETTINGS_BIND_GET);
 	g_settings_bind(settings,
-	                GENMON_PROP_USE_TITLE,
+	                GENMON_TITLE_TEXT,
 	                widget,
-	                GENMON_PROP_USE_TITLE,
+	                GENMON_TITLE_TEXT,
 	                G_SETTINGS_BIND_GET);
 	g_settings_bind(settings,
-	                GENMON_PROP_TITLE_TEXT,
+	                GENMON_UPDATE_PERIOD,
 	                widget,
-	                GENMON_PROP_TITLE_TEXT,
+	                GENMON_UPDATE_PERIOD,
 	                G_SETTINGS_BIND_GET);
-	g_settings_bind(settings,
-	                GENMON_PROP_UPDATE_PERIOD,
-	                widget,
-	                GENMON_PROP_UPDATE_PERIOD,
-	                G_SETTINGS_BIND_GET);
-	g_settings_bind(settings, GENMON_PROP_CMD, widget, GENMON_PROP_CMD, G_SETTINGS_BIND_GET);
-	g_settings_bind(settings, GENMON_PROP_FONT, widget, GENMON_PROP_FONT, G_SETTINGS_BIND_GET);
+	g_settings_bind(settings, GENMON_CMD, widget, GENMON_CMD, G_SETTINGS_BIND_GET);
+	g_settings_bind(settings, GENMON_FONT, widget, GENMON_FONT, G_SETTINGS_BIND_GET);
+	g_signal_connect(G_OBJECT(self),
+	                 "change_orient",
+	                 G_CALLBACK(genmon_applet_change_orient),
+	                 NULL);
 
 	genmon_applet_update_context_menu(self, settings);
 
@@ -96,7 +99,7 @@ static void genmon_applet_get_settings_ui(GtkAction *action, GSettings *settings
 	GenMonConfig *config = genmon_config_new(); /* Configuration/option dialog */
 
 	GtkDialog *dlg = GTK_DIALOG(gtk_dialog_new());
-	gtk_window_set_deletable(dlg, true);
+	gtk_window_set_deletable(GTK_WINDOW(dlg), true);
 	gtk_window_set_title(GTK_WINDOW(dlg), g_dgettext(GETTEXT_PACKAGE, "Configuration"));
 	genmon_config_init_gsettings(config, settings);
 
@@ -143,20 +146,21 @@ static void genmon_applet_about(GtkAction *action, GSettings *unused)
 	                      NULL);
 }
 
-static void genmon_applet_change_orient(MatePanelApplet *base, MatePanelAppletOrient orientation)
+static void genmon_applet_change_orient(MatePanelApplet *base, MatePanelAppletOrient orientation,
+                                        void *data)
 {
 	GenMonWidget *widget = genmon_applet_get_widget(base);
 	if (orientation < MATE_PANEL_APPLET_ORIENT_LEFT)
-		gtk_orientable_set_orientation(widget, GTK_ORIENTATION_HORIZONTAL);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(widget), GTK_ORIENTATION_HORIZONTAL);
 	else
-		gtk_orientable_set_orientation(widget, GTK_ORIENTATION_VERTICAL);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(widget), GTK_ORIENTATION_VERTICAL);
 }
 
 /*
  * Plugin functions
  */
 
-static bool genmon_factory(MatePanelApplet *applet, const char *iid, gpointer data)
+static int genmon_factory(MatePanelApplet *applet, const char *iid, gpointer data)
 {
 	bool retval = false;
 
@@ -170,4 +174,4 @@ static bool genmon_factory(MatePanelApplet *applet, const char *iid, gpointer da
 }
 
 MATE_PANEL_APPLET_IN_PROCESS_FACTORY("GenMonAppletFactory", mate_panel_applet_get_type(),
-                                     "GenericMonitor", genmon_factory, NULL);
+                                     "GenericMonitor", genmon_factory, NULL)

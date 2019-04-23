@@ -28,11 +28,11 @@
 G_BEGIN_DECLS
 
 /* Configuration Keywords */
-#define GENMON_PROP_USE_TITLE "use-title"
-#define GENMON_PROP_TITLE_TEXT "title-text"
-#define GENMON_PROP_CMD "command"
-#define GENMON_PROP_UPDATE_PERIOD "update-period"
-#define GENMON_PROP_FONT "font"
+#define GENMON_USE_TITLE "use-title"
+#define GENMON_TITLE_TEXT "title-text"
+#define GENMON_CMD "command"
+#define GENMON_UPDATE_PERIOD "update-period"
+#define GENMON_FONT "font"
 
 G_DECLARE_FINAL_TYPE(GenMonWidget, genmon_widget, GENMON, WIDGET, GtkEventBox)
 
