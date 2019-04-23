@@ -139,8 +139,8 @@ static void genmon_applet_about(GtkAction *action, GSettings *unused)
 	                      "website",
 	                      "http://goodies.xfce.org/projects/panel-plugins/xfce4-genmon-plugin",
 	                      "copyright",
-	                      _("Copyright \xc2\xa9 2004 Roger Seguin\nCopyright \xc2\xa9 2006 "
-	                        "Julien Devemy\nCopyright \xc2\xa9 2016 Tony Paulic\n"),
+	                      "Copyright \xc2\xa9 2004 Roger Seguin\nCopyright \xc2\xa9 2006 "
+	                      "Julien Devemy\nCopyright \xc2\xa9 2016 Tony Paulic\n",
 	                      "authors",
 	                      auth,
 	                      NULL);

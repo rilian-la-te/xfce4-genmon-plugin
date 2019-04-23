@@ -1,6 +1,6 @@
 project('genmon', 'c',
 	version : '5.1.0',
-	meson_version: '>=0.47.0',
+	meson_version: '>=0.49.0',
 	license: ['LGPL-3.0'],
     default_options: [
         'c_std=gnu11',
@@ -70,6 +70,13 @@ version = vcs_tag(
 	output: 'version.h',
 	replace_string: '@VERSION@',
 )
+
+desktop_kwargs = {
+      'type': 'desktop',
+      'args' : ['--keyword=Description'],
+      'po_dir': join_paths(meson.current_source_dir(),'po'),
+      'install': true,
+}
 
 subdir('po')
 subdir('src')

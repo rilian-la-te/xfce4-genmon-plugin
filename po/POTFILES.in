@@ -1,0 +1,14 @@
+#files from 'data'
+data/genmon.plugin.desktop.in
+data/genmon.desktop.in
+data/genmon-budgie.desktop.in
+data/genmon-mate.plugin.desktop.in
+data/config.ui
+data/main.ui
+
+#files from 'src'
+src/budgie-panel-genmon.c
+src/vala-panel-genmon.c
+src/mate-panel-genmon.c
+src/xfce4-panel-genmon.c
+src/mon_widget.c

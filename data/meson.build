@@ -6,31 +6,27 @@ if vala_panel_found
     vp_applets_datadir = vp.get_pkgconfig_variable('applets_data')
     desktop = vcs_tag(
 	    command : ['git','describe','--tags'],
-	    input: 'genmon.desktop.plugin.in.cmake',
-	    output: 'genmon.desktop.plugin.in',
+	    input: 'genmon.plugin.desktop.in',
+	    output: 'genmon.plugin.in',
 	    replace_string: '@VERSION@',
     )
     i18n.merge_file(
       input: desktop,
       output: 'org.valapanel.genmon.plugin',
-      type: 'desktop',
-      po_dir: join_paths(meson.source_root(),'po'),
-      install: true,
+      kwargs: desktop_kwargs,
       install_dir: vp_applets_datadir
     )
 endif
 
 if mate_found
     mate_applet_datadir = join_paths(mp.get_pkgconfig_variable('prefix'),datadir,'mate-panel','applets')
-    mate_desktop = configure_file(input : 'genmon-mate.desktop.plugin.in',
+    mate_desktop = configure_file(input : 'genmon-mate.plugin.desktop.in',
                output : 'genmon-mate.desktop.in',
 			   configuration : cdata)
     i18n.merge_file(
       input: mate_desktop,
       output: 'org.vala-panel.GenMon.mate-panel-applet',
-      type: 'desktop',
-      po_dir: join_paths(meson.source_root(),'po'),
-      install: true,
+      kwargs: desktop_kwargs,
       install_dir: mate_applet_datadir
     )
 endif
@@ -38,22 +34,18 @@ endif
 if xfce_found
     xfce_applet_datadir = join_paths(xp.get_pkgconfig_variable('prefix'),datadir,'xfce4','panel','plugins')
     i18n.merge_file(
-      input: 'genmon.desktop.xfce.in',
+      input: 'genmon.desktop.in',
       output: 'genmon.desktop',
-      type: 'desktop',
-      po_dir: join_paths(meson.source_root(),'po'),
-      install: true,
+      kwargs: desktop_kwargs,
       install_dir: xfce_applet_datadir
     )
 endif
 
 if budgie_found
     i18n.merge_file(
-      input: 'genmon-budgie.desktop.plugin.in',
+      input: 'genmon-budgie.desktop.in',
       output: 'genmon-budgie.plugin',
-      type: 'desktop',
-      po_dir: join_paths(meson.source_root(),'po'),
-      install: true,
+      kwargs: desktop_kwargs,
       install_dir: budgie_applet_libdir
     )
 endif
