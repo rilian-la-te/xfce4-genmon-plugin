@@ -85,7 +85,14 @@ char *genmon_spawn(char **argv, int wait)
 		return (NULL);
 	}
 	for (i = 0; i < OUT_ERR; i++)
-		pipe(aaiPipe[i]);
+	{
+		int err = pipe(aaiPipe[i]);
+		if (err == -1)
+		{
+			fprintf(stderr, "Spawn() error: Cannot allocate descriptors!\n");
+			return (NULL);
+		}
+	}
 	switch (pid = fork())
 	{
 	case -1:
