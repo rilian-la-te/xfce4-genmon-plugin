@@ -13,7 +13,7 @@ build-cmake:
   stage: build
   script:
    - pacman -Sy
-   - pacman -S --noconfirm libwnck3 gtk3 cmake git base-devel clang ninja xfce4-panel mate-panel budgie-desktop gobject-introspection
+   - pacman -S --noconfirm libwnck3 gtk3 vala cmake git base-devel clang ninja xfce4-panel mate-panel budgie-desktop gobject-introspection
    - git clone https://gitlab.com/vala-panel-project/cmake-vala.git
    - cd cmake-vala && cmake . -DCMAKE_INSTALL_PREFIX=/usr -GNinja && ninja install && cd .. && rm -rf cmake-vala
    - git clone https://gitlab.com/vala-panel-project/vala-panel.git
