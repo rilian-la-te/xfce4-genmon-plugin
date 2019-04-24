@@ -4,20 +4,20 @@ stages:
 before_script:
   - mkdir -p _ccache
   - export CCACHE_BASEDIR=${PWD}
-  - export CCACHE_DIR=${PWD}/_ccache
-  - pacman -Sy
-  - pacman -S --noconfirm libwnck3 gtk3 vala cmake git base-devel clang ninja xfce4-panel mate-panel budgie-desktop gobject-introspection
-  - git clone https://gitlab.com/vala-panel-project/cmake-vala.git
-  - cd cmake-vala && cmake . -DCMAKE_INSTALL_PREFIX=/usr -GNinja && ninja install && cd .. && rm -rf cmake-vala
-  - git clone https://gitlab.com/vala-panel-project/vala-panel.git
-  - cd vala-panel && cmake . -DCMAKE_INSTALL_PREFIX=/usr -GNinja && ninja install && cd .. && rm -rf vala-panel
+  - export CCACHE_DIR=${PWD}/_ccaches
 cache:
   paths:
     - _ccache/
-build:
+build-cmake:
   image: archlinux/base
   stage: build
   script:
+   - pacman -Sy
+   - pacman -S --noconfirm libwnck3 gtk3 cmake git base-devel clang ninja xfce4-panel mate-panel budgie-desktop gobject-introspection
+   - git clone https://gitlab.com/vala-panel-project/cmake-vala.git
+   - cd cmake-vala && cmake . -DCMAKE_INSTALL_PREFIX=/usr -GNinja && ninja install && cd .. && rm -rf cmake-vala
+   - git clone https://gitlab.com/vala-panel-project/vala-panel.git
+   - cd vala-panel && cmake . -DCMAKE_INSTALL_PREFIX=/usr -GNinja && ninja install && cd .. && rm -rf vala-panel
    - mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr -GNinja
    - ninja
    - ninja install
@@ -27,6 +27,19 @@ build:
     - "build/genmon*.tar.xz"
     expire_in: 1 week
 
+build-meson:
+  image: alpine:edge
+  stage: build
+  script:
+   - apk add --no-cache python3 gtk+3.0-dev ninja mate-panel-dev xfce4-panel-dev build-base git
+   - pip3 install meson
+   - git clone https://gitlab.com/vala-panel-project/vala-panel.git
+   - cd vala-panel && meson build --prefix=/usr && cd build && ninja install && cd ../.. && rm -rf vala-panel
+   - meson build --Dbudgie=disabled && cd build && ninja dist
+  artifacts:
+    paths:
+    - "build/meson-dist/genmon*.tar.xz"
+    expire_in: 1 week
 
 release-main:
   image: alpine:edge
