@@ -31,11 +31,11 @@ build-meson:
   image: alpine:edge
   stage: build
   script:
-   - apk add --no-cache python3 gtk+3.0-dev ninja mate-panel-dev xfce4-panel-dev build-base git
+   - apk add --no-cache python3 vala gtk+3.0-dev ninja mate-panel-dev xfce4-panel-dev build-base git
    - pip3 install meson
    - git clone https://gitlab.com/vala-panel-project/vala-panel.git
    - cd vala-panel && meson build --prefix=/usr && cd build && ninja install && cd ../.. && rm -rf vala-panel
-   - meson build --Dbudgie=disabled && cd build && ninja dist
+   - meson build -Dbudgie=disabled && cd build && ninja dist
   artifacts:
     paths:
     - "build/meson-dist/genmon*.tar.xz"
