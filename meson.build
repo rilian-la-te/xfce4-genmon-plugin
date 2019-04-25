@@ -36,7 +36,7 @@ schema_dir = join_paths(get_option('datadir'), 'glib-2.0', 'schemas')
 gtk_ver = '>=3.22.0'
 gtk = dependency('gtk+-3.0', version: gtk_ver)
 
-vp_ver = '>=0.4.88'
+vp_ver = '>=0.4.89'
 vp = dependency('vala-panel', version:  vp_ver, required: get_option('valapanel'))
 vala_panel_found = vp.found()
 

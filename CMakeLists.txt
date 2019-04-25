@@ -39,7 +39,7 @@ find_package(GTK 3.22 REQUIRED COMPONENTS GDK X11 WAYLAND)
 include(CMakeDependentOption)
 
 #set build options
-pkg_check_modules(VALAPANEL vala-panel>=0.4.60 IMPORTED_TARGET)
+pkg_check_modules(VALAPANEL vala-panel>=0.4.89 IMPORTED_TARGET)
 cmake_dependent_option(ENABLE_VALAPANEL "Enable Vala Panel Integration" ON
     "VALAPANEL_FOUND" OFF)
 add_feature_info(ValaPanel ENABLE_VALAPANEL "Vala Panel Integration - 0.5.x")
