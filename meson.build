@@ -73,7 +73,7 @@ version = vcs_tag(
 
 desktop_kwargs = {
       'type': 'desktop',
-      'args' : ['--keyword=Description'],
+      'args' : ['--keyword=Name','--keyword=Description','--keyword=Comment', '--keyword=Help'],
       'po_dir': join_paths(meson.current_source_dir(),'po'),
       'install': true,
 }
@@ -84,7 +84,7 @@ subdir('data')
 
 readmes = [
     'README.md',
-    'LICENSE', 
+    'LICENSE',
     'AUTHORS',
     'NEWS',
     'CSS Styling.txt'
